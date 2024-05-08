@@ -65,11 +65,11 @@ combined_data <- trnl %>%
     full_join(rbcl %>% select(species, rbcl_seq = nucleotides)) %>%
     full_join(rbcl_matches %>% select(index = i, rbcl_n_matches = n_matches)) %>%
     mutate(rbcl_n_matches = rbcl_n_matches - 1) %>%
-    mutate(rbcl_seq_length = sq(rbcl_seq) %>% get_sq_lengths()) %>%
+    mutate(rbcl_seq_length = gsub("-", "", rbcl_seq) %>% sq() %>% get_sq_lengths()) %>%
     full_join(its %>% select(species, its2_seq = nucleotides)) %>%
     full_join(its_matches %>% select(index = i, its2_n_matches = n_matches)) %>%
     mutate(its2_n_matches = its2_n_matches - 1) %>%
-    mutate(its2_seq_length = sq(its2_seq) %>% get_sq_lengths())
+    mutate(its2_seq_length =  gsub("-", "", its2_seq) %>% sq() %>% get_sq_lengths())
 write_csv(combined_data, "data/sequences/species_list_with_all_markers.csv")
 
 # Quick stats summary
