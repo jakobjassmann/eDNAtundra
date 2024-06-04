@@ -13,7 +13,7 @@ library(ggrepel)
 library(gt)
 
 # Load data
-botanical_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv")
+botanical_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") 
 
 # generate separate df containing only species where ID was certain
 botanical_obs_certain <- botanical_obs %>%
@@ -35,7 +35,7 @@ plot_richness_plot <- ggplot(plot_richness) +
         x = plot_id, y = species_richness,
         fill = site
     )) +
-    labs(y = "Species richness (n)", fill = "Site",
+    labs(y = "Vascular plant species richness (n)", fill = "Site",
     x = "Plot") +
 scale_y_continuous(limits = c(0,20)) +
 theme_cowplot() +
@@ -49,7 +49,7 @@ site_richness_plot <- ggplot(site_richness) +
     )) +
     labs(
         x = "",
-        y = "Species richness (n)"
+        y = "Vascular plant species richness (n)"
     ) +
 scale_y_continuous(limits = c(0, 50)) +
     theme_cowplot() +
@@ -57,7 +57,7 @@ scale_y_continuous(limits = c(0, 50)) +
 
 # write out plots
 plot_grid(site_richness_plot, plot_richness_plot) %>%
-    save_plot("figures/richness_plots.png", ., ncol = 2, bg = "white")
+    save_plot("figures/vascular_richness_plots.png", ., ncol = 2, bg = "white")
 
 # Identify common species
 species_frequencies <- data.frame(
@@ -142,13 +142,16 @@ ca_plot_site <- ggplot() +
             limits = c(-1.5, 1.5),
             breaks = seq(-1.5, 1.5, 0.5)
         ) +
+  annotate("text", x = Inf, y = Inf, hjust = 1.2, vjust = 1.8, 
+           label = "Vascular plant species", size = 18 / .pt,
+           fontface = "bold", colour = "darkgreen") +
     labs(x = paste0("Dim 1 (", round(ca_site_species$eig[1, 2], 2), "%)"), y = paste0("Dim 2 (", round(ca_site_species$eig[2, 2], 2), "%)")) +
     theme_cowplot() +
         theme(
             legend.position = "none",
             panel.border = element_rect(color = "black")
         )
-save_plot("figures/ca_plot_site.png", ca_plot_site,
+save_plot("figures/ca_vascular_plot_site.png", ca_plot_site,
     bg = "white",
     base_height = 7,
     base_asp = 1.6
@@ -157,10 +160,14 @@ save_plot("figures/ca_plot_site.png", ca_plot_site,
 
 ## Mosses!
 
+rm(list = ls())
+
 # Load moss presence absence
 moss_obs <- read_csv("data/botanical_obs/Moss_data_EC_Summer2023_UZH.csv") %>%
   # Remove redundant plot_id column
-  select(-Plot_ID)
+  select(-Plot_ID) %>%
+  # Remove some empty columns
+  filter(!is.na(Site))
 
 # Make columnames lowercase for easier handling
 colnames(moss_obs) <- c("site", "plot_id", "genus", "sp", "species", "presence", "date_entered") 
@@ -179,7 +186,7 @@ plot_richness_plot <- ggplot(plot_richness) +
     x = plot_id, y = species_richness,
     fill = site
   )) +
-  labs(y = "Species richness (n)", fill = "Site",
+  labs(y = "Moss species richness (n)", fill = "Site",
        x = "Plot") +
   scale_y_continuous(limits = c(0,20)) +
   theme_cowplot() +
@@ -193,7 +200,7 @@ site_richness_plot <- ggplot(site_richness) +
   )) +
   labs(
     x = "",
-    y = "Species richness (n)"
+    y = "Moss species richness (n)"
   ) +
   scale_y_continuous(limits = c(0, 70)) +
   theme_cowplot() +
@@ -294,6 +301,9 @@ ca_plot_site <- ggplot() +
     limits = c(-2, 1),
     breaks = seq(-2, 1, 0.5)
   ) +
+  annotate("text", x = Inf, y = Inf, hjust = 1.2, vjust = 1.8, 
+           label = "Moss species", size = 18 / .pt,
+           fontface = "bold", colour = "darkgreen") +
   labs(x = paste0("Dim 1 (", round(ca_site_species$eig[1, 2], 2), "%)"), y = paste0("Dim 2 (", round(ca_site_species$eig[2, 2], 2), "%)")) +
   theme_cowplot() +
   theme(
