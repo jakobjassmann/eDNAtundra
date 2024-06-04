@@ -145,6 +145,7 @@ ca_plot_site <- ggplot() +
   annotate("text", x = Inf, y = Inf, hjust = 1.2, vjust = 1.8, 
            label = "Vascular plant species", size = 18 / .pt,
            fontface = "bold", colour = "darkgreen") +
+  annotate("text", x = Inf, y = -Inf, hjust = 1.2, vjust = -1.8, label = "p-value = 0.006") +
     labs(x = paste0("Dim 1 (", round(ca_site_species$eig[1, 2], 2), "%)"), y = paste0("Dim 2 (", round(ca_site_species$eig[2, 2], 2), "%)")) +
     theme_cowplot() +
         theme(
@@ -226,7 +227,7 @@ species_frequencies %>%
          `Number of Plots` = n_plots,
          `Proportion of Plots` = spec_freq) %>%
   gt() %>%
-    gtsave("tables/moss_species_frequency_plot.html")
+    gtsave("tables/moss_species_frequency.html")
 
 # Generate a plot specific contingency table
 plot_species <- table(
@@ -304,6 +305,7 @@ ca_plot_site <- ggplot() +
   annotate("text", x = Inf, y = Inf, hjust = 1.2, vjust = 1.8, 
            label = "Moss species", size = 18 / .pt,
            fontface = "bold", colour = "darkgreen") +
+  annotate("text", x = Inf, y = -Inf, hjust = 1.2, vjust = -1.8, label = "p-value = 0.371") +
   labs(x = paste0("Dim 1 (", round(ca_site_species$eig[1, 2], 2), "%)"), y = paste0("Dim 2 (", round(ca_site_species$eig[2, 2], 2), "%)")) +
   theme_cowplot() +
   theme(
@@ -315,3 +317,4 @@ save_plot("figures/ca_moss_plot_site.png", ca_plot_site,
           base_height = 7,
           base_asp = 1.6
 )
+
