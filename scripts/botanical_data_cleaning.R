@@ -41,4 +41,4 @@ write_csv(botanical_obs, "data/botanical_obs/presence_absence_cleaned.csv")
 
 # Load point frame data
 point_frame_obs <- read_xlsx("data/botanical_obs/2023-08-11_botanical_ops_final.xlsx", sheet = "Pointframing")
-write_csv(botanical_obs, "data/botanical_obs/pointframing.csv")
+write_csv(point_frame_obs, "data/botanical_obs/pointframing.csv")
