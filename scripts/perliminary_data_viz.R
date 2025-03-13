@@ -29,6 +29,30 @@ site_richness <- botanical_obs_certain %>%
 
 # Visualise
 
+richness_all <- ggplot(plot_richness) +
+  geom_col(aes(
+    x = plot_id, y = species_richness,
+    fill = site
+  )) +
+  labs(y = "Vascular plant species richness (n)", fill = "Site",
+       x = "Plots") +
+  scale_fill_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
+  annotate("segment", x = 0, xend = 18.5, 
+           y  = filter(site_richness, site == "Site 1") %>% pull(species_richness),
+           linewidth = 3, colour = "#F2D64B") +
+  annotate("segment", x = 18.5, xend = 18.5 + 18, 
+           y  = filter(site_richness, site == "Site 2") %>% pull(species_richness),
+           linewidth = 3, colour = "#5F1773") +
+  annotate("segment", x = 18.5 + 18, xend = 18.5 + 2 * 18, 
+           y  = filter(site_richness, site == "Site 3") %>% pull(species_richness),
+           linewidth = 3, colour = "#F2507B") +
+scale_y_continuous(limits = c(0,40)) +
+  theme_cowplot() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+save_plot("figures/vascular_richness_all.png", richness_all,
+          bg = "white") 
+
 # Plot richness
 plot_richness_plot <- ggplot(plot_richness) +
     geom_col(aes(
@@ -37,7 +61,8 @@ plot_richness_plot <- ggplot(plot_richness) +
     )) +
     labs(y = "Vascular plant species richness (n)", fill = "Site",
     x = "Plot") +
-scale_y_continuous(limits = c(0,20)) +
+  scale_fill_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
+ scale_y_continuous(limits = c(0,20)) +
 theme_cowplot() +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 5))
 
@@ -120,8 +145,10 @@ ca_plot_site <- ggplot() +
     geom_point(
         data = ca_site_sp_site_dims,
         aes(x = `Dim 1`, y = `Dim 2`,
-        color = site),
-        size = 2,
+        fill = site),
+        colour = "white",
+        shape = 21,
+        size = 6,
     ) + 
     geom_text(
         data = ca_site_sp_site_dims,
@@ -129,13 +156,15 @@ ca_plot_site <- ggplot() +
             x = `Dim 1`, y = `Dim 2`, label = site,
             color = site
         ),
-        nudge_x = 0.1,
-        size = 5
+        nudge_x = 0.2,
+        size = 24 /.pt
     ) +
     scale_x_continuous(
         limits = c(-1.5, 1.5),
         breaks = seq(-1.5, 1.5, 0.5)
     ) +
+  scale_colour_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
+  scale_fill_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
     geom_vline(xintercept = 0, alpha = 0.5) +
         geom_hline(yintercept = 0, alpha = 0.5) +
         scale_y_continuous(
@@ -143,11 +172,12 @@ ca_plot_site <- ggplot() +
             breaks = seq(-1.5, 1.5, 0.5)
         ) +
   annotate("text", x = Inf, y = Inf, hjust = 1.2, vjust = 1.8, 
-           label = "Vascular plant species", size = 18 / .pt,
-           fontface = "bold", colour = "darkgreen") +
-  annotate("text", x = Inf, y = -Inf, hjust = 1.2, vjust = -1.8, label = "p-value = 0.006") +
+           label = "Vascular plant species", size = 20 / .pt,
+           fontface = "bold", colour = "black") +
+  annotate("text", x = Inf, y = -Inf, hjust = 1.2, vjust = -1.8, label = "p-value = 0.006",
+           size = 20/.pt) +
     labs(x = paste0("Dim 1 (", round(ca_site_species$eig[1, 2], 2), "%)"), y = paste0("Dim 2 (", round(ca_site_species$eig[2, 2], 2), "%)")) +
-    theme_cowplot() +
+    theme_cowplot(20) +
         theme(
             legend.position = "none",
             panel.border = element_rect(color = "black")
@@ -180,6 +210,32 @@ plot_richness <- moss_obs %>%
 site_richness <- moss_obs %>%
   group_by(site) %>%
   summarise(species_richness = n_distinct(species)) 
+
+# richness all plot
+richness_all <- ggplot(plot_richness) +
+  geom_col(aes(
+    x = plot_id, y = species_richness,
+    fill = site
+  )) +
+  labs(y = "Moss species richness (n)", fill = "Site",
+       x = "Plots") +
+  scale_fill_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
+  annotate("segment", x = 0, xend = 18.5, 
+           y  = filter(site_richness, site == "S1") %>% pull(species_richness),
+           linewidth = 3, colour = "#F2D64B") +
+  annotate("segment", x = 18.5, xend = 18.5 + 18, 
+           y  = filter(site_richness, site == "S2") %>% pull(species_richness),
+           linewidth = 3, colour = "#5F1773") +
+  annotate("segment", x = 18.5 + 18, xend = 18.5 + 2 * 18, 
+           y  = filter(site_richness, site == "S3") %>% pull(species_richness),
+           linewidth = 3, colour = "#F2507B") +
+  scale_y_continuous(limits = c(0,70), breaks = seq(0,70, 10)) +
+  theme_cowplot() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = "none")
+save_plot("figures/moss_richness_all.png", richness_all,
+          bg = "white") 
 
 # Plot richness
 plot_richness_plot <- ggplot(plot_richness) +
@@ -312,9 +368,65 @@ ca_plot_site <- ggplot() +
     legend.position = "none",
     panel.border = element_rect(color = "black")
   )
+
+ca_plot_site <- ggplot() +
+  geom_point(
+    data = ca_site_sp_spp_dims,
+    aes(x = `Dim 1`, y = `Dim 2`)
+  ) +
+  geom_text_repel(
+    data = ca_site_sp_spp_dims
+    # filter(abs(`Dim 1`) > 0.5 | abs(`Dim 2`) > 0.5)
+    ,
+    aes(
+      x = `Dim 1`, y = `Dim 2`,
+      label = gsub("([A-Z])[a-z]* ([a-z]*).*", "\\1\\. \\2", species)
+    ),
+    max.overlaps = 20
+  ) +    
+  geom_point(
+    data = ca_site_sp_site_dims,
+    aes(x = `Dim 1`, y = `Dim 2`,
+        fill = site),
+    colour = "white",
+    shape = 21,
+    size = 6,
+  ) + 
+  geom_text(
+    data = ca_site_sp_site_dims,
+    aes(
+      x = `Dim 1`, y = `Dim 2`, label = site,
+      color = site
+    ),
+    nudge_x = 0.2,
+    size = 24 /.pt
+  ) +
+  scale_x_continuous(
+    limits = c(-2, 1.5),
+    breaks = seq(-2, 1.5, 0.5)
+  ) +
+  geom_vline(xintercept = 0, alpha = 0.5) +
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  scale_y_continuous(
+    limits = c(-2, 1),
+    breaks = seq(-2, 1, 0.5)
+  ) +
+  scale_colour_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
+  scale_fill_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
+  annotate("text", x = Inf, y = Inf, hjust = 1.2, vjust = 1.8, 
+           label = "Vascular plant species", size = 20 / .pt,
+           fontface = "bold", colour = "black") +
+  annotate("text", x = Inf, y = -Inf, hjust = 1.2, vjust = -1.8, label = "p-value = 0.371",
+           size = 20/.pt) +
+  labs(x = paste0("Dim 1 (", round(ca_site_species$eig[1, 2], 2), "%)"), y = paste0("Dim 2 (", round(ca_site_species$eig[2, 2], 2), "%)")) +
+  theme_cowplot(20) +
+  theme(
+    legend.position = "none",
+    panel.border = element_rect(color = "black"))
 save_plot("figures/ca_moss_plot_site.png", ca_plot_site,
           bg = "white",
           base_height = 7,
           base_asp = 1.6
 )
 
+anova(lm(species_richness ~site, plot_richness))

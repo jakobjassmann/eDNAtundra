@@ -24,7 +24,7 @@ plot_locations <- ppk_data %>%
     filter(!(grepl("NW", Name) |
         grepl("NE", Name) |
         grepl("SE", Name) |
-        grepl("SE", Name))) 
+        grepl("SW", Name))) 
 write_sf(plot_locations, "data/geometries/plot_locations.gpkg")
 
 # Get site boundaries
@@ -32,7 +32,7 @@ site1_bounds <- ppk_data %>%
     filter(site == "Site 1") %>%
     summarise() %>%
     st_convex_hull() %>%
-    mutate(site = "Site 2")
+    mutate(site = "Site 1")
 plot(st_geometry(site1_bounds))
 st_area(site1_bounds)
 site2_bounds <- ppk_data %>%
