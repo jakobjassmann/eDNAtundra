@@ -1,4 +1,5 @@
-# Quick script to check trimmed reads
+# Quick script to extract trimmed reads
+# Jakob Assmann jakob.assmann@uzh.ch March 2025
 
 # Dependencies
 library(tidyverse)

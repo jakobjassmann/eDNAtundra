@@ -124,11 +124,12 @@ nrow(distinct(trnl_combined, realised_taxon, source))
 # Write to CSV
 trnl_combined %>%
     write_csv("data/sequences/reference/trnl_reference_Assmann_et_al_2025.csv")
+# trnl_combined <- read_csv("data/sequences/reference/trnl_reference_Assmann_et_al_2025.csv")
 
 # Write to fasta file
 trnl_combined %>%
     select(name = realised_taxon, sq = trnl_seq) %>%
-    mutate(sq = sq(sq)) %>%
+    mutate(name = paste0("ID ", name), sq = sq(sq)) %>%
     write_fasta("data/sequences/reference/trnl_reference_Assmann_et_al_2025.fasta")
 
 
@@ -324,10 +325,11 @@ nrow(distinct(its2_combined, realised_taxon, source))
 # Write as CSV
 its2_combined %>%
     write_csv("data/sequences/reference/its2_reference_Assmann_et_al_2025.csv")
+# its2_combined <- read_csv("data/sequences/reference/its2_reference_Assmann_et_al_2025.csv")
 
 # Write to fasta file
 its2_combined %>%
     select(name = realised_taxon, sq = its2_seq) %>%
-    mutate(sq = sq(sq)) %>%
+    mutate(name = paste0("ID ", name), sq = sq(sq)) %>%
     arrange(name) %>%
     write_fasta("data/sequences/reference/its2_reference_Assmann_et_al_2025.fasta")
