@@ -30,6 +30,7 @@ sample_ids <- gsub("([A-Za-z0-9]*-?[123P]?)-.*", "\\1", basename(its2_fwd))
 ## Visual QC of a couple of samples
 plotQualityProfile(its2_fwd[17:18])
 plotQualityProfile(its2_rev[17:18])
+# These reads look a lot better then the trnl ones (overall)
 
 ## Filtering ---
 
@@ -113,8 +114,8 @@ its2_taxa %>% data.frame() %>% remove_rownames() %>% filter(!is.na(Genus)) %>% V
 
 # Save objects
 dir.create("data/sequences/its2/edna/cleaned")
-write(its2_seqtab_nochim, "data/sequences/its2/edna/cleaned/its2_seqtab_nochim.rda")
-write(its2_taxa, "data/sequences/its2/edna/cleaned/its2_taxa.rda")
+save(its2_seqtab_nochim, "data/sequences/its2/edna/cleaned/its2_seqtab_nochim.rda")
+save(its2_taxa, "data/sequences/its2/edna/cleaned/its2_taxa.rda")
 write_csv(track %>% data.frame(), "data/sequences/its2/edna/cleaned/track.csv")
 
 # End of file
