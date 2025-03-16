@@ -110,14 +110,14 @@ View(track)
 its2_taxa <- assignSpecies(its2_seqtab_nochim,
                       "data/sequences/reference/its2_reference_Assmann_et_al_2025.fasta",
                       verbose = T)
-its2_taxa %>% data.frame() %>% remove_rownames() %>% filter(!is.na(Genus)) %>% View()
+its2_taxa %>% data.frame() %>% remove_rownames() %>% filter(!is.na(Genus)) %>% 
+  distinct() %>% 
+  arrange(Genus, Species) %>% View()
 
 # Save objects
 dir.create("data/sequences/its2/edna/cleaned")
-save(its2_seqtab_nochim, "data/sequences/its2/edna/cleaned/its2_seqtab_nochim.rda")
-save(its2_taxa, "data/sequences/its2/edna/cleaned/its2_taxa.rda")
-write_csv(track %>% data.frame(), "data/sequences/its2/edna/cleaned/track.csv")
+save(its2_seqtab_nochim, file = "data/sequences/its2/edna/cleaned/its2_seqtab_nochim.Rda")
+save(its2_taxa, file = "data/sequences/its2/edna/cleaned/its2_taxa.Rda")
+write_csv(track %>% data.frame(), "data/sequences/its2/edna/cleaned/its2_track.csv")
 
 # End of file
-    
-
