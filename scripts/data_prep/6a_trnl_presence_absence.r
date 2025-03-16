@@ -114,9 +114,16 @@ trnl_taxa %>% data.frame() %>% remove_rownames() %>% filter(!is.na(Genus)) %>% V
 
 # Save objects
 dir.create("data/sequences/trnl/edna/cleaned")
-write(trnl_seqtab_nochim, "data/sequences/trnl/edna/cleaned/trnl_seqtab_nochim.rda")
-write(trnl_taxa, "data/sequences/trnl/edna/cleaned/trnl_taxa.rda")
+save(trnl_seqtab_nochim, "data/sequences/trnl/edna/cleaned/trnl_seqtab_nochim.rda")
+save(trnl_taxa, "data/sequences/trnl/edna/cleaned/trnl_taxa.rda")
 write_csv(track %>% data.frame(), "data/sequences/trnl/edna/cleaned/track.csv")
+
+## Post processing to generate presence absence data frames
+
+# Load sequneces and taxonomic assignments
+load("data/sequences/trnl/edna/cleaned/trnl_seqtab_nochim.rda")
+load("data/sequences/trnl/edna/cleaned/trnl_taxa.rda")
+
 
 ### Old stuff
 
