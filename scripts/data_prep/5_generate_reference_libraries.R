@@ -385,7 +385,7 @@ nrow(bold_bryo[is.na(species),])
 
 # Prepare to write out as dada fasta:
 bryo_ref <- bold_bryo %>% 
-    mutate(name = paste(kingdom, phylum, class, family, genus, species), collapse = "; ") %>%
+    mutate(name = paste(kingdom, phylum, class, family, genus, species, collapse = ";")) %>%
     select(name, sq = nuc, bold_id = processid)
 
 # Check distinct sequences
@@ -399,10 +399,24 @@ nrow(distinct(bryo_ref, sq))
 # Write as CSV
 bryo_ref %>%
     write_csv("data/sequences/reference/its2_reference_bryo_BOLD.csv")
-# its2_combined <- read_csv("data/sequences/reference/its2_reference_Assmann_et_al_2025.csv")
+# bryo_ref <- read_csv("data/sequences/reference/its2_reference_bryo_BOLD.csv")
+
+# remove nas
+bryo_ref <- filter(bryo_ref, !is.na(sq))
+
+# Remove any extra lenght names (n = 300)
+bryo_ref <- filter(bryo_ref, !sapply(strsplit(bryo_ref$name, ";"), length) > 7) 
+# Come back to this later
+
+# Remove any dashes in sequences
+bryo_ref$sq <- sapply(bryo_ref$sq, function(x) gsub("-", "", x))
+
+# Add a final semicolon to the name vector
+bryo_ref$name <- paste0(bryo_ref$name, ";")
 
 # Write to fasta file
 bryo_ref %>%
+    filter(!is.na(sq)) %>%
     mutate(sq = sq(sq)) %>%
     arrange(name) %>%
     write_fasta("data/sequences/reference/its2_reference_bryo_BOLD.fasta")
