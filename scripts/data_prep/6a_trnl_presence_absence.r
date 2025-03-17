@@ -134,8 +134,8 @@ write_csv(track %>% data.frame(), "data/sequences/trnl/edna/cleaned/trnl_track.c
 ## Post processing to generate presence absence data frames ----
 
 # Load sequneces and taxonomic assignments
-load("data/sequences/trnl/edna/cleaned/trnl_seqtab_nochim.rda")
-load("data/sequences/trnl/edna/cleaned/trnl_taxa.rda")
+load("data/sequences/trnl/edna/cleaned/trnl_seqtab_nochim.Rda")
+load("data/sequences/trnl/edna/cleaned/trnl_taxa.Rda")
 
 # Collapse data into a datafram of species presence / absence per plot
 tax_counts <- right_join(
