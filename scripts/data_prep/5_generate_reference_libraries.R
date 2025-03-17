@@ -114,12 +114,29 @@ trnl_combined <- bind_rows(
     }) %>%
     bind_rows()
 
+# Quick check:
+length(unique(trnl_combined$trnl_seq))
+nrow(distinct(trnl_combined, realised_taxon, source))
+trnl_combined %>% group_by(trnl_seq) %>% filter(n()>1)
+
+# Two more duplicates remain: 
+# Carex aquatilis (Willerslev) groups with Carex aquatilis and Carex bigelowii (Assmann)
+# -> we will merge these into Carex species (Assmann)
+# Oxytropis maydelliana (Assmann) groups with Oxytropis species (Willerslev)
+# -> we will merge thes into Oxytropis species (Willerslev)
+trnl_combined %>% filter((realised_taxon == "Carex aquatilis"))
+trnl_combined <- trnl_combined %>% filter(!(realised_taxon == "Carex aquatilis"))
+trnl_combined %>% filter((realised_taxon == "Oxytropis maydelliana"))
+trnl_combined <- trnl_combined %>% filter(!(realised_taxon == "Oxytropis maydelliana"))
+
 # Show final list
 print(trnl_combined, n = 100)
 
-# Quick sanity check:
+# Quick check:
 length(unique(trnl_combined$trnl_seq))
 nrow(distinct(trnl_combined, realised_taxon, source))
+trnl_combined %>% group_by(trnl_seq) %>% filter(n()>1)
+trnl_combined %>% group_by(realised_taxon) %>% filter(n()>1)
 
 # Write to CSV
 trnl_combined %>%
