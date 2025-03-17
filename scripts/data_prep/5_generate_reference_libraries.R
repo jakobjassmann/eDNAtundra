@@ -350,3 +350,61 @@ its2_combined %>%
     mutate(name = paste0("ID ", name), sq = sq(sq)) %>%
     arrange(name) %>%
     write_fasta("data/sequences/reference/its2_reference_Assmann_et_al_2025.fasta")
+
+## Quick shot at generating moss ITS2 reference library from bolt----
+
+# Load data table to handle the big bold database
+library(data.table)
+setwd("repositories/eDNAtundra")
+
+# Load the bold database
+bold <- fread("data/external/reference_libraries/BOLD/BOLD_Public.07-Mar-2025.tsv")
+names(bold)
+
+# Filter phylum bryophyta
+bold_bryo <- bold[phylum == "Bryophyta",]
+nrow(bold_bryo)
+# 148264 entries
+
+# Filter ITS2
+bold_bryo <- bold_bryo[marker_code == "ITS2",]
+nrow(bold_bryo)
+# 7084 entries
+
+# Look at head
+head(bold_bryo)
+
+# Check for NAs in taxonomy
+nrow(bold_bryo[is.na(kingdom),])
+nrow(bold_bryo[is.na(phylum),])
+nrow(bold_bryo[is.na(class),])
+nrow(bold_bryo[is.na(family),])
+nrow(bold_bryo[is.na(genus),])
+nrow(bold_bryo[is.na(species),])
+# All good
+
+# Prepare to write out as dada fasta:
+bryo_ref <- bold_bryo %>% 
+    mutate(name = paste(kingdom, phylum, class, family, genus, species), collapse = "; ") %>%
+    select(name, sq = nuc, bold_id = processid)
+
+# Check distinct sequences
+nrow(bryo_ref)
+nrow(distinct(bryo_ref, name))
+nrow(distinct(bryo_ref, sq))
+# There seems to be a lot of duplicate sequences and taxa. 
+# Let's roll with it for now and see whether the DADA2 taxonomic assignment can
+# handle it. 
+
+# Write as CSV
+bryo_ref %>%
+    write_csv("data/sequences/reference/its2_reference_bryo_BOLD.csv")
+# its2_combined <- read_csv("data/sequences/reference/its2_reference_Assmann_et_al_2025.csv")
+
+# Write to fasta file
+bryo_ref %>%
+    mutate(sq = sq(sq)) %>%
+    arrange(name) %>%
+    write_fasta("data/sequences/reference/its2_reference_bryo_BOLD.fasta")
+
+

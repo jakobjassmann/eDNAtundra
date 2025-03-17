@@ -1,4 +1,4 @@
-# Retrieve presence absence for each plot based on trnl
+# Retrieve presence absence for each plot based on its2
 # Jakob Assmann jakob.assmann@uzh.ch March 2025
 
 # Dependencies
@@ -119,5 +119,74 @@ dir.create("data/sequences/its2/edna/cleaned")
 save(its2_seqtab_nochim, file = "data/sequences/its2/edna/cleaned/its2_seqtab_nochim.Rda")
 save(its2_taxa, file = "data/sequences/its2/edna/cleaned/its2_taxa.Rda")
 write_csv(track %>% data.frame(), "data/sequences/its2/edna/cleaned/its2_track.csv")
+
+## Post processing to generate presence absence data frames ----
+
+# Load sequneces and taxonomic assignments
+load("data/sequences/its2/edna/cleaned/its2_seqtab_nochim.rda")
+load("data/sequences/its2/edna/cleaned/its2_taxa.rda")
+
+# Collapse data into a datafram of species presence / absence per plot
+tax_counts <- right_join(
+    # Prepare sequence ocunts
+    t(its2_seqtab_nochim) %>%
+        data.frame() %>%
+        mutate(., sq = row.names(.)) %>%
+        remove_rownames() %>%
+        relocate(sq) %>%
+        pivot_longer(.,
+            cols = 2:ncol(.),
+            names_to = "sample_id",
+            values_to = "count"
+        ) %>%
+        mutate(
+            sample_id = gsub("\\.", "-", sample_id),
+            plot_id = case_when(
+                grepl("S[0-9]{1}[SR]{1}[0-9]{1}", sample_id) ~ substr(sample_id, 1, 4),
+                TRUE ~ NA
+            ),
+            subsample_id = case_when(
+                grepl("S[0-9]{1}[SR]{1}[0-9]{1}", sample_id) ~ substr(sample_id, 6, 6),
+                TRUE ~ NA
+            )
+        ),
+    # Preprare taxonomic assignments
+    data.frame(its2_taxa) %>%
+        mutate(., sq = row.names(.)) %>%
+        remove_rownames() %>%
+        filter(!is.na(Genus))
+) %>%
+    relocate(sample_id, plot_id, subsample_id, Genus, Species) %>%
+    dplyr::rename(genus = Genus, species = Species) %>%
+    arrange(sample_id) %>%
+    # Retain only presences
+    filter(count > 0)
+
+# Write out data table
+write_csv(tax_counts, "data/sequences/its2/edna/cleaned/its2_taxa_in_sample.csv")
+
+## Quick quality checks ----
+
+# Check for NAs
+tax_counts %>%
+filter(is.na(species)) 
+# No NAs -> good!
+
+# Check for n taxa per sample
+tax_counts %>% group_by(sample_id) %>% tally() %>% pull(n) %>% hist()
+read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
+group_by(plot_id) %>% distinct(full_name) %>% tally() %>% pull(n) %>% hist()
+# Distribution look more similar than what we saw for trnl
+
+# Check counts
+tax_counts %>% pull(count) %>% hist()
+
+# How many counts are below 16?
+tax_counts %>% filter(count < 16) %>% nrow()
+# A bit more than for trnl, but still...
+# This is fewer than expected -> it seems like the dada2 pipline filter worked
+# rather well. Check later whether count is associated with presence. 
+
+# Overall looking good.
 
 # End of file

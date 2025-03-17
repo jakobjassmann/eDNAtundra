@@ -131,7 +131,7 @@ save(trnl_seqtab_nochim, file = "data/sequences/trnl/edna/cleaned/trnl_seqtab_no
 save(trnl_taxa, file = "data/sequences/trnl/edna/cleaned/trnl_taxa.Rda")
 write_csv(track %>% data.frame(), "data/sequences/trnl/edna/cleaned/trnl_track.csv")
 
-## Post processing to generate presence absence data frames
+## Post processing to generate presence absence data frames ----
 
 # Load sequneces and taxonomic assignments
 load("data/sequences/trnl/edna/cleaned/trnl_seqtab_nochim.rda")
@@ -169,43 +169,34 @@ tax_counts <- right_join(
 ) %>%
     relocate(sample_id, plot_id, subsample_id, Genus, Species) %>%
     dplyr::rename(genus = Genus, species = Species) %>%
-    arrange(sample_id)
+    arrange(sample_id) %>%
+    # Retain only presences
+    filter(count > 0)
 
 # Write out data table
 write_csv(tax_counts, "data/sequences/trnl/edna/cleaned/trnl_taxa_in_sample.csv")
 
 ## Quick quality checks ----
 
-# Why are some species NA?
+# Check for NAs
 tax_counts %>%
-filter(is.na(species)) %>%
-dplyr::slice(2) %>%
-pull(sq)
+filter(is.na(species)) 
+# No NAs -> good!
 
-# Compare to botanical obs
-botanical_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv")
+# Check for n taxa per sample
+tax_counts %>% group_by(sample_id) %>% tally() %>% pull(n) %>% hist()
+read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
+group_by(plot_id) %>% distinct(full_name) %>% tally() %>% pull(n) %>% hist()
+# Botanical obs are slightly less normally distributed. 
 
-botanical_obs %>%
-    filter(plot_id %in% unique(substr(species_detected_df_filtered$plot_id, 1, 4))) %>%
-    group_by(plot_id) %>%
-    summarise(n_spp = n())
+# Check counts
+tax_counts %>% pull(count) %>% hist()
 
-species_detected_df_filtered %>%
-    mutate(plot_id = substr(plot_id, 1, 4)) %>%
-    distinct(plot_id, Genus, Species) %>%
-    group_by(plot_id) %>%
-    summarise(n_spp = n())
+# How many counts are below 16?
+tax_counts %>% filter(count < 16) %>% nrow()
+# This is fewer than expected -> it seems like the dada2 pipline filter worked
+# rather well. Check later whether count is associated with presence. 
 
-test_plot <- unique(substr(species_detected_df_filtered$plot_id, 1, 4))[3]
-botanical_obs %>%
-    filter(plot_id %in% test_plot) %>%
-    arrange(plot_id, full_name) %>%
-    select(plot_id, full_name)
-species_detected_df_filtered %>%
-    mutate(plot_id = substr(plot_id, 1, 4)) %>%
-    filter(plot_id %in% test_plot) %>%
-    group_by(plot_id, Genus, Species) %>%
-    summarise(total_count = sum(Count))
-arrange(Genus, Species)
+# Overall looking good.
 
 # End of file
