@@ -150,7 +150,7 @@ trnl_combined %>%
     write_fasta("data/sequences/reference/trnl_reference_Assmann_et_al_2025.fasta")
 
 
-## ITS2 ---
+## ITS2 ----
 
 # Load ITS2 sequences from cambridge bay
 cb_sqs <- read_csv("data/sequences/reference/Assmann_et_al_CB_2023.csv") %>%
