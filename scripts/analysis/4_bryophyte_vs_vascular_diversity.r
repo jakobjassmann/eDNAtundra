@@ -1,0 +1,100 @@
+# Moss vs. vascular diversity
+# Jakob J. Assmann jakob.assmann@uzh.ch 19 March 2025
+
+# Dependencies
+library(tidyverse)
+library(ggplot2)
+
+# Load presence / absence vascular observations
+vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
+    select(-observer, -scribe) %>%
+    mutate(
+        species = gsub("([A-Za-z]*) .*", "\\1", species),
+        short_name = paste(genus, species)
+    ) %>%
+    # Add site_id string
+    rename(site_id = site) %>%
+    select(-date, -full_name) %>%
+    mutate(phylum = "Vascular plants") 
+
+# Load presence / absence moss observations
+bryo_obs <- read_csv("data/botanical_obs/moss_data_Erin_cleaned_final_Deb.csv") %>%
+    mutate(plot_id = paste0(Site, Plot_ID)) %>%
+    select(site_id = Site, plot_id, genus = Genus, species = Species) %>%
+    # convert al sp. to species
+    mutate(species = (gsub("sp\\.", "species", species))) %>%
+    # Remove all uncertain ids
+    filter(!grepl("cf", genus) & !grepl("cf", species)) %>%
+    mutate(short_name = paste(genus, species)) %>%
+    arrange(site_id, plot_id, short_name) %>%
+    mutate(site_id = gsub("S", "Site ", site_id)) %>%
+    mutate(phylum = "Bryophytes") 
+
+# Combine dataframes
+combined_obs <- bind_rows(vascular_obs, bryo_obs) %>%
+arrange(site_id, plot_id, short_name, phylum) %>%
+relocate(site_id)
+
+# Caluclate number of species per plot
+combined_obs_nsp_plot <- combined_obs %>%
+group_by(site_id, plot_id, phylum) %>%
+summarise(nsp = n_distinct(short_name)) %>%
+# Add 0 for empty observations
+group_split() %>%
+map(function(x){
+    if(nrow(x) == 2) return(x)
+    x <- bind_rows(x, 
+        mutate(x, phylum = case_when(
+        x$phylum == "Bryophytes" ~ "Vascular plants",
+        x$phylum == "Vascular plants" ~ "Bryophytes"),
+        nsp = 0))
+    return(x)
+}) %>% 
+bind_rows() %>%
+arrange(site_id, plot_id, phylum)
+
+# Are mossess more diverse than vascular plants at the plot level?
+combined_obs_nsp_plot %>% 
+group_by(site_id, plot_id) %>%
+arrange(site_id, plot_id, desc(nsp)) %>%
+slice(1) %>%
+ungroup() %>%
+summarise(bryo_lt_vasc = sum(phylum == "Bryophytes"))
+n_distinct(pull(combined_obs_nsp_plot, plot_id))
+# No! Bryophyte diverstiy only exceeds vascular diversity for 39 / 54 
+
+# How is it at site level?
+# Caluclate number of species per site
+(combined_obs_nsp_site <- combined_obs %>%
+select(-plot_id) %>%
+group_by(site_id, phylum) %>%
+summarise(nsp = n_distinct(short_name)) %>%
+bind_rows() %>%
+arrange(site_id, phylum))
+# Bryophytes exeed vascular plant diversity dramatically in all cases
+# # A tibble: 6 × 3
+#   site_id phylum            nsp
+#   <chr>   <chr>           <int>
+# 1 Site 1  Bryophytes         56
+# 2 Site 1  Vascular plants    30
+# 3 Site 2  Bryophytes         35
+# 4 Site 2  Vascular plants    31
+# 5 Site 3  Bryophytes         63
+# 6 Site 3  Vascular plants    38
+
+# What about Shannon diversity?
+(combined_obs_div_site <- combined_obs %>%
+group_by(site_id, phylum, short_name) %>%
+summarise(p_ln_p = (n()/13)*log(n()/13)) %>%
+group_by(site_id, phylum) %>%
+summarise(shan_div = (-1)*sum(p_ln_p)) %>%
+arrange(site_id, phylum))
+# Same here!
+#   site_id phylum          shan_div
+#   <chr>   <chr>              <dbl>
+# 1 Site 1  Bryophytes         15.1 
+# 2 Site 1  Vascular plants     7.64
+# 3 Site 2  Bryophytes          9.43
+# 4 Site 2  Vascular plants     7.96
+# 5 Site 3  Bryophytes         16.3
+# 6 Site 3  Vascular plants     8.98
