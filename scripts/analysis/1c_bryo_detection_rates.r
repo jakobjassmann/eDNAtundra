@@ -148,7 +148,7 @@ save_plot("figures/fig_s5_bryo_sp_detection.png",
 )
 
 # Collapse species list where detected
-combined_obs <- combined_obs %>%
+obs_combined <- obs_combined %>%
     group_by(plot_id, species) %>%
     group_split() %>%
     map(function(x) {
@@ -157,3 +157,11 @@ combined_obs <- combined_obs %>%
     }) %>%
     bind_rows() %>%
     distinct(plot_id, short_name, source)
+
+# Detection per site
+obs_combined %>%
+filter(!grepl("species", short_name)) %>%
+mutate(site_id = substr(plot_id, 1,2),
+site_id = gsub("S", "Site ", site_id)) %>%
+group_by(site_id) %>%
+summarise(n = n_distinct(short_name))

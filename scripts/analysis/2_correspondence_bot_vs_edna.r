@@ -103,6 +103,18 @@ ca_plot_site_bot <- ggplot() +
         ),
         max.overlaps = 20
     ) +    
+    geom_label(
+        data = ca_site_sp_site_dims,
+        aes(
+            x = `Dim 1`, y = `Dim 2`, label = site,
+            color = site
+        ),
+        label.size = NA,
+        fill = "#FFFFFF88",
+        nudge_x = -0.25,
+        hjust = 0.5,
+        size = 28 /.pt
+    ) +   
     geom_point(
         data = ca_site_sp_site_dims,
         aes(x = `Dim 1`, y = `Dim 2`,
@@ -110,15 +122,6 @@ ca_plot_site_bot <- ggplot() +
         colour = "white",
         shape = 21,
         size = 6,
-    ) + 
-    geom_text(
-        data = ca_site_sp_site_dims,
-        aes(
-            x = `Dim 1`, y = `Dim 2`, label = site,
-            color = site
-        ),
-        nudge_x = 0.2,
-        size = 24 /.pt
     ) +
     scale_x_continuous(
         limits = c(-1.5, 1.5),
@@ -129,16 +132,16 @@ ca_plot_site_bot <- ggplot() +
     geom_vline(xintercept = 0, alpha = 0.5) +
         geom_hline(yintercept = 0, alpha = 0.5) +
         scale_y_continuous(
-            limits = c(-1.5, 1.5),
+            limits = c(-1.6, 1.6),
             breaks = seq(-1.5, 1.5, 0.5)
         ) +
   annotate("text", x = Inf, y = Inf, hjust = 1.2, vjust = 1.8, 
-           label = "Botanical Surveys", size = 20 / .pt,
+           label = "Botanical Surveys", size = 24 / .pt,
            fontface = "bold", colour = "black") +
   annotate("text", x = Inf, y = -Inf, hjust = 1.2, vjust = -1.8, label = "p-value = 0.01",
-           size = 20/.pt) +
+           size = 24/.pt) +
     labs(x = paste0("Dim 1 (", round(ca_bot_site$eig[1, 2], 2), "%)"), y = paste0("Dim 2 (", round(ca_bot_site$eig[2, 2], 2), "%)")) +
-    theme_cowplot(20) +
+    theme_cowplot(24) +
         theme(
             legend.position = "none",
             panel.border = element_rect(color = "black")
@@ -158,10 +161,14 @@ fviz_ca_biplot(ca_edna_site)
 # Simplify objects
 ca_site_sp_site_dims <- ca_edna_site$row$coord %>%
     as.data.frame() %>%
-    mutate(., site = row.names(.))
+    mutate(., site = row.names(.)) %>%
+    mutate(`Dim 1` = -1 * `Dim 1`,
+    `Dim 2` = -1 * `Dim 2`)
 ca_site_sp_spp_dims <- ca_edna_site$col$coord %>%
     as.data.frame() %>%
-    mutate(., species = row.names(.))
+    mutate(., species = row.names(.)) %>%
+    mutate(`Dim 1` = -1 * `Dim 1`,
+    `Dim 2` = -1 * `Dim 2`)
 
 ca_plot_site_edna <- ggplot() +
     geom_point(
@@ -177,7 +184,19 @@ ca_plot_site_edna <- ggplot() +
             label = gsub("([A-Z])[a-z]* ([a-z]*).*", "\\1\\. \\2", species)
         ),
         max.overlaps = 20
-    ) +    
+    ) +   
+    geom_label(
+        data = ca_site_sp_site_dims,
+        aes(
+            x = `Dim 1`, y = `Dim 2`, label = site,
+            color = site
+        ),
+        label.size = NA,
+        fill = "#FFFFFF88",
+        nudge_x = -0.25,
+        hjust = 0.5,
+        size = 28 /.pt
+    ) + 
     geom_point(
         data = ca_site_sp_site_dims,
         aes(x = `Dim 1`, y = `Dim 2`,
@@ -186,43 +205,37 @@ ca_plot_site_edna <- ggplot() +
         shape = 21,
         size = 6,
     ) + 
-    geom_text(
-        data = ca_site_sp_site_dims,
-        aes(
-            x = `Dim 1`, y = `Dim 2`, label = site,
-            color = site
-        ),
-        nudge_x = -0.2,
-        hjust = 0.5,
-        size = 24 /.pt
-    ) +
     scale_x_continuous(
         limits = c(-1.5, 1.5),
         breaks = seq(-1.5, 1.5, 0.5)
     ) +
+    # scale_y_reverse() +
   scale_colour_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
   scale_fill_manual(values = c("#F2D64B", "#5F1773", "#F2507B")) +
     geom_vline(xintercept = 0, alpha = 0.5) +
         geom_hline(yintercept = 0, alpha = 0.5) +
         scale_y_continuous(
-            limits = c(-1.5, 1.5),
+            limits = c(-1.6, 1.6),
             breaks = seq(-1.5, 1.5, 0.5)
         ) +
   annotate("text", x = Inf, y = Inf, hjust = 1.2, vjust = 1.8, 
-           label = "eDNA", size = 20 / .pt,
+           label = "eDNA", size = 24 / .pt,
            fontface = "bold", colour = "black") +
   annotate("text", x = Inf, y = -Inf, hjust = 1.2, vjust = -1.8, label = "p-value < 0.001",
-           size = 20/.pt) +
+           size = 24/.pt) +
     labs(x = paste0("Dim 1 (", round(ca_edna_site$eig[1, 2], 2), "%)"), y = paste0("Dim 2 (", round(ca_edna_site$eig[2, 2], 2), "%)")) +
-    theme_cowplot(20) +
+    theme_cowplot(24) +
         theme(
             legend.position = "none",
             panel.border = element_rect(color = "black")
         )
-
+set.seed(24)
 save_plot("figures/fig_2_ca_site.png", 
     plot_grid(ca_plot_site_bot, ca_plot_site_edna),
     bg = "white",
     base_height = 7,
     base_asp = 1.6*2
 )
+
+
+
