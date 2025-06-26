@@ -94,13 +94,16 @@ site_map <- ggplot() +
 
 # Combine with the conceptual sketches
 plot_grid(
-    site_map,
-    ggdraw() + draw_image("figures/sketches_site_plot_layout.png", clip = "on", scale = 1.25),
+    ggdraw() + 
+    draw_plot(site_map) + 
+    draw_image("figures/overview_map.png", scale = 0.5, x = 0.35, y = -0.2),
+    ggdraw() + 
+    draw_image("figures/sketches_site_plot_layout.png", clip = "on", scale = 1.225),
     nrow = 2,
     labels = c("a)", ""),
-    label_x = 0.01,
+    label_x = 0.025,
     label_y = 0.975,
     label_size = 18,
     label_colour = "white") %>%
 save_plot("figures/figure1_map_sketch.png", ., nrow = 2,
-    base_asp = 2, base_height = 5, bg = "white")
+    base_asp = (517000 - 478000) / (7678000 - 7659000), base_height = 5, bg = "white")
