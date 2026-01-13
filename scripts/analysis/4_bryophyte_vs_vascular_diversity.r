@@ -4,6 +4,7 @@
 # Dependencies
 library(tidyverse)
 library(ggplot2)
+library(cowplot)
 
 # Load presence / absence vascular observations
 vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
@@ -98,3 +99,30 @@ arrange(site_id, phylum))
 # 4 Site 2  Vascular plants     7.96
 # 5 Site 3  Bryophytes         16.3
 # 6 Site 3  Vascular plants     8.98
+
+# Visualise at the site level
+(bryo_vs_vasc_plot <- ggplot(combined_obs_nsp_site) +
+    geom_col(aes(x= site_id, y = nsp , fill = phylum)) +
+        labs(x = "", y = "Number of Species (n)" ) +
+        scale_fill_manual(values = c("#a6212166", "#a62121"),
+            labels = c("Bryophytes", "Vascular Plants")) +
+        scale_y_continuous(limits = c(0, 120), breaks = seq(0,120,20)) +
+    theme_cowplot() +
+    theme(legend.title = element_blank(),
+    legend.margin = margin(0.25,0.25,0.25,0.25, unit = "cm"),
+    legend.position = "right",
+    legend.box.background = element_rect(colour = "black"),
+    legend.justification.right = c(0.5, 0.05),
+    axis.title.x = element_blank()))
+
+(bryo_vs_vasc_plot_icons <- ggdraw() +
+    draw_plot(bryo_vs_vasc_plot) +
+    draw_image("figures/moss_bw.png", scale = 0.275, x= 0.35, y = 0.325) +
+    draw_image("figures/vascular_plant_bw.png", scale = 0.3, x = 0.34, y = 0) )
+
+save_plot("figures/fig_2b.png",
+    bryo_vs_vasc_plot_icons,
+    bg = "white")
+
+
+
