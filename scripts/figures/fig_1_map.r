@@ -1,4 +1,5 @@
 # Figure 1 - Map and sampling overview
+# Jakob J. Assmann jakob.assmann@uzh.ch 30 January 2026
 
 # Dependencies
 library(tidyverse)
@@ -8,7 +9,7 @@ library(ggplot2)
 library(tidyterra)
 library(cowplot)
 
-# Load Sentinel-2 imager
+# Load Sentinel-2 imagery
 sentinel_2 <- rast("data/sentinel/2023-08-08-Sentinel-2_L2A_true_color_-_Cambridge_Bay.tiff")
 
 # Load site locations
@@ -91,6 +92,9 @@ site_map <- ggplot() +
         ylim = c(7659000, 7678000)
     ) +
     theme_map()
+
+# Generate overview map / globe insert
+source("scripts/figures/fig_1_globe_insert.R")
 
 # Combine with the conceptual sketches
 plot_grid(

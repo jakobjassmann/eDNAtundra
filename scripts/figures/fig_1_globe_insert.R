@@ -1,4 +1,5 @@
-# Make a quick overview map
+# Overview map (globe insert) for Figure 1
+# Jakob J. Assmann jakob.assmann@uzh.ch 30 January 2026
 
 # Dependencies
 library(tidyverse)
