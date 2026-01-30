@@ -58,17 +58,18 @@ arrange(site_id, phylum))
     scale_y_continuous(limits = c(0, 120),
                        breaks = seq(0,120,20)) +
     theme_cowplot() +
-    theme(legend.margin = margin(0.25,0.25,0.25,0.25, unit = "cm"),
+    theme(legend.margin = margin(0.25, 0.35, 0.25, 0.35, unit = "cm"),
           legend.position = "right",
           legend.box.background = element_rect(colour = "black"),
-          legend.justification.right = c(0.5, 0.05),
+          legend.justification.right = c(0.5, 0.25),
           plot.title = element_text(hjust = 0.5),
           axis.title.x = element_blank()))
 
-(bryo_vs_vasc_plot_icons <- ggdraw() +
-    draw_plot(bryo_vs_vasc_plot) +
-    draw_image("figures/moss_bw.png", scale = 0.1, x= 0.275, y = -0.05) +
-    draw_image("figures/vascular_plant_bw.png", scale = 0.15, x = 0.375, y = -0.025) )
+# Add icons
+# (bryo_vs_vasc_plot_icons <- ggdraw() +
+#     draw_plot(bryo_vs_vasc_plot) +
+#     draw_image("figures/moss_bw.png", scale = 0.1, x= 0.275, y = 0.175) +
+#     draw_image("figures/vascular_plant_bw.png", scale = 0.15, x = 0.375, y = 0.190) )
 
 # save_plot("figures/fig_2b.png",
 #     bryo_vs_vasc_plot_icons,
@@ -146,7 +147,7 @@ pal <- c("#F28F16", "#A62121", "#223F59")
     )) +
     labs(
         y = "Number of Species (n)",
-        title = "Vascular Detection"
+        title = "Vascular Plant Detection"
     ) +
     scale_colour_manual(
         values = pal, name = "Observed in",
@@ -161,18 +162,18 @@ pal <- c("#F28F16", "#A62121", "#223F59")
     theme(axis.title.x = element_blank()) +
     theme(legend.position = "right", 
         #legend.position.inside = c(0.06, 0.9),
-        legend.justification.right = c(0.5, 0.105),
+        legend.justification.right = c(0.5, 0.25),
         legend.box.background = element_rect(colour = "black"),
-        legend.box.margin = margin(0.25,0.75,0.25,0.25, unit = "cm"),
+        legend.box.margin = margin(0.25,0.50,0.25,0.35, unit = "cm"),
         plot.title = element_text(hjust = 0.5),))
 
-# Add icons
-(site_richness_plot_icons <- ggdraw() + 
-    draw_plot(site_richness_plot) +
-    # Vascular plants
-    draw_image("figures/vascular_plant_bw.png", scale = 0.15, x = 0.3, y = 0.036) +
-    # DNA 
-    draw_image("figures/dna.png", scale = 0.13, x = 0.05, y = 0.44))
+# # Add icons
+# (site_richness_plot_icons <- ggdraw() + 
+#     draw_plot(site_richness_plot) +
+#     # Vascular plants
+#     draw_image("figures/vascular_plant_bw.png", scale = 0.15, x = 0.375, y = 0.200) +
+#     # DNA 
+#     draw_image("figures/dna.png", scale = 0.13, x = 0.275, y = 0.195))
 
 # save_plot("figures/figure_2b.png",
 #     site_richness_plot_icons,
@@ -180,6 +181,31 @@ pal <- c("#F28F16", "#A62121", "#223F59")
 #     #base_asp = 2 * 1.6,
 #     bg = "white"
 # )
+
+# Assemble figure 2 (one colum)
+(panel_plot <- (plot_grid(
+           bryo_vs_vasc_plot,
+           site_richness_plot,
+           #bryo_site_richness_plot_icons,
+           ncol = 1,
+           nrow = 2,
+           labels = c("a)", "b)"), # "c)"),
+           align = "hv")))
+
+# Add icons
+(panel_plot_icons <- ggdraw() + 
+    draw_plot(panel_plot) +
+    # Bryophytes
+    draw_image("figures/moss_bw.png", scale = 0.12, x= 0.25, y = 0.290) +
+    # Vascular plants I
+    draw_image("figures/vascular_plant_bw.png", scale = 0.1, x = 0.375, y = 0.305) +
+    # Vascular plants II
+    draw_image("figures/vascular_plant_bw.png", scale = 0.1, x = 0.375, y = -0.18) +
+    # DNA 
+    draw_image("figures/dna.png", scale = 0.1, x = 0.25, y = -0.18))
+    
+
+save_plot("figures/figure_2.png", panel_plot_icons, ncol = 1, nrow = 2, bg = "white")
 
 ## Bryophyte detection
 
@@ -313,7 +339,7 @@ pal <- c("#F28F16", "#EB7075", "#223F59") # "#A62121"
     theme(axis.title.x = element_blank()) +
     theme(legend.position = "right", 
         #legend.position.inside = c(0.06, 0.9),
-        legend.justification.right = c(0.5, 0.105),
+        #legend.justification.right = c(0.5, 0.105),
         legend.box.background = element_rect(colour = "black"),
         legend.box.margin = margin(0.25,0.75,0.25,0.25, unit = "cm"),
         plot.title = element_text(hjust = 0.5)))
@@ -322,23 +348,14 @@ pal <- c("#F28F16", "#EB7075", "#223F59") # "#A62121"
 (bryo_site_richness_plot_icons <- ggdraw() + 
     draw_plot(bryo_site_richness_plot) +
     # Vascular plants
-    draw_image("figures/moss_bw.png", scale = 0.1, x = 0.3, y = 0.01) +
+    draw_image("figures/moss_bw.png", scale = 0.1, x = 0.31, y = 0.225) +
     # DNA 
-    draw_image("figures/dna.png", scale = 0.13, x = 0.06, y = 0.44))
+    draw_image("figures/dna.png", scale = 0.13, x = 0.21, y = 0.230))
 
-# save_plot("figures/figure_2b.png",
-#     bryo_site_richness_plot,
-#     #plot_grid(richness_detection, site_richness_plot),
-#     #base_asp = 2 * 1.6,
-#     bg = "white"
-#)
+save_plot("figures/figure_S1.png",
+    bryo_site_richness_plot_icons,
+    #plot_grid(richness_detection, site_richness_plot),
+    #base_asp = 2 * 1.6,
+    bg = "white"
+)
 
-# Assemble figure (one colum)
-(panel_plot <- (plot_grid(
-           bryo_vs_vasc_plot_icons,
-           site_richness_plot_icons,
-           bryo_site_richness_plot_icons,
-           ncol = 1,
-           labels = c("a)", "b)", "c)"),
-           align = "hv")))
-save_plot("figures/figure_2.png", panel_plot, ncol = 1, nrow = 3, bg = "white")
