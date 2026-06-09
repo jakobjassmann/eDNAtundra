@@ -8,7 +8,9 @@ library(readxl)
 ## Presence/Absence Observations -----
 
 # Load XLS spread sheet
-botanical_obs <- read_xlsx("data/botanical_obs/2025-03-11_botanical_ops_final.xlsx") %>%
+botanical_obs <- read_xlsx(
+    "data/botanical_obs/2025-03-11_botanical_ops_final.xlsx"
+) %>%
     filter(Cleaned == "Yes") %>%
     filter(Group == "Vascular") %>%
     select(
@@ -59,21 +61,30 @@ distinct(botanical_obs, full_name) %>%
     arrange(full_name) %>%
     print(n = 100)
 
+# Remove subspecies names in species column
+botanical_obs <- botanical_obs %>%
+    mutate(
+        species = sapply(str_extract_all(full_name, "\\S+"), `[`, 2)
+    )
+
 # write out cleaned data file
 write_csv(botanical_obs, "data/botanical_obs/presence_absence_cleaned.csv")
 
 # Write out a species list
-botanical_obs %>% 
+botanical_obs %>%
     distinct(genus, species, full_name) %>%
-    mutate(short_name = gsub("([A-Za-z]*) ([A-Za-z]*).*", "\\1 \\2", full_name)) %>%
-    filter(!grepl("species", species)) %>% 
+    mutate(
+        short_name = gsub("([A-Za-z]*) ([A-Za-z]*).*", "\\1 \\2", full_name)
+    ) %>%
+    filter(!grepl("species", species)) %>%
     arrange(short_name) %>%
     write_csv(., "data/botanical_obs/species_list_cleaned.csv")
-    
+
 ## Point fraiming ----
 
 # Load point frame data
-point_frame_obs <- read_xlsx("data/botanical_obs/2025-03-11_botanical_ops_final.xlsx",
+point_frame_obs <- read_xlsx(
+    "data/botanical_obs/2025-03-11_botanical_ops_final.xlsx",
     sheet = "Pointframing"
 )
 
@@ -129,10 +140,18 @@ distinct(point_frame_obs, full_name) %>%
     arrange(full_name) %>%
     print(n = 250)
 
+# Remove subspecies names in species column
+point_frame_obs <- point_frame_obs %>%
+    mutate(
+        species = sapply(str_extract_all(species, "\\S+"), `[`, 1)
+    )
+
 write_csv(point_frame_obs, "data/botanical_obs/pointframing.csv")
 
 ## QC: Compare with species list from Saarela et al. 2020 ----
-species_list <- read_csv("data/external/species_list/species_list_Saarela_et_al_2020.csv")
+species_list <- read_csv(
+    "data/external/species_list/species_list_Saarela_et_al_2020.csv"
+)
 
 # Presence / absence
 botanical_obs %>%
@@ -140,7 +159,9 @@ botanical_obs %>%
     filter(species != "species") %>%
     distinct(genus, species) %>%
     mutate(obs = "botanical obs") %>%
-    full_join(., select(species_list, genus, species) %>% mutate(list = "species list"),
+    full_join(
+        .,
+        select(species_list, genus, species) %>% mutate(list = "species list"),
         by = join_by(genus == genus, species == species)
     ) %>%
     arrange(genus, species) %>%
@@ -150,7 +171,9 @@ botanical_obs %>%
     filter(species != "species") %>%
     distinct(genus, species) %>%
     mutate(obs = "botanical obs") %>%
-    full_join(., select(species_list, genus, species) %>% mutate(list = "species list"),
+    full_join(
+        .,
+        select(species_list, genus, species) %>% mutate(list = "species list"),
         by = join_by(genus == genus, species == species)
     ) %>%
     arrange(genus, species) %>%
@@ -158,8 +181,10 @@ botanical_obs %>%
     print(n = 200)
 # Not matching due to ID differences:
 # Carex bigelowii Torr. ex Schwein. not id'ed to sub-species, but only listed as
-# asubspecies in Saarela et al. 2020
-# Tofielda coccinea Richardson, genus spelled wrong, should be : Tofieldia -> corrected in file version 09-03-2025
+# subspecies in Saarela et al. 2020
+# Not matching because previously not recorded
+# Tofieldia coccinea
+# Note: Previously spelled Tofielda coccinea Richardson (genus spelled wrong), should be : Tofieldia -> corrected in file version 09-03-2025
 
 # Point framing
 point_frame_obs %>%
@@ -167,23 +192,29 @@ point_frame_obs %>%
     mutate(species = gsub("([A-Za-z]*) (.*)", "\\1", species)) %>%
     distinct(genus, species) %>%
     mutate(obs = "botanical obs") %>%
-    full_join(., select(species_list, genus, species) %>% 
-        mutate(list = "species list", 
-        species = gsub("([A-Za-z]*) (.*)", "\\1", species)),
+    full_join(
+        .,
+        select(species_list, genus, species) %>%
+            mutate(
+                list = "species list",
+                species = gsub("([A-Za-z]*) (.*)", "\\1", species)
+            ),
         by = join_by(genus == genus, species == species)
     ) %>%
     arrange(genus, species) %>%
     filter(!is.na(obs), is.na(list)) %>%
     print(n = 200)
- # Only mosses that are not listed.
- # Check genera with no species ID
- point_frame_obs %>%
+# Only mosses that are not listed.
+# Check genera with no species ID
+point_frame_obs %>%
     filter(species == "species") %>%
-    distinct(genus) %>% print(n = 100)
+    distinct(genus) %>%
+    print(n = 100)
 # Only Carex is a vascular plant genus (and this is correct)
 # Check other surfaces
-point_frame_obs %>% 
-filter(is.na(species)) %>% distinct(genus)
+point_frame_obs %>%
+    filter(is.na(species)) %>%
+    distinct(genus)
 
 ## QC: Check agreement with pan-Arctic species list ----
 
@@ -199,7 +230,9 @@ pasl <- read_xlsx("data/external/species_list/pasl_breen_uaf_original.xlsx")
         obs = "botanical obs"
     ) %>%
     distinct(full_name, obs) %>%
-    left_join(., select(pasl, ABBREVIAT) %>% mutate(list = "PASL"),
+    left_join(
+        .,
+        select(pasl, ABBREVIAT) %>% mutate(list = "PASL"),
         by = join_by(full_name == ABBREVIAT)
     ) %>%
     arrange(full_name) %>%
@@ -228,7 +261,9 @@ mosses <- read_csv("data/botanical_obs/moss_data_Erin_cleaned_final_Deb.csv")
     ) %>%
     select(full_name, obs) %>%
     print(n = 100) %>%
-    left_join(., select(pasl, ABBREVIAT) %>% mutate(list = "PASL"),
+    left_join(
+        .,
+        select(pasl, ABBREVIAT) %>% mutate(list = "PASL"),
         by = join_by(full_name == ABBREVIAT)
     ) %>%
     arrange(full_name) %>%
