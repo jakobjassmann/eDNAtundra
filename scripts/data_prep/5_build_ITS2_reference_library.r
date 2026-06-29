@@ -8,7 +8,7 @@ library(tidyverse)
 library(readxl)
 library(Biostrings)
 
-# Load species list from vascular plant observatins
+# Load species list from vascular plant observations
 species_list <- read_csv("data/botanical_obs/species_list_cleaned.csv")
 
 # Load reference our own ITS2 sequences
@@ -340,7 +340,9 @@ writeXStringSet(
 # Create BLAST database in terminal (external command)
 # makeblastdb -in data/sequences/its2/reference/Assmann_et_al_ITS2_ref.fasta -dbtype nucl -out data/sequences/its2/reference/Assmann_et_al_ITS2_ref_db
 
-# Generate an inexed fasta for testing
+#### Test reference database against itself
+
+# Generate an indexed fasta for testing
 names(sequences) <- paste0(1:length(names(sequences)), ";", names(sequences))
 writeXStringSet(
     sequences,
@@ -404,6 +406,7 @@ confused_taxa <- top_hits %>%
   separate(qseqid, c("id", "clade_id", "family_id", "genus_id", "species_id"), sep = ";") %>%
  filter(id %in% (filter(lca_taxonomy, is.na(species_match)) %>% pull(id))) %>%
  distinct(genus_id, species_id, genus, species)
+ # 6 confusion pairs
 # # A tibble: 12 × 4
 #    genus_id   species_id    genus      species      
 #    <chr>      <chr>         <chr>      <chr>        
@@ -422,6 +425,8 @@ confused_taxa <- top_hits %>%
 
 # Print only those taxa inluced in the confusion matrix
 distinct(confused_taxa, genus_id, species_id)
+
+# 6 species with confusion
 # # A tibble: 6 × 2
 #   genus_id   species_id   
 #   <chr>      <chr>        
