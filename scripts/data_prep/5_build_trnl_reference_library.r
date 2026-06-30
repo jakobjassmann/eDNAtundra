@@ -12,31 +12,31 @@ species_list <- read_csv("data/botanical_obs/species_list_cleaned.csv")
 # Load reference our own trnl sequences
 cb_trnl <- read_csv(
     "data/sequences/trnl/single_species/trnl_single_species_cleaned.csv"
-)
+) %>% select(-full_name)
 
 # Join datastes
 assmann_et_al <- full_join(species_list, cb_trnl) %>%
     mutate(source = "Assmann et al")
-
+view(assmann_et_al)
 # Loads fasta with sequences from Willerslev et al. 2014
 willerslev <- readDNAStringSet("data/external/reference_libraries/Willerslev_et_al_2014/references.arctic-gh.fasta")
 
 # Check species with missing sequences
 filter(assmann_et_al, is.na(sequence))
-#    <chr>        <chr>       <chr>     <chr>      <chr>              <dbl> <chr> 
 #  1 Arctagrostis latifolia   Arctagro… Arctagros… NA                    NA Assma…
 #  2 Astragalus   alpinus     Astragal… Astragalu… NA                    NA Assma…
-#  3 Carex        atrofusca   Carex at… Carex atr… NA                    NA Assma…
-#  4 Carex        rupestris   Carex ru… Carex rup… NA                    NA Assma…
-#  5 Cassiope     tetragona   Cassiope… Cassiope … NA                    NA Assma…
-#  6 Equisetum    arvense     Equisetu… Equisetum… NA                    NA Assma…
-#  7 Equisetum    variegatum  Equisetu… Equisetum… NA                    NA Assma…
-#  8 Oxytropis    arctobia    Oxytropi… Oxytropis… NA                    NA Assma…
-#  9 Pedicularis  langsdorff… Pedicula… Pedicular… NA                    NA Assma…
-# 10 Salix        arctica     Salix ar… Salix arc… NA                    NA Assma…
-# 11 Salix        reticulata  Salix re… Salix ret… NA                    NA Assma…
-# 12 Salix        richardson… Salix ri… Salix ric… NA                    NA Assma…
-# 13 Saxifraga    cespitosa   Saxifrag… Saxifraga… NA                    NA Assma…
+#  3 Bistorta     vivipara    Bistorta… Bistorta … NA                    NA Assma…
+#  4 Carex        atrofusca   Carex at… Carex atr… NA                    NA Assma…
+#  5 Carex        rupestris   Carex ru… Carex rup… NA                    NA Assma…
+#  6 Cassiope     tetragona   Cassiope… Cassiope … NA                    NA Assma…
+#  7 Equisetum    arvense     Equisetu… Equisetum… NA                    NA Assma…
+#  8 Equisetum    variegatum  Equisetu… Equisetum… NA                    NA Assma…
+#  9 Oxytropis    arctobia    Oxytropi… Oxytropis… NA                    NA Assma…
+# 10 Pedicularis  langsdorff… Pedicula… Pedicular… NA                    NA Assma…
+# 11 Salix        arctica     Salix ar… Salix arc… NA                    NA Assma…
+# 12 Salix        reticulata  Salix re… Salix ret… NA                    NA Assma…
+# 13 Salix        richardson… Salix ri… Salix ric… NA                    NA Assma…
+# 14 Saxifraga    cespitosa   Saxifrag… Saxifraga… NA                    NA Assma…
 
 # Fill missing values
 
@@ -54,6 +54,13 @@ sum(grepl(".*Astragalus alpinus.*", names(willerslev)))
 assmann_et_al$sequence[grepl(".*Astragalus alpinus.*", assmann_et_al$short_name)] <- 
     willerslev[grepl(".*Astragalus alpinus.*", names(willerslev))]
 assmann_et_al$source[grepl(".*Astragalus alpinus.*", assmann_et_al$short_name)] <- 
+    "Willerslev et al. 2014"
+
+# Bistorta vivipara
+sum(grepl(".*Bistorta vivipara.*", names(willerslev)))
+assmann_et_al$sequence[grepl(".*Bistorta vivipara.*", assmann_et_al$short_name)] <- 
+    willerslev[grepl(".*Bistorta vivipara.*", names(willerslev))]
+assmann_et_al$source[grepl(".*Bistorta vivipara.*", assmann_et_al$short_name)] <- 
     "Willerslev et al. 2014"
 
 # Carex atrofusca
@@ -250,7 +257,10 @@ blastn -query data/sequences/trnl/reference/Assmann_et_al_trnl_test.fasta \
        -out data/sequences/trnl/reference/test_blast.txt \
        -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore" \
        -max_target_seqs 5 \
-       -perc_identity 95
+       -perc_identity 95 \
+       -word_size 7 \
+       -dust no \
+       -evalue 1000
 
 # Read test result
 blast_test <- read_delim("data/sequences/trnl/reference/test_blast.txt", delim="\t", col_names = c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore"))
@@ -280,7 +290,7 @@ lca_taxonomy <- top_hits %>%
     
     # DYNAMIC LCA LOGIC:
     # Level 1: Species Assignment (If there's exactly 1 unique species tied at the top)
-    species = if_else(n_species == 1 & max(pident) >= 98, dplyr::first(species), NA_character_),
+    species = if_else(n_species == 1 & max(pident) == 100, dplyr::first(species), NA_character_),
     
     # Level 2: Genus Fallback (If multiple species tied, but they all belong to 1 genus)
     genus   = if_else(n_genus == 1, dplyr::first(genus), NA_character_),
@@ -301,33 +311,94 @@ confused_taxa <- top_hits %>%
   separate(qseqid, c("id", "clade_id", "family_id", "genus_id", "species_id"), sep = ";") %>%
  filter(id %in% (filter(lca_taxonomy, is.na(species_match)) %>% pull(id))) %>%
  distinct(genus_id, species_id, genus, species)
- # 6 confusion pairs
-# # A tibble: 12 × 4
-#    genus_id   species_id    genus      species      
-#    <chr>      <chr>         <chr>      <chr>        
-#  1 Carex      aquatilis     Carex      bigelowii    
-#  2 Carex      aquatilis     Carex      aquatilis    
-#  3 Carex      bigelowii     Carex      bigelowii    
-#  4 Carex      bigelowii     Carex      aquatilis    
-#  5 Eriophorum angustifolium Eriophorum triste       
-#  6 Eriophorum angustifolium Eriophorum angustifolium
-#  7 Eriophorum triste        Eriophorum triste       
-#  8 Eriophorum triste        Eriophorum angustifolium
-#  9 Salix      reticulata    Salix      richardsonii 
-# 10 Salix      reticulata    Salix      reticulata   
-# 11 Salix      richardsonii  Salix      richardsonii 
-# 12 Salix      richardsonii  Salix      reticulata  
+print(confused_taxa, n = Inf)
+# A tibble: 48 × 4
+   genus_id species_id     genus species       
+   <chr>    <chr>          <chr> <chr>         
+ 1 Carex    aquatilis      Carex bigelowii     
+ 2 Carex    aquatilis      Carex aquatilis     
+ 3 Carex    bigelowii      Carex bigelowii     
+ 4 Carex    bigelowii      Carex aquatilis     
+ 5 Carex    borealipolaris Carex myosuroides   
+ 6 Carex    borealipolaris Carex borealipolaris
+ 7 Carex    capillaris     Carex scirpoidea    
+ 8 Carex    capillaris     Carex membranacea   
+ 9 Carex    capillaris     Carex fuliginosa    
+10 Carex    capillaris     Carex capillaris    
+# ℹ 38 more rows
+# ℹ Use `print(n = ...)` to see more rows
+> print(confused_taxa, n = Inf)
+# A tibble: 48 × 4
+#    genus_id   species_id     genus      species       
+#    <chr>      <chr>          <chr>      <chr>         
+#  1 Carex      aquatilis      Carex      bigelowii     
+#  2 Carex      aquatilis      Carex      aquatilis     
+#  3 Carex      bigelowii      Carex      bigelowii     
+#  4 Carex      bigelowii      Carex      aquatilis     
+#  5 Carex      borealipolaris Carex      myosuroides   
+#  6 Carex      borealipolaris Carex      borealipolaris
+#  7 Carex      capillaris     Carex      scirpoidea    
+#  8 Carex      capillaris     Carex      membranacea   
+#  9 Carex      capillaris     Carex      fuliginosa    
+# 10 Carex      capillaris     Carex      capillaris    
+# 11 Carex      fuliginosa     Carex      scirpoidea    
+# 12 Carex      fuliginosa     Carex      membranacea   
+# 13 Carex      fuliginosa     Carex      fuliginosa    
+# 14 Carex      fuliginosa     Carex      capillaris    
+# 15 Carex      membranacea    Carex      scirpoidea    
+# 16 Carex      membranacea    Carex      membranacea   
+# 17 Carex      membranacea    Carex      fuliginosa    
+# 18 Carex      membranacea    Carex      capillaris    
+# 19 Carex      myosuroides    Carex      myosuroides   
+# 20 Carex      myosuroides    Carex      borealipolaris
+# 21 Carex      scirpoidea     Carex      scirpoidea    
+# 22 Carex      scirpoidea     Carex      membranacea   
+# 23 Carex      scirpoidea     Carex      fuliginosa    
+# 24 Carex      scirpoidea     Carex      capillaris    
+# 25 Eriophorum angustifolium  Eriophorum triste        
+# 26 Eriophorum angustifolium  Eriophorum angustifolium 
+# 27 Eriophorum triste         Eriophorum triste        
+# 28 Eriophorum triste         Eriophorum angustifolium 
+# 29 Oxytropis  arctobia       Oxytropis  maydelliana   
+# 30 Oxytropis  arctobia       Oxytropis  arctobia      
+# 31 Oxytropis  maydelliana    Oxytropis  maydelliana   
+# 32 Oxytropis  maydelliana    Oxytropis  arctobia      
+# 33 Salix      arctica        Salix      richardsonii  
+# 34 Salix      arctica        Salix      reticulata    
+# 35 Salix      arctica        Salix      polaris       
+# 36 Salix      arctica        Salix      arctica       
+# 37 Salix      polaris        Salix      richardsonii  
+# 38 Salix      polaris        Salix      reticulata    
+# 39 Salix      polaris        Salix      polaris       
+# 40 Salix      polaris        Salix      arctica       
+# 41 Salix      reticulata     Salix      richardsonii  
+# 42 Salix      reticulata     Salix      reticulata    
+# 43 Salix      reticulata     Salix      polaris       
+# 44 Salix      reticulata     Salix      arctica       
+# 45 Salix      richardsonii   Salix      richardsonii  
+# 46 Salix      richardsonii   Salix      reticulata    
+# 47 Salix      richardsonii   Salix      polaris       
+# 48 Salix      richardsonii   Salix      arctica 
 
 # Print only those taxa inluced in the confusion matrix
 distinct(confused_taxa, genus_id, species_id)
 
-# 6 species with confusion
-# # A tibble: 6 × 2
-#   genus_id   species_id   
-#   <chr>      <chr>        
-# 1 Carex      aquatilis    
-# 2 Carex      bigelowii    
-# 3 Eriophorum angustifolium
-# 4 Eriophorum triste       
-# 5 Salix      reticulata   
-# 6 Salix      richardsonii 
+# A tibble: 16 × 2
+#    genus_id   species_id    
+#    <chr>      <chr>         
+#  1 Carex      aquatilis     
+#  2 Carex      bigelowii     
+#  3 Carex      borealipolaris
+#  4 Carex      capillaris    
+#  5 Carex      fuliginosa    
+#  6 Carex      membranacea   
+#  7 Carex      myosuroides   
+#  8 Carex      scirpoidea    
+#  9 Eriophorum angustifolium 
+# 10 Eriophorum triste        
+# 11 Oxytropis  arctobia      
+# 12 Oxytropis  maydelliana   
+# 13 Salix      arctica       
+# 14 Salix      polaris       
+# 15 Salix      reticulata    
+# 16 Salix      richardsonii 
