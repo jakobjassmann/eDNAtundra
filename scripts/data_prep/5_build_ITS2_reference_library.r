@@ -238,10 +238,10 @@ assmann_et_al <- arrange(assmann_et_al, short_name)
 
 # Check all gaps were filled where possible
 print(assmann_et_al, n = 200)
-# 5 species without barcode
-# Salix polaris
+# 4 species without barcode
 # Equisetum arvense
 # Equisetum variegatum
+# Salix polaris
 # Woodsia glabella
 
 # Remove NAs
@@ -436,3 +436,5 @@ distinct(confused_taxa, genus_id, species_id)
 # 4 Eriophorum triste       
 # 5 Salix      reticulata   
 # 6 Salix      richardsonii 
+
+## EOF

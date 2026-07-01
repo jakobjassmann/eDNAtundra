@@ -312,23 +312,7 @@ confused_taxa <- top_hits %>%
  filter(id %in% (filter(lca_taxonomy, is.na(species_match)) %>% pull(id))) %>%
  distinct(genus_id, species_id, genus, species)
 print(confused_taxa, n = Inf)
-# A tibble: 48 × 4
-   genus_id species_id     genus species       
-   <chr>    <chr>          <chr> <chr>         
- 1 Carex    aquatilis      Carex bigelowii     
- 2 Carex    aquatilis      Carex aquatilis     
- 3 Carex    bigelowii      Carex bigelowii     
- 4 Carex    bigelowii      Carex aquatilis     
- 5 Carex    borealipolaris Carex myosuroides   
- 6 Carex    borealipolaris Carex borealipolaris
- 7 Carex    capillaris     Carex scirpoidea    
- 8 Carex    capillaris     Carex membranacea   
- 9 Carex    capillaris     Carex fuliginosa    
-10 Carex    capillaris     Carex capillaris    
-# ℹ 38 more rows
-# ℹ Use `print(n = ...)` to see more rows
-> print(confused_taxa, n = Inf)
-# A tibble: 48 × 4
+# # A tibble: 48 × 4
 #    genus_id   species_id     genus      species       
 #    <chr>      <chr>          <chr>      <chr>         
 #  1 Carex      aquatilis      Carex      bigelowii     
@@ -378,7 +362,8 @@ print(confused_taxa, n = Inf)
 # 45 Salix      richardsonii   Salix      richardsonii  
 # 46 Salix      richardsonii   Salix      reticulata    
 # 47 Salix      richardsonii   Salix      polaris       
-# 48 Salix      richardsonii   Salix      arctica 
+# 48 Salix      richardsonii   Salix      arctica   
+print(confused_taxa, n = Inf)
 
 # Print only those taxa inluced in the confusion matrix
 distinct(confused_taxa, genus_id, species_id)
@@ -402,3 +387,11 @@ distinct(confused_taxa, genus_id, species_id)
 # 14 Salix      polaris       
 # 15 Salix      reticulata    
 # 16 Salix      richardsonii 
+
+# These collapse into the follwing groups
+# 1. Carex sp. (bigelowii / aquatilis)
+# 2. Carex sp. (scirpoidea / membranacea / myosuroides / scirpoidea)
+# 3. Eriophorum sp.
+# 4. Oxitropis sp. (arctobia / meydelliana)
+# 5. Salix sp. 
+
