@@ -333,7 +333,7 @@ trnl_annotated <- read_csv(
 View(trnl_annotated)
 
 # Write out
-write_csv(
+write_excel_csv(
     trnl_annotated,
     "data/sequences/trnl/single_species/trnl_single_species_cleaned.csv"
 )
