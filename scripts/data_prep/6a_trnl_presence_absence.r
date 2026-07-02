@@ -306,6 +306,11 @@ trnl_taxa <- select(trnl_taxa,
 # Save
 write_csv(trnl_taxa, "data/sequences/trnl/edna/cleaned/trnl_taxa.csv")
 
+
+## EOF File
+
+### OLD CODE:
+
 ## Post processing to generate presence absence data frames ----
 
 # Load sequneces and taxonomic assignments
