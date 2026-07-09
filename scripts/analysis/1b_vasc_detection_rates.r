@@ -2,12 +2,9 @@
 
 # Dependencies
 library(tidyverse)
-library(cowplot)
-library(ggplot2)
+library(gt)
 
-# Set colours
-col_edna <- "#156082"
-col_bot <- "#00CC66"
+#### Load and prepare botanical and eDNA datasets ----
 
 # Load presence/ absence botanical observations and prepare for comaprison
 botanical_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
@@ -15,7 +12,9 @@ botanical_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
     mutate(
         species = gsub("([A-Za-z]*) .*", "\\1", species),
         short_name = paste(genus, species)
-    )
+    ) %>%
+    # Remove any duplicated rows
+    distinct()
 
 # Load species list from botanical observaitons
 botanical_ref <- read_csv("data/botanical_obs/species_list_cleaned.csv") %>%
@@ -25,437 +24,308 @@ botanical_ref <- read_csv("data/botanical_obs/species_list_cleaned.csv") %>%
     )
 
 # Load presence / absence from eDNA
-trnl_obs <- read_csv("data/sequences/trnl/edna/cleaned/trnl_taxa_in_sample.csv") %>%
-    mutate(short_name = paste(genus, species), sq = "trnl")
-its2_obs <- read_csv("data/sequences/its2/edna/cleaned/its2_taxa_in_sample.csv") %>%
-    mutate(short_name = paste(genus, species), sq = "its2")
-eDNA_obs <- bind_rows(trnl_obs, its2_obs) %>%
-    group_by(sample_id, short_name) %>%
-    group_split() %>%
-    map(function(x) {
-        # Arrange by count
-        x <- arrange(x, count)
-        # Get unique markers
-        sqs <- sort(unique(x$sq)) %>% paste(collapse = " ")
-        # Slice tor row with most counts
-        x <- slice(x, 1)
-        # Update markers
-        x$sq <- sqs
-        return(x)
-    }) %>%
-    bind_rows()
+trnl_obs <- read_csv("data/sequences/trnl/edna/cleaned/trnl_taxa.csv") %>%
+    mutate(species = if_else(is.na(species), "species", species)) %>%
+    mutate(short_name = paste(genus, species), trnl = TRUE) %>%
+    select(-asv_id, -count, -sq) %>%
+    distinct()
+its2_obs <- read_csv("data/sequences/its2/edna/cleaned/its2_taxa.csv") %>%
+    mutate(species = if_else(is.na(species), "species", species)) %>%
+    mutate(short_name = paste(genus, species), its2 = TRUE) %>%
+    select(-asv_id, -count, -sq) %>%
+    distinct()
+eDNA_obs <- full_join(trnl_obs, its2_obs) %>%
+    mutate(eDNA = TRUE)
 
-# Load reference databases
-its2_ref <- read_csv("data/sequences/reference/its2_reference_Assmann_et_al_2025.csv") %>% mutate(sq = "its2")
-trnl_ref <- read_csv("data/sequences/reference/trnl_reference_Assmann_et_al_2025.csv") %>% mutate(sq = "trnl")
-ref_combined <- bind_rows(its2_ref, trnl_ref) %>%
-    distinct(realised_taxon, sq) %>%
-    dplyr::rename(short_name = realised_taxon) %>%
+# Tally unqiue detection by each marker
+eDNA_obs %>%
+    summarise(
+        trnl_only = sum(is.na(its2)),
+        its2_only = sum(is.na(trnl)),
+        both = sum(!is.na(trnl) & !is.na(its2))
+    )
+# # A tibble: 1 × 3
+#   trnl_only its2_only  both
+#       <int>     <int> <int>
+# 1       704       670   968
+
+#### Join botanical and edna data ----
+
+# Combine datasets and add species level detection
+obs_combined <- full_join(
+    eDNA_obs %>%
+        select(plot_id, genus, species, short_name, trnl, its2, eDNA) %>%
+        # Summarise at plot level
+        group_by(plot_id, genus, species, short_name) %>%
+        summarise(trnl = any(trnl), its2 = any(its2), eDNA = any(eDNA)) %>%
+        ungroup(),
+    botanical_obs %>%
+        select(plot_id, genus, species, short_name) %>%
+        filter(species != "species") %>%
+        mutate(botanical = TRUE)
+) %>%
+    mutate(short_name = paste(genus, species))
+
+# Replace detection NAs with FALSE
+obs_combined <- obs_combined %>%
     mutate(
-        genus = gsub("([A-Za-z]*) ([A-Za-z]*)", "\\1", short_name),
-        species = gsub("([A-Za-z]*) ([A-Za-z]*)", "\\2", short_name)
-    ) %>%
-    group_by(short_name) %>%
+        trnl = if_else(is.na(trnl), FALSE, trnl),
+        its2 = if_else(is.na(its2), FALSE, its2),
+        eDNA = if_else(is.na(eDNA), FALSE, eDNA),
+        botanical = if_else(is.na(botanical), FALSE, botanical)
+    )
+
+# Add genus detection
+obs_combined <- obs_combined %>%
+    group_by(plot_id) %>%
     group_split() %>%
     map(function(x) {
-        # Get unique markers
-        sqs <- sort(unique(x$sq)) %>% paste(collapse = " ")
-        # Slice tor row with most counts
-        x <- slice(x, 1)
-        # Update markers
-        x$sq <- sqs
+        # Get genera with eDNA level detection
+        genus_detected <- select(x, genus, trnl, its2, eDNA) %>%
+            filter(eDNA) %>%
+            distinct() %>%
+            group_by(genus) %>%
+            summarise(
+                eDNA_genus_trnl = any(trnl),
+                eDNA_genus_its2 = any(its2),
+                eDNA_genus = any(its2 | trnl)
+            )
+
+        # Update detection level
+        x <- full_join(x, genus_detected) %>%
+            filter(species != "species")
+
         return(x)
     }) %>%
     bind_rows() %>%
-    relocate(short_name, genus, species)
+    mutate(
+        eDNA_genus_trnl = if_else(
+            is.na(eDNA_genus_trnl),
+            FALSE,
+            eDNA_genus_trnl
+        ),
+        eDNA_genus_its2 = if_else(
+            is.na(eDNA_genus_its2),
+            FALSE,
+            eDNA_genus_its2
+        ),
+        eDNA_genus = if_else(is.na(eDNA_genus), FALSE, eDNA_genus)
+    )
 
-## Theoretical detection rates ----
+# Add harmonised detection for confused taxa
+obs_combined <- obs_combined %>%
+    mutate(
+        eDNA_harm_trnl = case_when(
+            !trnl &
+                eDNA_genus_trnl &
+                (short_name %in%
+                    c(
+                        "Carex borealipolaris",
+                        "Carex myosuroides",
+                        "Carex capillaris",
+                        "Carex scirpoidea",
+                        "Carex membranacea",
+                        "Carex fuliginosa",
+                        "Oxytropis arctobia",
+                        "Oxytropis maydelliana",
+                        "Salix arctica",
+                        "Salix polaris",
+                        "Salix reticulata",
+                        "Salix richardsonii"
+                    )) ~ TRUE,
+            TRUE ~ trnl
+        ),
+        eDNA_harm_its2 = case_when(
+            !its2 &
+                eDNA_genus_its2 &
+                (short_name %in%
+                    c(
+                        "Carex aquatilis",
+                        "Carex bigelowii",
+                        "Eriophorum angustifolium",
+                        "Eriophorum triste",
+                        "Salix reticulata",
+                        "Salix richardsonii"
+                    )) ~ TRUE,
+            TRUE ~ its2
+        )
+    ) %>%
+    mutate(eDNA_harm = eDNA_harm_trnl | eDNA_harm_its2)
 
-# Species-level detection
-theo_detect <- botanical_ref %>%
-    filter(species != "species") %>%
-    inner_join(ref_combined, by = join_by(short_name)) %>%
-    select(short_name, genus = genus.x, species = species.x, sq) %>%
-    filter(!is.na(short_name)) %>%
-    mutate(detect_level = "species")
-
-# Check n species
-nrow(theo_detect)
-# In theory we can detect 48 species to the species level
-
-# Genus level detection
-theo_detect <- botanical_ref %>%
-    filter(!(short_name %in% theo_detect$short_name)) %>%
-    filter(genus %in% ref_combined$genus) %>%
-    select(-full_name) %>%
-    mutate(detect_level = "genus", sq = "its2 trnl") %>%
-    bind_rows(., theo_detect)
-
-theo_detect %>% filter(detect_level == "genus")
-botanical_ref %>% filter(!(short_name %in% theo_detect$short_name))
-# All Salix speices except for Salix arctica can only be detected at the
-# genus level. Woodsia cannot be detected at all.
-# For the puprose of the analyis it seems like no Salix arcitca
-# Are specifically detected with eDNA so we just treat all
-# willow species as one species
-
-## Joined analysis of botanical and edna data ----
-
-# Combined datasets
-obs_combined <- bind_rows(
-    eDNA_obs %>%
-        filter(!is.na(subsample_id)) %>%
-        select(plot_id, genus, species, short_name) %>%
-        mutate(source = "eDNA"),
-    botanical_obs %>%
-        select(plot_id, genus, species, short_name) %>%
-        mutate(source = "botanical")
-) %>%
-    mutate(short_name = paste(genus, species)) %>%
-    distinct()
+# Arrange columns
+obs_combined <- obs_combined %>%
+    relocate(
+        plot_id,
+        genus,
+        species,
+        short_name,
+        botanical,
+        trnl,
+        its2,
+        eDNA,
+        eDNA_harm_trnl,
+        eDNA_harm_its2,
+        eDNA_harm,
+        eDNA_genus_trnl,
+        eDNA_genus_its2,
+        eDNA_genus
+    )
 
 # Save file
 write_csv(
     obs_combined,
-    "data/analysis/combined_observations.csv"
+    "data/analysis/detection_species_genus.csv"
 )
 
-# Frequencies of species detected with each method
-species_frequencies <- obs_combined %>%
-    filter(species != "species" | genus == "Salix") %>%
-    group_by(short_name, source) %>%
-    summarise(n_detected = n()) %>%
-    arrange(desc(short_name))
+#### Summary statistics ----
 
-# Add 0s for no detection
-species_frequencies <- species_frequencies %>%
+# Taxa detection across the different methods
+obs_combined %>%
     group_by(short_name) %>%
-    filter(n() == 1) %>%
-    mutate(
-        source = case_when(
-            source == "botanical" ~ "eDNA",
-            source == "eDNA" ~ "botanical"
-        ),
-        n_detected = 0
+    summarise(across(botanical:eDNA_genus, any)) %>%
+    relocate(short_name, botanical) %>%
+    bind_rows(
+        .,
+        mutate(
+            summarise(., across(botanical:eDNA_harm, sum)),
+            short_name = "Total"
+        )
     ) %>%
-    bind_rows(species_frequencies)
+    mutate(across(botanical:eDNA_genus, function(x) {
+        case_when(x == 1 ~ "X", x == 0 ~ "O", TRUE ~ as.character(x))
+    })) %>%
+    gt() %>%
+    tab_spanner(label = "species-level", columns = c(trnl, its2, eDNA)) %>%
+    tab_spanner(
+        label = "harmonised",
+        columns = c(eDNA_harm_trnl, eDNA_harm_its2, eDNA_harm)
+    ) %>%
+    tab_spanner(
+        label = "genus-level",
+        columns = c(eDNA_genus_trnl, eDNA_genus_its2, eDNA_genus)
+    ) %>%
+    cols_label(
+        short_name = "Species",
+        botanical = html("botanical<br>survery"),
+        trnl = "trnl",
+        its2 = "ITS2",
+        eDNA = "both",
+        eDNA_harm_trnl = "trnl",
+        eDNA_harm_its2 = "ITS2",
+        eDNA_harm = "both",
+        eDNA_genus_trnl = "trnl",
+        eDNA_genus_its2 = "ITS2",
+        eDNA_genus = "both",
+    ) %>%
+    cols_align(
+        align = "center",
+        columns = c(
+            botanical,
+            trnl,
+            its2,
+            eDNA,
+            eDNA_harm_trnl,
+            eDNA_harm_its2,
+            eDNA_harm,
+            eDNA_genus_trnl,
+            eDNA_genus_its2,
+            eDNA_genus
+        )
+    ) %>%
+    tab_options(
+        table_body.hlines.color = "white",
+        table_body.vlines.color = "white"
+    ) %>%
+    gtsave("tables/1_Detection_across_methods.html")
 
-# re order factor for plotting
-species_frequencies$short_name <- factor(species_frequencies$short_name,
-    levels = sort(unique(species_frequencies$short_name), decreasing = TRUE)
-)
-species_frequencies$source <- gsub("botanical", "botanical survey", species_frequencies$source)
-
-# Visualise
-sp_detection_plot <- ggplot(
-    species_frequencies,
-    aes(
-        x = short_name,
-        y = n_detected,
-        fill = source,
-        group = source
-    )
-) +
-    geom_col(position = "dodge") +
-    scale_x_discrete() +
-    scale_fill_manual(values = c(col_bot, col_edna)) +
-    labs(
-        x = "", y = "species detected (n plots)",
-        fill = "data source:"
-    ) +
-    coord_flip() +
-    theme_cowplot() +
-    theme(legend.position = "top")
-save_plot("figures/fig_s1_sp_detection.png",
-    sp_detection_plot,
-    base_height = 10,
-    base_asp = 3 / 5,
-    bg = "white"
-)
-
-# Plot level detection rate ----
-
-# Species level
-plot_level_detection <- obs_combined %>%
-    # Remove all ids without species id except for salix
-    filter(species != "species" | genus == "Salix") %>%
-    # eDNA detection of Salix at the genus level
-    group_by(plot_id, genus) %>%
-    group_split() %>%
-    map(function(x) {
-        # If it's not a Salix species skip
-        if (unique(x$genus) != "Salix") {
-            return(x)
-        }
-        # If it's just one observaiton of a salix species skip
-        if (nrow(x) == 1) {
-            return(x)
-        }
-        # If it's just botanical detections keep only species ids
-        if (sum(grepl("eDNA", x$source)) == 0) {
-            x <- filter(x, species != "species")
-            return(x)
-        }
-        # In all other cases, assign a random species of the sub set
-        # to the eDNA detection
-        x[x$source == "eDNA", ]$species <- filter(x, source != "eDNA") %>%
-            pull(species) %>%
-            sample(1)
-        x <- mutate(x, short_name = paste(genus, species))
-        # Filter any remaining entries wihtout species id
-        x <- filter(x, species != "species")
-        return(x)
-    }) %>%
-    bind_rows() %>%
-    group_by(plot_id, species) %>%
-    group_split() %>%
-    map(function(x) {
-        srcs <- unique(x$source)
-        slice(x, 1) %>% mutate(source = paste(sort(srcs), collapse = " "))
-    }) %>%
-    bind_rows() %>%
-    distinct(plot_id, short_name, source)
-
-# Calculate mean detection rates
-plot_level_detection %>%
-    group_by(plot_id) %>%
-    group_split() %>%
-    map(function(x) {
-        n_matches <- filter(x, source == "botanical eDNA") %>% nrow()
-        return(data.frame(
-            plot_id = unique(x$plot_id),
-            bot_in_edna = n_matches / nrow(filter(x, grepl("botanical", source))),
-            edna_in_bot = n_matches / nrow(filter(x, grepl("eDNA", source)))
-        ))
-    }) %>%
-    bind_rows() %>%
-    summarise(
-        bot_in_edna_mean = mean(bot_in_edna),
-        bot_in_edna_sd = sd(bot_in_edna),
-        edna_in_bot_mean = mean(edna_in_bot),
-        edna_in_bot_sd = sd(edna_in_bot)
-    )
-#   bot_in_edna_mean bot_in_edna_sd edna_in_bot_mean edna_in_bot_sd
-# 1        0.7595775      0.1821415         0.544813      0.1726605
-# Mean detection botany in eDNA: 76.0% (sd = 18.2%)
-# Mean detection of eDNA in botany: 54.5% (sd = 17.3%)
-
-# Summarise source groupings and visualise
-plot_level_detection <- plot_level_detection %>%
-    group_by(plot_id, source) %>%
-    summarise(n = n()) %>%
-    mutate(site = substr(plot_id, 1, 2))
-
-# Update source levels for plotting
-plot_level_detection$source <- gsub(" ", " & ", plot_level_detection$source)
-plot_level_detection$source <- case_when(
-    plot_level_detection$source == "botanical" ~ "botanical only",
-    plot_level_detection$source == "eDNA" ~ "eDNA only",
-    TRUE ~ plot_level_detection$source
-)
-plot_level_detection$source <- factor(plot_level_detection$source,
-    levels = sort(unique(plot_level_detection$source), decreasing = TRUE)
-)
-
-plot_level_detect_plot <- ggplot(
-    plot_level_detection,
-    aes(x = plot_id, y = n, fill = source, group = source)
-) +
-    geom_col() +
-    scale_y_continuous(limits = c(0, 20)) +
-    scale_fill_manual(values = c(col_edna, col_bot, "gray25")) +
-    labs(
-        x = "", y = "species detected (n)",
-        fill = "detected in:"
-    ) +
-    theme_cowplot() +
-    theme(legend.position = "top") +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-save_plot("figures/fig_s2_sp_detect_per_plot.png",
-    plot_level_detect_plot,
-    base_height = 6,
-    bg = "white"
-)
-
-
-# Genus level
-plot_level_detection <- obs_combined %>%
-    group_by(plot_id, genus) %>%
-    group_split() %>%
-    map(function(x) {
-        srcs <- unique(x$source)
-        slice(x, 1) %>% mutate(source = paste(sort(srcs), collapse = " "))
-    }) %>%
-    bind_rows() %>%
-    distinct(plot_id, genus, source)
-
-# Calculate mean detection rates
-plot_level_detection %>%
-    group_by(plot_id) %>%
-    group_split() %>%
-    map(function(x) {
-        n_matches <- filter(x, source == "botanical eDNA") %>% nrow()
-        return(data.frame(
-            plot_id = unique(x$plot_id),
-            bot_in_edna = n_matches / nrow(filter(x, grepl("botanical", source))),
-            edna_in_bot = n_matches / nrow(filter(x, grepl("eDNA", source)))
-        ))
-    }) %>%
-    bind_rows() %>%
-    summarise(
-        bot_in_edna_mean = mean(bot_in_edna),
-        bot_in_edna_sd = sd(bot_in_edna),
-        edna_in_bot_mean = mean(edna_in_bot),
-        edna_in_bot_sd = sd(edna_in_bot)
-    )
-#   bot_in_edna_mean bot_in_edna_sd edna_in_bot_mean edna_in_bot_sd
-# 1        0.9226257      0.1083756        0.6073142      0.1894256
-# Mean detection botany in eDNA: 92.2% (sd = 10.8%)
-# Mean detection of eDNA in botany: 60.7% (sd = 18.9%)
-
-# Summarise source groupings and visualise
-plot_level_detection <- plot_level_detection %>%
-    group_by(plot_id, source) %>%
-    summarise(n = n()) %>%
-    mutate(site = substr(plot_id, 1, 2))
-
-# Update source levels for plotting
-plot_level_detection$source <- gsub(" ", " & ", plot_level_detection$source)
-plot_level_detection$source <- case_when(
-    plot_level_detection$source == "botanical" ~ "botanical only",
-    plot_level_detection$source == "eDNA" ~ "eDNA only",
-    TRUE ~ plot_level_detection$source
-)
-plot_level_detection$source <- factor(plot_level_detection$source,
-    levels = sort(unique(plot_level_detection$source), decreasing = TRUE)
-)
-
-plot_level_detect_plot <- ggplot(
-    plot_level_detection,
-    aes(x = plot_id, y = n, fill = source, group = source)
-) +
-    geom_col() +
-    scale_y_continuous(limits = c(0, 15)) +
-    scale_fill_manual(values = c(col_edna, col_bot, "gray25")) +
-    labs(
-        x = "", y = "genera detected (n)",
-        fill = "detected in:"
-    ) +
-    theme_cowplot() +
-    theme(legend.position = "top") +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-save_plot("figures/fig_s2_genus_detect_per_plot.png",
-    plot_level_detect_plot,
-    base_height = 6,
-    bg = "white"
-)
-
-## Site level detection ----
-# Species level
-site_level_detection <- obs_combined %>%
-    # Treating salix as one species removing all other species-level ids
-    filter(species != "species" | genus == "Salix") %>%
+## Detections rates at the site level
+obs_combined %>%
+    # add site id
     mutate(site_id = substr(plot_id, 1, 2)) %>%
-    select(-plot_id) %>%
-    # eDNA detection of Salix at the genus level
-    group_by(site_id, genus) %>%
-    group_split() %>%
-    map(function(x) {
-        # If it's not a Salix species skip
-        if (unique(x$genus) != "Salix") {
-            return(x)
-        }
-        # If it's just one observaiton of a salix species skip
-        if (nrow(x) == 1) {
-            return(x)
-        }
-        # If it's just botanical detections keep only species ids
-        if (sum(grepl("eDNA", x$source)) == 0) {
-            x <- filter(x, species != "species")
-            return(x)
-        }
-        # In all other cases, assign a random species of the sub set
-        # to the eDNA detection
-        x[x$source == "eDNA", ]$species <- filter(x, source != "eDNA") %>%
-            pull(species) %>%
-            sample(1)
-        x <- mutate(x, short_name = paste(genus, species))
-        # Filter any remaining entries wihtout species id
-        x <- filter(x, species != "species")
-        return(x)
-    }) %>%
-    bind_rows() %>%
-    group_by(site_id, species) %>%
-    group_split() %>%
-    map(function(x) {
-        srcs <- unique(x$source)
-        slice(x, 1) %>% mutate(source = paste(sort(srcs), collapse = " "))
-    }) %>%
-    bind_rows() %>%
-    distinct(site_id, short_name, source) %>%
-    arrange(site_id, short_name) 
-
-# Print list for qc
-site_level_detection %>%
-group_by(site_id) %>%
-group_split() %>% map(print,n = 100)
-
-# Calculate mean detection rates
-site_level_detection %>%
-    group_by(site_id) %>%
-    group_split() %>%
-    map(function(x) {
-        n_matches <- filter(x, source == "botanical eDNA") %>% nrow()
-        return(data.frame(
-            plot_id = unique(x$site_id),
-            bot_in_edna = n_matches / nrow(filter(x, grepl("botanical", source))),
-            edna_in_bot = n_matches / nrow(filter(x, grepl("eDNA", source)))
-        ))
-    }) %>%
-    bind_rows() %>%
+    relocate(site_id, short_name) %>%
+    select(-plot_id, -genus, -species) %>%
+    # keep only species detected in botanical observations (reference)
+    filter(botanical) %>%
+    # aggregate detections by site
+    group_by(site_id, short_name) %>%
+    summarise(across(botanical:eDNA_genus, any)) %>%
     summarise(
-        bot_in_edna_mean = mean(bot_in_edna),
-        bot_in_edna_sd = sd(bot_in_edna),
-        edna_in_bot_mean = mean(edna_in_bot),
-        edna_in_bot_sd = sd(edna_in_bot)
-    )
-# site levle detection
-#   bot_in_edna_mean bot_in_edna_sd edna_in_bot_mean edna_in_bot_sd
-# 1        0.7896563      0.0594771        0.8380561     0.06004709
-# Mean detection botany in eDNA: 79.0% (sd = 5.9%)
-# Mean detection of eDNA in botany: 83.8% (sd = 6.0%)
+        across(botanical:eDNA_genus, sum)
+    ) %>%
+    ungroup() %>%
+    bind_rows(
+        .,
+        mutate(
+            summarize(., across(botanical:eDNA_genus, mean)),
+            site_id = "Mean"
+        )
+    ) %>%
+    mutate(
+        across(trnl:eDNA_genus, function(x) {
+            paste0(
+                format(x, width = 2, digits = 2, nsmall = 0),
+                " (",
+                format(
+                    round(100 * x / botanical),
+                    width = 2
+                ),
+                "%)"
+            )
+        }),
+        botanical = format(botanical, width = 2),
+    ) %>%
+    gt() %>%
+    tab_spanner(label = "species-level", columns = c(trnl, its2, eDNA)) %>%
+    tab_spanner(
+        label = "harmonised",
+        columns = c(eDNA_harm_trnl, eDNA_harm_its2, eDNA_harm)
+    ) %>%
+    tab_spanner(
+        label = "genus-level",
+        columns = c(eDNA_genus_trnl, eDNA_genus_its2, eDNA_genus)
+    ) %>%
+    cols_label(
+        site_id = "Site",
+        botanical = html("botanical<br>survery"),
+        trnl = "trnl",
+        its2 = "ITS2",
+        eDNA = "both",
+        eDNA_harm_trnl = "trnl",
+        eDNA_harm_its2 = "ITS2",
+        eDNA_harm = "both",
+        eDNA_genus_trnl = "trnl",
+        eDNA_genus_its2 = "ITS2",
+        eDNA_genus = "both",
+    ) %>%
+    cols_align(
+        align = "center",
+        columns = c(
+            botanical,
+            trnl,
+            its2,
+            eDNA,
+            eDNA_harm_trnl,
+            eDNA_harm_its2,
+            eDNA_harm,
+            eDNA_genus_trnl,
+            eDNA_genus_its2,
+            eDNA_genus
+        )
+    ) %>%
+    tab_options(
+        table_body.hlines.color = "white",
+        table_body.vlines.color = "white"
+    ) %>%
+    gtsave("tables/2_detections_per_site.html")
 
-# Summarise source groupings and visualise
-site_level_detection <- site_level_detection %>%
-    group_by(site_id, source) %>%
-    summarise(n = n())
 
-# Update source levels for plotting
-site_level_detection$source <- gsub(" ", " & ", site_level_detection$source)
-site_level_detection$source <- case_when(
-    site_level_detection$source == "botanical" ~ "botanical only",
-    site_level_detection$source == "eDNA" ~ "eDNA only",
-    TRUE ~ site_level_detection$source
-)
-site_level_detection$source <- factor(site_level_detection$source,
-    levels = sort(unique(site_level_detection$source), decreasing = TRUE)
-)
-
-site_level_detect_plot <- ggplot(
-    site_level_detection,
-    aes(x = site_id, y = n, fill = source, group = source)
-) +
-    geom_col() +
-    scale_y_continuous(limits = c(0, 40)) +
-    scale_fill_manual(values = c(col_edna, col_bot, "gray25")) +
-    labs(
-        x = "", y = "species detected (n)",
-        fill = "detected in:"
-    ) +
-    theme_cowplot() +
-    theme(legend.position = "top")
-save_plot("figures/fig_s3_sp_detect_per_site.png",
-    site_level_detect_plot,
-    base_height = 6,
-    bg = "white"
-)
+obs_combined_harm %>%
+    distinct(plot_id, genus, botanical, eDNA_genus) %>%
+    group_by(plot_id, genus) %>%
+    summarise(botanical = any(botanical), eDNA = any(eDNA_genus)) %>%
+    group_by(genus) %>%
+    summarise(
+        botanical = sum(botanical, na.rm = T),
+        eDNA = sum(eDNA_genus, na.rm = T)
+    ) %>%
+    print(n = 100)
