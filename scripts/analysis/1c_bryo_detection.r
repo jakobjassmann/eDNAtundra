@@ -123,7 +123,7 @@ obs_combined %>%
     })) %>%
     gt() %>%
     cols_label(
-        short_name = "Species",
+        short_name = "species",
         botanical = html("botanical<br>survery"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
@@ -148,11 +148,11 @@ obs_combined %>%
     mutate(site_id = substr(plot_id, 1, 2)) %>%
     relocate(site_id, short_name) %>%
     select(-plot_id, -genus, -species) %>%
-    # keep only species detected in botanical observations (reference)
-    filter(botanical) %>%
     # aggregate detections by site
     group_by(site_id, short_name) %>%
     summarise(across(botanical:eDNA_genus, any)) %>%
+    # keep only species detected in botanical observations (reference)
+    filter(botanical) %>%
     summarise(
         across(botanical:eDNA_genus, sum)
     ) %>%
@@ -160,14 +160,14 @@ obs_combined %>%
     bind_rows(
         .,
         mutate(
-            summarize(., round(across(botanical:eDNA_genus, mean))),
+            summarize(., round(across(botanical:eDNA_genus, mean), 1)),
             site_id = "Mean"
         )
     ) %>%
     mutate(
         across(eDNA:eDNA_genus, function(x) {
             paste0(
-                format(x, width = 2, digits = 2, nsmall = 0),
+                format(x, width = 2, drop0trailing = TRUE),
                 " (",
                 format(
                     round(100 * x / botanical),
@@ -176,11 +176,11 @@ obs_combined %>%
                 "%)"
             )
         }),
-        botanical = format(botanical, width = 2),
+        botanical = format(botanical, width = 2, drop0trailing = TRUE),
     ) %>%
     gt() %>%
     cols_label(
-        site_id = "Site",
+        site_id = "site",
         botanical = html("botanical<br>survery"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
@@ -202,11 +202,11 @@ obs_combined %>%
 ## Detections rates at the plot level
 obs_combined %>%
     select(-genus, -species) %>%
-    # keep only species detected in botanical observations (reference)
-    filter(botanical) %>%
     # aggregate detections by site
     group_by(plot_id, short_name) %>%
     summarise(across(botanical:eDNA_genus, any)) %>%
+    # keep only species detected in botanical observations (reference)
+    filter(botanical) %>%
     summarise(
         across(botanical:eDNA_genus, sum)
     ) %>%
@@ -214,23 +214,23 @@ obs_combined %>%
     bind_rows(
         .,
         mutate(
-            summarize(., round(across(botanical:eDNA_genus, mean))),
+            summarize(., round(across(botanical:eDNA_genus, mean), 1)),
             plot_id = "Mean"
         )
     ) %>%
     mutate(
         across(eDNA:eDNA_genus, function(x) {
             paste0(
-                format(x, width = 2, digits = 2, nsmall = 0),
+                format(x, width = 2, drop0trailing = TRUE),
                 " (",
                 format(
                     round(100 * x / botanical),
-                    width = 2
+                    width = 3
                 ),
                 "%)"
             )
         }),
-        botanical = format(botanical, width = 2),
+        botanical = format(botanical, width = 2, drop0trailing = TRUE),
     ) %>%
     gt() %>%
     cols_label(
@@ -275,6 +275,7 @@ obs_combined %>%
     ) %>%
     gt() %>%
     cols_label(
+        short_name = "species",
         botanical = html("botanical<br>survery"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
@@ -309,6 +310,7 @@ obs_combined %>%
     ) %>%
     gt() %>%
     cols_label(
+        short_name = "species",
         botanical = html("botanical<br>survery"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
