@@ -176,6 +176,7 @@ write_csv(
     obs_combined,
     "data/analysis/detection_species_genus.csv"
 )
+# obs_combined <- read_csv("data/analysis/detection_species_genus.csv")
 
 #### Summary statistics ----
 
@@ -187,7 +188,7 @@ obs_combined %>%
     bind_rows(
         .,
         mutate(
-            summarise(., across(botanical:eDNA_harm, sum)),
+            summarise(., across(botanical:eDNA_genus, sum)),
             short_name = "Total"
         )
     ) %>%
@@ -318,14 +319,201 @@ obs_combined %>%
     ) %>%
     gtsave("tables/2_detections_per_site.html")
 
-
-obs_combined_harm %>%
-    distinct(plot_id, genus, botanical, eDNA_genus) %>%
-    group_by(plot_id, genus) %>%
-    summarise(botanical = any(botanical), eDNA = any(eDNA_genus)) %>%
-    group_by(genus) %>%
+## Detections rates at the plot level
+obs_combined %>%
+    select(-genus, -species) %>%
+    # keep only species detected in botanical observations (reference)
+    filter(botanical) %>%
+    # aggregate detections by site
+    group_by(plot_id, short_name) %>%
+    summarise(across(botanical:eDNA_genus, any)) %>%
     summarise(
-        botanical = sum(botanical, na.rm = T),
-        eDNA = sum(eDNA_genus, na.rm = T)
+        across(botanical:eDNA_genus, sum)
     ) %>%
-    print(n = 100)
+    ungroup() %>%
+    bind_rows(
+        .,
+        mutate(
+            summarize(., across(botanical:eDNA_genus, mean)),
+            plot_id = "Mean"
+        )
+    ) %>%
+    mutate(
+        across(trnl:eDNA_genus, function(x) {
+            paste0(
+                format(x, width = 2, digits = 2, nsmall = 0),
+                " (",
+                format(
+                    round(100 * x / botanical),
+                    width = 2
+                ),
+                "%)"
+            )
+        }),
+        botanical = format(botanical, width = 2),
+    ) %>%
+    gt() %>%
+    tab_spanner(label = "species-level", columns = c(trnl, its2, eDNA)) %>%
+    tab_spanner(
+        label = "harmonised",
+        columns = c(eDNA_harm_trnl, eDNA_harm_its2, eDNA_harm)
+    ) %>%
+    tab_spanner(
+        label = "genus-level",
+        columns = c(eDNA_genus_trnl, eDNA_genus_its2, eDNA_genus)
+    ) %>%
+    cols_label(
+        plot_id = "Plot",
+        botanical = html("botanical<br>survery"),
+        trnl = "trnl",
+        its2 = "ITS2",
+        eDNA = "both",
+        eDNA_harm_trnl = "trnl",
+        eDNA_harm_its2 = "ITS2",
+        eDNA_harm = "both",
+        eDNA_genus_trnl = "trnl",
+        eDNA_genus_its2 = "ITS2",
+        eDNA_genus = "both",
+    ) %>%
+    cols_align(
+        align = "center",
+        columns = c(
+            botanical,
+            trnl,
+            its2,
+            eDNA,
+            eDNA_harm_trnl,
+            eDNA_harm_its2,
+            eDNA_harm,
+            eDNA_genus_trnl,
+            eDNA_genus_its2,
+            eDNA_genus
+        )
+    ) %>%
+    tab_options(
+        table_body.hlines.color = "white",
+        table_body.vlines.color = "white"
+    ) %>%
+    gtsave("tables/3_detections_per_plot.html")
+
+## Sites per species by method
+obs_combined %>%
+    # add site id
+    mutate(site_id = substr(plot_id, 1, 2)) %>%
+    relocate(site_id, short_name) %>%
+    select(-plot_id, -genus, -species) %>%
+    # aggregate detections by site
+    group_by(site_id, short_name) %>%
+    summarise(across(botanical:eDNA_genus, any)) %>%
+    group_by(short_name) %>%
+    arrange(short_name) %>%
+    summarise(across(botanical:eDNA_genus, sum)) %>%
+    mutate(
+        across(trnl:eDNA_genus, function(x) {
+            paste0(
+                format(x, width = 2, digits = 2, nsmall = 0)
+            )
+        }),
+        botanical = format(botanical, width = 2),
+    ) %>%
+    gt() %>%
+    tab_spanner(label = "species-level", columns = c(trnl, its2, eDNA)) %>%
+    tab_spanner(
+        label = "harmonised",
+        columns = c(eDNA_harm_trnl, eDNA_harm_its2, eDNA_harm)
+    ) %>%
+    tab_spanner(
+        label = "genus-level",
+        columns = c(eDNA_genus_trnl, eDNA_genus_its2, eDNA_genus)
+    ) %>%
+    cols_label(
+        botanical = html("botanical<br>survery"),
+        trnl = "trnl",
+        its2 = "ITS2",
+        eDNA = "both",
+        eDNA_harm_trnl = "trnl",
+        eDNA_harm_its2 = "ITS2",
+        eDNA_harm = "both",
+        eDNA_genus_trnl = "trnl",
+        eDNA_genus_its2 = "ITS2",
+        eDNA_genus = "both",
+    ) %>%
+    cols_align(
+        align = "center",
+        columns = c(
+            botanical,
+            trnl,
+            its2,
+            eDNA,
+            eDNA_harm_trnl,
+            eDNA_harm_its2,
+            eDNA_harm,
+            eDNA_genus_trnl,
+            eDNA_genus_its2,
+            eDNA_genus
+        )
+    ) %>%
+    tab_options(
+        table_body.hlines.color = "white",
+        table_body.vlines.color = "white"
+    ) %>%
+    gtsave("tables/4_sites_per_species.html")
+
+## Plot per species by method
+obs_combined %>%
+    select(-genus, -species) %>%
+    group_by(short_name) %>%
+    arrange(short_name) %>%
+    summarise(across(botanical:eDNA_genus, sum)) %>%
+    mutate(
+        across(trnl:eDNA_genus, function(x) {
+            paste0(
+                format(x, width = 2, digits = 2, nsmall = 0)
+            )
+        }),
+        botanical = format(botanical, width = 2),
+    ) %>%
+    gt() %>%
+    tab_spanner(label = "species-level", columns = c(trnl, its2, eDNA)) %>%
+    tab_spanner(
+        label = "harmonised",
+        columns = c(eDNA_harm_trnl, eDNA_harm_its2, eDNA_harm)
+    ) %>%
+    tab_spanner(
+        label = "genus-level",
+        columns = c(eDNA_genus_trnl, eDNA_genus_its2, eDNA_genus)
+    ) %>%
+    cols_label(
+        botanical = html("botanical<br>survery"),
+        trnl = "trnl",
+        its2 = "ITS2",
+        eDNA = "both",
+        eDNA_harm_trnl = "trnl",
+        eDNA_harm_its2 = "ITS2",
+        eDNA_harm = "both",
+        eDNA_genus_trnl = "trnl",
+        eDNA_genus_its2 = "ITS2",
+        eDNA_genus = "both",
+    ) %>%
+    cols_align(
+        align = "center",
+        columns = c(
+            botanical,
+            trnl,
+            its2,
+            eDNA,
+            eDNA_harm_trnl,
+            eDNA_harm_its2,
+            eDNA_harm,
+            eDNA_genus_trnl,
+            eDNA_genus_its2,
+            eDNA_genus
+        )
+    ) %>%
+    tab_options(
+        table_body.hlines.color = "white",
+        table_body.vlines.color = "white"
+    ) %>%
+    gtsave("tables/5_plots_per_species.html")
+
+## End of file
