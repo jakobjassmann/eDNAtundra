@@ -193,7 +193,7 @@ writeXStringSet(
     filepath = "data/sequences/its2/edna/cleaned/its2_asvs.fasta"
 )
 
-# Test blast the database against itself
+# Blast the data against the reference database
 blastn -query data/sequences/its2/edna/cleaned/its2_asvs.fasta \
        -db data/sequences/its2/reference/Assmann_et_al_ITS2_ref_db \
        -out data/sequences/its2/edna/cleaned/its2_blast_res.txt \
