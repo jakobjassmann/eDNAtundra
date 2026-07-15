@@ -175,17 +175,13 @@ all_combos <- bind_rows(
     all_plots %>%
         filter(source == "botanical" | source == "eDNA") %>%
         split(.$site_id) %>%
-        map(get_sample, max_plots = 18, max_sample = 32) %>%
+        map(get_sample, max_plots = 18, max_sample = 36) %>%
         unlist(recursive = FALSE) %>%
         unlist(recursive = FALSE) %>%
         set_names(paste0("all both", 1:length(.))) %>%
         tibble(sample = .) %>%
         mutate(sample_id = names(sample))
 )
-
-# Check total number of combinations
-nrow(all_combos)
-# This requires parallel processing!
 
 # prepare parallel envrionment
 stopCluster(cl)
@@ -205,23 +201,22 @@ n_detected <- all_combos %>%
         cl = cl,
         FUN = function(combo) {
             plots_df <- filter(all_plots, combo_id %in% unlist(combo$sample))
-            site_id <- unique(plots_df$site_id)
+            current_site <- unique(plots_df$site_id)
             # Look up maximum number of species to detect
-            n_max <- filter(n_max, site_id == site_id) %>%
+            n_max_site <- filter(n_max, site_id == current_site) %>%
                 pull(n_max)
             n_obs <- filter(
                 obs_combined,
-                site_id %in%
-                    unique(site_id) &
-                    plot_id %in% unique(plots_df$plot_id) &
-                    source %in% unique(plots_df$source)
+                (site_id == current_site) &
+                    (plot_id %in% unique(plots_df$plot_id)) &
+                    (source %in% unique(plots_df$source))
             ) %>%
                 distinct(short_name) %>%
                 nrow()
             # Return proportion as a data frame
             return(tibble(
                 sample = sort(unique(combo$sample_id)),
-                site_id = site_id,
+                site_id = current_site,
                 plot_type = paste0(
                     sort(unique(plots_df$plot_type)),
                     collapse = " and "
@@ -232,8 +227,8 @@ n_detected <- all_combos %>%
                 ),
                 n_sampled = nrow(plots_df),
                 n_detected = n_obs,
-                n_site = n_max,
-                fract_detected = n_obs / n_max
+                n_max_site = n_max_site,
+                fract_detected = n_obs / n_max_site
             )) %>%
                 bind_rows()
         }
@@ -241,24 +236,74 @@ n_detected <- all_combos %>%
     bind_rows()
 
 # Save calculations
-write_csv(fract_detected, "data/analysis/fract_detected.csv")
+write_csv(n_detected, "data/analysis/n_detected.csv")
+# n_detected <- read_csv("data/analysis/n_detected")
+
+# Prepare data frame for plotting
+n_detected_plot <- n_detected %>%
+    group_by(site_id, method, plot_type, n_sampled) %>%
+    summarise(
+        mean_detected = mean(n_detected),
+        min_detected = min(n_detected),
+        max_detected = max(n_detected),
+        n_max_site = unique(n_max_site),
+        eighty_perc = unique(n_max_site) * 0.8
+    ) %>%
+    mutate(
+        panel_id = factor(
+            paste(site_id, plot_type),
+            levels = c(
+                "Site 1 systematic",
+                "Site 2 systematic",
+                "Site 3 systematic",
+                "Site 1 stratified random",
+                "Site 2 stratified random",
+                "Site 3 stratified random",
+                "Site 1 stratified random and systematic",
+                "Site 2 stratified random and systematic",
+                "Site 3 stratified random and systematic"
+            )
+        )
+    )
 
 # Visualise
 (rarefraction <- ggplot(
-    data = fract_detected %>%
-        group_by(site_id, method, plot_type, n_sampled) %>%
-        summarise(
-            fract_detected = mean(fract_detected),
-            min_perc = min(fract_detected),
-            max_perc = max(fract_detected)
-        )
+    data = n_detected_plot
 ) +
+    geom_hline(
+        aes(yintercept = eighty_perc),
+        linetype = "dashed",
+        colour = "grey70"
+    ) +
+    geom_hline(
+        aes(yintercept = n_max_site),
+        linetype = "dashed",
+        colour = "grey70"
+    ) +
+    geom_text(
+        aes(y = eighty_perc),
+        x = 19.5,
+        label = "80%",
+        size = 10 / .pt,
+        vjust = 1.5,
+        hjust = 1,
+        colour = "grey70"
+    ) +
+    geom_text(
+        aes(y = n_max_site),
+        x = 19.5,
+        label = "100%",
+        size = 10 / .pt,
+        vjust = 1.5,
+        hjust = 1,
+        colour = "grey70"
+    ) +
     geom_line(
         aes(
             x = n_sampled,
-            y = fract_detected * 100,
-            colour = method,
-            linetype = plot_type
+            y = mean_detected,
+            colour = method
+            #linetype = plot_type
             # group = paste0(site_id, "_", plot_type)
         ),
         linewidth = 1
@@ -266,30 +311,35 @@ write_csv(fract_detected, "data/analysis/fract_detected.csv")
     geom_ribbon(
         aes(
             x = n_sampled,
-            ymin = min_perc * 100,
-            ymax = max_perc * 100,
-            fill = method,
-            linetype = plot_type
+            ymin = min_detected,
+            ymax = max_detected,
+            fill = method
+            #linetype = plot_type
         ),
         alpha = 0.1
     ) +
-    scale_x_continuous(breaks = 1:18) +
-    scale_y_continuous(limits = c(0, 150), breaks = seq(0, 120, 10)) +
+    scale_x_continuous(limits = c(1, 19), breaks = 1:18) +
+    scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, 10)) +
     scale_colour_manual(values = c("#F28F16", "#A62121", "#223F59")) + # yellow #F5C700
     scale_fill_manual(values = c("#F28F16", "#A62121", "#223F59")) +
-    facet_wrap(~site_id) +
+    facet_wrap(~panel_id, scales = "free") +
     labs(
         x = "Number of plots sampled",
-        y = "Vascular species detected (%)",
+        y = "Vascular species detected (n)",
         fill = "Method",
-        colour = "Method",
-        linetype = "Sampling Strategy"
+        colour = "Method"
+        #linetype = "Sampling Strategy"
     ) +
     theme_cowplot() +
     theme(strip.background = element_rect(fill = "white")))
 save_plot(
-    "figures/figure_3_optimisation.png",
+    "figures/figure_SX_rarefaction.png",
     rarefraction,
-    base_asp = 4,
+    base_asp = 2.5,
+    base_height = 7,
     bg = "white"
 )
+
+obs_combined %>%
+    filter(site_id == "Site 1") %>%
+    distinct(plot_id, source, plot_type)
