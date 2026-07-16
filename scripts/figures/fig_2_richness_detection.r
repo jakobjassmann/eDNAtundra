@@ -24,14 +24,14 @@ site_richness <- obs_combined %>%
     # Aggregate into detection classes
     group_by(site_id) %>%
     summarise(
-        `Botanical Observations Only` = sum(botanical & !eDNA & !eDNA_harm),
+        `Botanical observations only` = sum(botanical & !eDNA & !eDNA_harm),
         `Botanical and eDNA (Harmonised)` = sum(botanical & !eDNA & eDNA_harm),
         `Botanical and eDNA` = sum(botanical & eDNA),
-        `eDNA Only` = sum(!botanical & eDNA)
+        `eDNA only` = sum(!botanical & eDNA)
     ) %>%
     ungroup() %>%
     pivot_longer(
-        cols = `Botanical Observations Only`:`eDNA Only`,
+        cols = `Botanical observations only`:`eDNA only`,
         names_to = "source",
         values_to = "n"
     ) %>%
@@ -39,8 +39,8 @@ site_richness <- obs_combined %>%
         source = factor(
             source,
             levels = c(
-                "eDNA Only",
-                "Botanical Observations Only",
+                "eDNA only",
+                "Botanical observations only",
                 "Botanical and eDNA (Harmonised)",
                 "Botanical and eDNA"
             )
@@ -49,18 +49,27 @@ site_richness <- obs_combined %>%
 
 # Plot site-level detection
 (site_richness_plot <- ggplot(site_richness) +
-    geom_col(aes(
-        x = site_id,
-        y = n,
-        fill = source
-    )) +
+    geom_col(
+        aes(
+            x = site_id,
+            y = n,
+            fill = source
+            # colour = source
+        )
+        # linewidth = 1.5,
+        # lineend = "square"
+    ) +
     labs(
         y = "Number of Species (n)"
     ) +
     scale_fill_manual(
         values = c("#F28F16", "#A62121", "#016E63", "#223F59"),
-        name = "Vascular Plants Detected with"
+        name = "Vascular plants observed with"
     ) +
+    # scale_colour_manual(
+    #     values = c("#F28F16", "#A62121", "#223F59", "#223F59"),
+    #     name = "Vascular plants observed with"
+    # ) +
     scale_y_continuous(limits = c(0, 50)) +
     guides(
         fill = guide_legend(nrow = 4)
@@ -126,8 +135,8 @@ combined_obs <- bind_rows(vascular_obs, bryo_obs) %>%
     labs(x = "", y = "Number of Species (n)") +
     scale_fill_manual(
         values = c("#EB7075", "#a62121"),
-        name = "Botanical Observation of",
-        labels = c("Bryophytes", "Vascular Plants")
+        name = "Botanical observations of",
+        labels = c("Bryophytes", "Vascular plants")
     ) +
     scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +
     theme_cowplot() +
