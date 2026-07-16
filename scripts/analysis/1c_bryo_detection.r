@@ -124,7 +124,7 @@ obs_combined %>%
     gt() %>%
     cols_label(
         short_name = "species",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
     ) %>%
@@ -181,7 +181,7 @@ obs_combined %>%
     gt() %>%
     cols_label(
         site_id = "site",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
     ) %>%
@@ -235,7 +235,7 @@ obs_combined %>%
     gt() %>%
     cols_label(
         plot_id = "Plot",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
     ) %>%
@@ -276,7 +276,7 @@ obs_combined %>%
     gt() %>%
     cols_label(
         short_name = "species",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
     ) %>%
@@ -311,7 +311,7 @@ obs_combined %>%
     gt() %>%
     cols_label(
         short_name = "species",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         eDNA = html("eDNA at<br>species-level"),
         eDNA_genus = html("eDNA at<br>genus-level"),
     ) %>%
