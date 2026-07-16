@@ -207,7 +207,7 @@ obs_combined %>%
     ) %>%
     cols_label(
         short_name = "species",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         trnl = "trnl",
         its2 = "ITS2",
         eDNA = "both",
@@ -287,7 +287,7 @@ obs_combined %>%
     ) %>%
     cols_label(
         site_id = "site",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         trnl = "trnl",
         its2 = "ITS2",
         eDNA = "both",
@@ -364,7 +364,7 @@ obs_combined %>%
     ) %>%
     cols_label(
         plot_id = "Plot",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         trnl = "trnl",
         its2 = "ITS2",
         eDNA = "both",
@@ -428,7 +428,7 @@ obs_combined %>%
     ) %>%
     cols_label(
         short_name = "species",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         trnl = "trnl",
         its2 = "ITS2",
         eDNA = "both",
@@ -486,7 +486,7 @@ obs_combined %>%
     ) %>%
     cols_label(
         short_name = "species",
-        botanical = html("botanical<br>survery"),
+        botanical = html("botanical<br>survey"),
         trnl = "trnl",
         its2 = "ITS2",
         eDNA = "both",
