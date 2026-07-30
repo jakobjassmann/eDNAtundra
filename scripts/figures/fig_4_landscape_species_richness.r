@@ -1,4 +1,5 @@
 ## Fig 4 Landscape-level species richness
+# Jakob Assmann jakob.assmann@gu.se Updated 30 July 2026
 
 library(tidyverse)
 library(ggplot2)

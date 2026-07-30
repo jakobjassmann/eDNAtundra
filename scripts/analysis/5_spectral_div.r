@@ -18,7 +18,7 @@ library(gt)
 # Set up parallel envrionment
 cl <- parallel::makeCluster(5)
 
-# Set site colours
+# Set site colours (not used anymore)
 site_colours <- data.frame(
     site = c("Site 1", "Site 2", "Site 3"),
     value = c(
@@ -415,3 +415,5 @@ spp_richness_bryo_lm %>%
 #             group_by(site_id) %>%
 #             summarise(shan_div = -1 * sum(p_ln_p))
 #     )
+
+# End of file
