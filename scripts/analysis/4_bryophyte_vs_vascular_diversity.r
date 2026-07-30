@@ -108,6 +108,11 @@ combined_obs_nsp_plot %>%
 combined_obs_nsp_site %>%
     pivot_wider(names_from = phylum, values_from = nsp) %>%
     mutate(ratio = Bryophytes / (Bryophytes + `Vascular plants`)) %>%
+    #   site_id Bryophytes `Vascular plants` ratio
+    #   <chr>        <int>             <int> <dbl>
+    # 1 Site 1          50                30 0.625
+    # 2 Site 2          32                31 0.508
+    # 3 Site 3          57                38 0.6
     ungroup() %>%
     summarise(perc = round(100 * mean(ratio)))
 # A tibble: 1 × 1
