@@ -1,7 +1,6 @@
 # Figure 3 Spectral variability and species richness
 # Jakob J. Assmann jakob.assmann@uzh.ch February 2026
 
-
 # Dependencies
 library(tidyverse)
 library(sf)
@@ -27,37 +26,45 @@ plots_buffered <- plot_coords %>%
 load("data/analysis/lm_nspp_multispectral_cv.Rda")
 multispec_cv <- bind_cols(
     multispec_cv,
-    predict(spp_richness_lm,
-        interval = "confidence"
-    )
+    predict(spp_richness_lm, interval = "confidence")
 )
 
 # Load file names of multispec drone rasters
 multispec_rasts <- data.frame(
-    file_name = list.files("data/drone_data/multispec/", full.names = T, pattern = ".tif$")
+    file_name = list.files(
+        "data/drone_data/multispec/",
+        full.names = T,
+        pattern = ".tif$"
+    )
 ) %>%
     mutate(
         site = gsub(".*(site_[1-3]).*", "\\1", file_name),
         band = gsub(".*_(.*)\\..*", "\\1", file_name)
     ) %>%
-    mutate(wavelength = case_when(
-        band == "blue" ~ 475,
-        band == "green" ~ 560,
-        band == "red" ~ 668,
-        band == "rededge" ~ 717,
-        band == "nir" ~ 842,
-        TRUE ~ NA
-    ))
+    mutate(
+        wavelength = case_when(
+            band == "blue" ~ 475,
+            band == "green" ~ 560,
+            band == "red" ~ 668,
+            band == "rededge" ~ 717,
+            band == "nir" ~ 842,
+            TRUE ~ NA
+        )
+    )
 
 
 # Plott richness (nspp) vs. spectral variation (multispec cv)
-(n_spp_vs_spect_cv_plot <- ggplot(multispec_cv, aes(x = spectral_cv, y = n_spp)) +
+(n_spp_vs_spect_cv_plot <- ggplot(
+    multispec_cv,
+    aes(x = spectral_cv, y = n_spp)
+) +
     geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "#cdcdcd66") +
     geom_line(aes(y = fit), colour = "#962c7e", linewidth = 2) +
     geom_point(aes(shape = site_id, color = spectral_cv), size = 5) +
     scale_color_viridis_c(
         option = "magma",
-        limits = c(0.2, 1), na.value = "white",
+        limits = c(0.2, 1),
+        na.value = "white",
         guide = "none"
     ) +
     scale_x_continuous(
@@ -67,7 +74,8 @@ multispec_rasts <- data.frame(
     ) +
     scale_y_continuous(limits = c(0, 32), expand = c(0, 0)) +
     labs(
-        x = "Spectral Variation (CV)", y = "Species Richness (n)",
+        x = "Spectral Variability (CV)",
+        y = "Species Richness (n)",
         colour = "",
         shape = "",
     ) +
@@ -82,8 +90,12 @@ multispec_rasts <- data.frame(
 
 # Prepare examples for plots at extremes of CV scale
 # Get IDs for extreme plots
-plot_id_min <- multispec_cv[which(multispec_cv$spectral_cv == min(multispec_cv$spectral_cv)), ]$plot_id
-plot_id_max <- multispec_cv[which(multispec_cv$spectral_cv == max(multispec_cv$spectral_cv)), ]$plot_id
+plot_id_min <- multispec_cv[
+    which(multispec_cv$spectral_cv == min(multispec_cv$spectral_cv)),
+]$plot_id
+plot_id_max <- multispec_cv[
+    which(multispec_cv$spectral_cv == max(multispec_cv$spectral_cv)),
+]$plot_id
 # Get geometeries
 plot_min <- plots_buffered %>% filter(Name == plot_id_min)
 plot_max <- plots_buffered %>% filter(Name == plot_id_max)
@@ -110,7 +122,8 @@ example_1_drone <- ggplot() +
         fill = NA,
         linewidth = 2
     ) +
-    annotate("segment",
+    annotate(
+        "segment",
         x = 482788.8,
         xend = 482789.3,
         y = 7667984.05,
@@ -118,7 +131,8 @@ example_1_drone <- ggplot() +
         linewidth = 3,
         colour = "#595959"
     ) +
-    annotate("text",
+    annotate(
+        "text",
         x = 482789.05,
         y = 7667984.2,
         label = "0.5 m",
@@ -219,7 +233,7 @@ example_2_stats <- plot_grid(
             theme_nothing(18) +
             theme(axis.title.x = element_text(vjust = 2, size = 18)),
         ggplot() +
-            labs(x = "Spectral\nVariation (CV)") +
+            labs(x = "Spectral\nVariability (CV)") +
             theme_nothing(18) +
             theme(axis.title.x = element_text(vjust = 2, size = 18)),
         nrow = 1,
@@ -251,7 +265,8 @@ combined_plot_nspp_cv <- plot_grid(
     n_spp_vs_spect_cv_plot,
     # Example plots
     plots_example,
-    ncol = 2, nrow = 1,
+    ncol = 2,
+    nrow = 1,
     rel_widths = c(1.1, 0.9),
     align = "",
     labels = c("a)", "b)"),
@@ -264,13 +279,19 @@ combined_plot_nspp_cv <- plot_grid(
     draw_plot(combined_plot_nspp_cv) +
     # Plant observation icons
     # draw_image("figures/glasses.png", scale = 0.065, x = -0.41, y = +0.425) +
-    draw_image("figures/vascular_plant_bw.png", scale = 0.12, x = -0.425, y = +0.425) +
+    draw_image(
+        "figures/vascular_plant_bw.png",
+        scale = 0.12,
+        x = -0.425,
+        y = +0.425
+    ) +
     draw_image("figures/moss_bw.png", scale = 0.12, x = -0.37, y = +0.425) +
     # Drone Icon
     draw_image("figures/drone.png", scale = 0.125, x = 0.02, y = -0.275))
 
 # Write out as file
-save_plot("figures/figure_3.png",
+save_plot(
+    "figures/figure_3.png",
     combined_plot_nspp_cv,
     base_asp = 1.2,
     ncol = 2,
