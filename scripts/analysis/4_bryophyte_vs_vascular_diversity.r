@@ -28,7 +28,7 @@ bryo_obs <- read_csv(
     select(site_id = Site, plot_id, genus = Genus, species = Species) %>%
     # Remove all uncertain ids
     filter(!grepl("cf", genus) | !grepl("cf", species)) %>%
-    filter(!grepl("sp.", species)) %>%
+    filter(!grepl("sp\\.", species)) %>%
     mutate(short_name = paste(genus, species)) %>%
     arrange(site_id, plot_id, short_name) %>%
     mutate(site_id = gsub("S", "Site ", site_id)) %>%
@@ -73,7 +73,7 @@ combined_obs_nsp_plot %>%
     ungroup() %>%
     summarise(bryo_lt_vasc = sum(phylum == "Bryophytes"))
 n_distinct(pull(combined_obs_nsp_plot, plot_id))
-# No! Bryophyte diverstiy only exceeds vascular diversity for 27 / 54
+# No! Bryophyte diverstiy only exceeds vascular diversity for 28 / 54
 combined_obs_nsp_plot %>%
     group_by(site_id, plot_id) %>%
     arrange(site_id, plot_id, desc(nsp)) %>%
@@ -84,7 +84,7 @@ combined_obs_nsp_plot %>%
 # # A tibble: 1 × 1
 #    prec
 #   <dbl>
-# 1  48.8
+# 1  49.2
 
 # How is it at site level?
 # Caluclate number of species per site
@@ -98,21 +98,22 @@ combined_obs_nsp_plot %>%
 # # A tibble: 6 × 3
 #   site_id phylum            nsp
 #   <chr>   <chr>           <int>
-# 1 Site 1  Bryophytes         50
+# 1 Site 1  Bryophytes         52
 # 2 Site 1  Vascular plants    30
 # 3 Site 2  Bryophytes         32
 # 4 Site 2  Vascular plants    31
-# 5 Site 3  Bryophytes         57
+# 5 Site 3  Bryophytes         58
 # 6 Site 3  Vascular plants    38
+
 # Calculate percentage
 combined_obs_nsp_site %>%
     pivot_wider(names_from = phylum, values_from = nsp) %>%
     mutate(ratio = Bryophytes / (Bryophytes + `Vascular plants`)) %>%
     #   site_id Bryophytes `Vascular plants` ratio
     #   <chr>        <int>             <int> <dbl>
-    # 1 Site 1          50                30 0.625
+    # 1 Site 1          52                30 0.634
     # 2 Site 2          32                31 0.508
-    # 3 Site 3          57                38 0.6
+    # 3 Site 3          58                38 0.604
     ungroup() %>%
     summarise(perc = round(100 * mean(ratio)))
 # A tibble: 1 × 1
@@ -131,11 +132,11 @@ combined_obs_nsp_site %>%
 #   site_id phylum          shan_div
 #  site_id phylum          shan_div
 #   <chr>   <chr>              <dbl>
-# 1 Site 1  Bryophytes         13.1
+# 1 Site 1  Bryophytes         13.8
 # 2 Site 1  Vascular plants     6.75
 # 3 Site 2  Bryophytes          8.82
 # 4 Site 2  Vascular plants     7.77
-# 5 Site 3  Bryophytes         14.9
+# 5 Site 3  Bryophytes         15.1
 # 6 Site 3  Vascular plants     7.77
 
 # Visualise at the site level
@@ -162,4 +163,6 @@ combined_obs_nsp_site %>%
     draw_image("figures/moss_bw.png", scale = 0.275, x = 0.35, y = 0.325) +
     draw_image("figures/vascular_plant_bw.png", scale = 0.3, x = 0.34, y = 0))
 
-save_plot("figures/fig_2b.png", bryo_vs_vasc_plot_icons, bg = "white")
+# save_plot("figures/fig_2b.png", bryo_vs_vasc_plot_icons, bg = "white")
+
+# End of File

@@ -108,7 +108,7 @@ bryo_obs <- read_csv(
     # convert al sp. to species
     mutate(species = (gsub("sp\\.", "species", species))) %>%
     # Remove all uncertain ids
-    filter(!grepl("cf", genus) & !grepl("cf", species)) %>%
+    filter(!grepl("cf", genus) | !grepl("cf", species)) %>%
     mutate(short_name = paste(genus, species)) %>%
     arrange(site_id, plot_id, short_name) %>%
     mutate(site_id = gsub("S", "Site ", site_id)) %>%
