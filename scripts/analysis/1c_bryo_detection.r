@@ -1,5 +1,5 @@
 # eDNA detection for bryophytes
-#
+# Jakob J. Assmann jakob.assmann@gu.se 5 August 2026
 
 # Dependencies
 library(tidyverse)
@@ -8,18 +8,36 @@ library(gt)
 #### Load and prepare botanical and eDNA datasets ----
 
 # Load presence/ absence botanical observations and prepare for comaprison
-botanical_obs <- read_csv(
-    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb.csv"
+botanical_obs_orignal <- read_csv(
+    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
 ) %>%
     mutate(plot_id = paste0(Site, Plot_ID)) %>%
-    select(plot_id, genus = Genus, species = Species) %>%
+    select(plot_id, genus = Genus, species = Species, synonym) %>%
     # convert al sp. to species
-    mutate(species = (gsub("sp\\.", "species", species))) %>%
+    mutate(
+        species = (gsub("sp\\.", "species", species)),
+        synonym = (gsub("sp\\.", "species", synonym))
+    ) %>%
     # Remove all uncertain ids
-    filter(!grepl("cf", genus) & !grepl("cf", species)) %>%
+    filter(!grepl("cf", genus) | !grepl("cf", species)) %>%
     mutate(short_name = paste(genus, species)) %>%
     # Remove any duplicates (n = 2) from subspecies-ids
     distinct()
+
+# Save all name and synonym combinations for later
+botanical_obs_synonyms <- botanical_obs_orignal %>%
+    distinct(genus, species, short_name, synonym) %>%
+    arrange(short_name) %>%
+    filter(species != "species")
+
+# Override original species names with synonyms present in DS-BITSR
+botanical_obs <- botanical_obs_orignal %>%
+    mutate(
+        short_name = synonym,
+        genus = gsub("([A-Za-z]*) ([A-Za-z]*)", "\\1", synonym),
+        species = gsub("([A-Za-z]*) ([A-Za-z]*)", "\\2", synonym)
+    ) %>%
+    select(-synonym)
 
 # Load presence / absence from eDNA
 eDNA_obs <- read_csv("data/sequences/its2/edna/cleaned/its2_bryo_taxa.csv") %>%
@@ -29,12 +47,43 @@ eDNA_obs <- read_csv("data/sequences/its2/edna/cleaned/its2_bryo_taxa.csv") %>%
     distinct()
 
 # Tally unqiue detections
-nrow(distinct(botanical_obs))
+nrow(botanical_obs)
+nrow(filter(botanical_obs, species != "species"))
 nrow(eDNA_obs)
 # botanical 516 vs edna 120 (23%)
 # These are very few detections, how many are at species level?
 nrow(filter(eDNA_obs, species != "species"))
 # even less 77 (15%)
+
+# How many species were successfuly detected at least once?
+eDNA_obs %>%
+    filter(species != "species") %>%
+    distinct(genus, species) %>%
+    arrange(genus, species)
+# 17
+# How many of these are in our botanical observations?
+eDNA_obs %>%
+    filter(species != "species") %>%
+    distinct(short_name) %>%
+    arrange(short_name) %>%
+    inner_join(botanical_obs_synonyms)
+# 9
+# Which are not?
+eDNA_obs %>%
+    filter(species != "species") %>%
+    distinct(short_name) %>%
+    arrange(short_name) %>%
+    filter(!(short_name %in% botanical_obs_synonyms$short_name))
+# # A tibble: 7 × 1
+#   short_name
+#   <chr>
+# 1 Campylium bambergeri
+# 2 Distichium hagenii
+# 3 Encalypta longicollis
+# 4 Flexitrichum flexicaule
+# 5 Hymenostylium recurvirostrum
+# 6 Orthothecium intricatum
+# 7 Timmiella anomala
 
 #### Join botanical and edna data ----
 
@@ -85,6 +134,26 @@ obs_combined <- obs_combined %>%
         eDNA_genus = if_else(is.na(eDNA_genus), FALSE, eDNA_genus)
     )
 
+# revert synonyms and fill columns for species not in botanical observations
+obs_combined <- obs_combined %>%
+    mutate(synonym = short_name) %>%
+    select(-genus, -species, -short_name) %>%
+    full_join(botanical_obs_synonyms) %>%
+    mutate(
+        short_name = if_else(is.na(short_name), synonym, short_name),
+        genus = if_else(
+            is.na(genus),
+            gsub("([A-Za-z]*) ([A-Za-z]*)", "\\1", synonym),
+            genus
+        ),
+        species = if_else(
+            is.na(species),
+            gsub("([A-Za-z]*) ([A-Za-z]*)", "\\2", synonym),
+            species
+        )
+    )
+
+
 # Arrange columns
 obs_combined <- obs_combined %>%
     relocate(
@@ -92,6 +161,7 @@ obs_combined <- obs_combined %>%
         genus,
         species,
         short_name,
+        synonym,
         botanical,
         eDNA,
         eDNA_genus
@@ -103,6 +173,48 @@ write_csv(
     "data/analysis/bryo_detection_species_genus.csv"
 )
 # obs_combined <- read_csv("data/analysis/bryo_detection_species_genus.csv")
+
+# For QC with Erin, pull out those plots where there is at least one species
+# that was detected only through DS-BITSR
+obs_combined_new <-
+    filter(
+        obs_combined,
+        plot_id %in%
+            (obs_combined %>%
+                group_by(plot_id) %>%
+                summarise(
+                    new = any(
+                        short_name %in%
+                            (eDNA_obs %>%
+                                filter(species != "species") %>%
+                                distinct(short_name) %>%
+                                arrange(short_name) %>%
+                                filter(
+                                    !(short_name %in%
+                                        botanical_obs_synonyms$short_name)
+                                ) %>%
+                                pull(short_name))
+                    )
+                ) %>%
+                filter(new) %>%
+                pull(plot_id))
+    ) %>%
+    mutate(
+        new_species = short_name %in%
+            (eDNA_obs %>%
+                filter(species != "species") %>%
+                distinct(short_name) %>%
+                arrange(short_name) %>%
+                filter(
+                    !(short_name %in%
+                        botanical_obs_synonyms$short_name)
+                ) %>%
+                pull(short_name))
+    )
+write_csv(
+    obs_combined_new,
+    "data/analysis/bryo_detection_plots_with_new_species.csv"
+)
 
 #### Summary statistics ----
 

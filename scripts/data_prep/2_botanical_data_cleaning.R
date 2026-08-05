@@ -281,4 +281,82 @@ mosses <- read_csv("data/botanical_obs/moss_data_Erin_cleaned_final_Deb.csv")
 #  9 Tortella tortuosa var. fragilifolia -> sp., but not var. listed in PASL
 # 10 Tortella tortuosa var. tortuosa     -> sp., but not var. listed in PASL
 
+# Update 5 August 2028
+# Erin spotted some spelling mistakes and synonyms that might have caused
+# mismatch with DS-BITSR even though species were detected.
+# Here I correct for those and add a synonym colum
+moss_obs <- read_csv("data/botanical_obs/moss_data_Erin_cleaned_final_Deb.csv")
+
+# Spelling errors (2 species affected)
+moss_obs <- moss_obs %>%
+    mutate(
+        Full_Name = case_when(
+            # Missing "h" in genus for Eurhynchiastrum pulchellum
+            Full_Name ==
+                "Eurynchiastrum pulchellum" ~ "Eurhynchiastrum pulchellum",
+            # Missing "mo" in genus for Scapania gymnostomophila
+            Full_Name == "Scapania gymnostophila" ~ "Scapania gymnostomophila",
+            TRUE ~ Full_Name
+        )
+    ) %>%
+    mutate(
+        Genus = if_else(
+            Full_Name == "Eurhynchiastrum pulchellum",
+            "Eurhynchiastrum",
+            Genus
+        ),
+        Species = if_else(
+            Full_Name == "Scapania gymnostomophila",
+            "gymnostomophila",
+            Species
+        )
+    ) %>%
+    # Remove any duplicates
+    distinct()
+
+# Remove identifications at the sub-species level
+moss_obs <- moss_obs %>%
+    mutate(
+        Species = case_when(
+            Full_Name == "Stegonia latifolia var. pilifera" ~ "latifolia",
+            Full_Name == "Tortella tortuosa var. tortuosa" ~ "tortuosa",
+            Full_Name == "Tortella tortuosa var. fragilifolia" ~ "tortuosa",
+            TRUE ~ Species
+        ),
+        Full_Name = case_when(
+            Full_Name ==
+                "Stegonia latifolia var. pilifera" ~ "Stegonia latifolia",
+            Full_Name ==
+                "Tortella tortuosa var. tortuosa" ~ "Tortella tortuosa",
+            Full_Name ==
+                "Tortella tortuosa var. fragilifolia" ~ "Tortella tortuosa",
+            TRUE ~ Full_Name
+        )
+    ) %>%
+    # Remove any newly created duplicates
+    distinct()
+
+# Add synonyms for mathching with DS-BITSR
+moss_obs <- moss_obs %>%
+    mutate(
+        synonym = case_when(
+            Full_Name == "Ditrichum flexicaule" ~ "Flexitrichum flexicaule",
+            Full_Name == "Ditrichum gracile" ~ "Flexitrichum gracile",
+            Full_Name == "Hypnum bambergeri" ~ "Campylium bambergeri",
+            Full_Name == "Hypnum procerrimum" ~ "Pseudostereodon procerrimus",
+            Full_Name == "Hypnum revolutum" ~ "Roaldia revoluta",
+            Full_Name == "Hypnum vaucheri" ~ "Buckia vaucheri",
+            Full_Name ==
+                "Pseudocalliergon brevifolium" ~ "Drepanocladus brevifolius",
+            # Add the original name for those that don't have synonyms
+            TRUE ~ Full_Name
+        )
+    )
+
+# Write out update
+write_csv(
+    moss_obs,
+    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
+)
+#
 # End of file ----
