@@ -62,7 +62,6 @@ map(unique(its2_taxa$site_id), function(site_id_to_plot) {
             lineend = "square"
         ) +
         geom_vline(xintercept = seq(4.5, 16 * 4.5, 4), colour = "white") +
-        scale_x_discrete(position = "top") +
         scale_y_discrete(drop = FALSE) +
         scale_fill_continuous(
             limits = c(1, 103000),
@@ -85,7 +84,7 @@ map(unique(its2_taxa$site_id), function(site_id_to_plot) {
         theme(
             panel.background = element_rect(fill = "black"),
             plot.title = element_text(hjust = 0.5),
-            axis.text.x = element_text(angle = 90, hjust = 0.5)
+            axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5)
         )
     save_plot(
         paste0("figures/ASV_counts_ITS2_", site_id_to_plot, ".png"),
@@ -94,6 +93,90 @@ map(unique(its2_taxa$site_id), function(site_id_to_plot) {
         bg = "white"
     )
 })
+
+
+## Plot ITS2 grouped by soil sampling date
+
+# Add sampling date
+its2_taxa <- read_csv("data/sequences/soil_sampling_dates.csv") %>%
+    full_join(its2_taxa)
+its2_taxa$plot_id <- factor(
+    its2_taxa$plot_id,
+    levels = unique(its2_taxa$plot_id)
+)
+
+# Plot
+species_count_plot_by_date <- ggplot(
+    its2_taxa
+) +
+    geom_tile(
+        aes(
+            x = sample_id,
+            y = short_name,
+            fill = count
+        ),
+        width = 0.8,
+        height = 0.6,
+        color = "white",
+        linewidth = 0.1,
+        linejoin = "mitre",
+        lineend = "square"
+    ) +
+    geom_vline(
+        aes(xintercept = x_int),
+        colour = "white",
+        data = data.frame(
+            soil_sampling_date = as.Date(c(
+                rep("2023-07-13", 7),
+                rep("2023-07-21", 10),
+                rep("2023-07-20", 7),
+                rep("2023-07-28", 9),
+                rep("2023-07-29", 9),
+                rep("2023-07-30", 7)
+            )),
+            x_int = c(
+                seq(4.5, 4.5 + 6 * 4, 4),
+                seq(4.5, 4.5 + 9 * 4, 4),
+                seq(4.5, 4.5 + 6 * 4, 4),
+                seq(4.5, 4.5 + 8 * 4, 4),
+                seq(4.5, 4.5 + 8 * 4, 4),
+                seq(4.5, 4.5 + 6 * 4, 4)
+            )
+        )
+    ) +
+    facet_wrap(~soil_sampling_date, scales = "free") +
+    scale_y_discrete(drop = FALSE) +
+    scale_fill_continuous(
+        limits = c(1, 103000),
+        trans = "log10",
+        breaks = c(1, 10, 100, 1000, 10000, 100000),
+        labels = c("1", "10", "100", "1000", "10000", "100000")
+    ) +
+    labs(
+        x = "",
+        y = "",
+        fill = "Total count\nof ASVs",
+        title = paste0(
+            "Sum of ITS2 ASV counts per taxon by sampling date"
+        )
+    ) +
+    # coord_flip() +
+    theme_cowplot(8) +
+    theme(
+        panel.background = element_rect(fill = "black"),
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(
+            angle = 90,
+            hjust = 0.5,
+            vjust = 0.5
+        )
+    )
+save_plot(
+    paste0("figures/ASV_counts_ITS2_by_soil_sampling_date.png"),
+    species_count_plot_by_date,
+    base_height = 12,
+    bg = "white"
+)
 
 ## trnl
 
@@ -150,7 +233,6 @@ map(unique(trnl_taxa$site_id), function(site_id_to_plot) {
             lineend = "square"
         ) +
         geom_vline(xintercept = seq(4.5, 16 * 4.5, 4), colour = "white") +
-        scale_x_discrete(position = "top") +
         scale_y_discrete(drop = FALSE) +
         scale_fill_continuous(
             trans = "log10",
@@ -173,7 +255,7 @@ map(unique(trnl_taxa$site_id), function(site_id_to_plot) {
         theme(
             panel.background = element_rect(fill = "black"),
             plot.title = element_text(hjust = 0.5),
-            axis.text.x = element_text(angle = 90, hjust = 0.5)
+            axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5)
         )
     save_plot(
         paste0("figures/ASV_counts_trnl_", site_id_to_plot, ".png"),
@@ -182,5 +264,88 @@ map(unique(trnl_taxa$site_id), function(site_id_to_plot) {
         bg = "white"
     )
 })
+
+## Plot trnl grouped by soil sampling date
+
+# Add sampling date
+trnl_taxa <- read_csv("data/sequences/soil_sampling_dates.csv") %>%
+    full_join(trnl_taxa)
+trnl_taxa$plot_id <- factor(
+    trnl_taxa$plot_id,
+    levels = unique(trnl_taxa$plot_id)
+)
+
+# Plot
+species_count_plot_by_date <- ggplot(
+    trnl_taxa
+) +
+    geom_tile(
+        aes(
+            x = sample_id,
+            y = short_name,
+            fill = count
+        ),
+        width = 0.8,
+        height = 0.6,
+        color = "white",
+        linewidth = 0.1,
+        linejoin = "mitre",
+        lineend = "square"
+    ) +
+    geom_vline(
+        aes(xintercept = x_int),
+        colour = "white",
+        data = data.frame(
+            soil_sampling_date = as.Date(c(
+                rep("2023-07-13", 7),
+                rep("2023-07-21", 10),
+                rep("2023-07-20", 7),
+                rep("2023-07-28", 9),
+                rep("2023-07-29", 9),
+                rep("2023-07-30", 7)
+            )),
+            x_int = c(
+                seq(4.5, 4.5 + 6 * 4, 4),
+                seq(4.5, 4.5 + 9 * 4, 4),
+                seq(4.5, 4.5 + 6 * 4, 4),
+                seq(4.5, 4.5 + 8 * 4, 4),
+                seq(4.5, 4.5 + 8 * 4, 4),
+                seq(4.5, 4.5 + 6 * 4, 4)
+            )
+        )
+    ) +
+    facet_wrap(~soil_sampling_date, scales = "free") +
+    scale_y_discrete(drop = FALSE) +
+    scale_fill_continuous(
+        limits = c(1, 103000),
+        trans = "log10",
+        breaks = c(1, 10, 100, 1000, 10000, 100000),
+        labels = c("1", "10", "100", "1000", "10000", "100000")
+    ) +
+    labs(
+        x = "",
+        y = "",
+        fill = "Total count\nof ASVs",
+        title = paste0(
+            "Sum of trnl ASV counts per taxon by sampling date"
+        )
+    ) +
+    # coord_flip() +
+    theme_cowplot(8) +
+    theme(
+        panel.background = element_rect(fill = "black"),
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(
+            angle = 90,
+            hjust = 0.5,
+            vjust = 0.5
+        )
+    )
+save_plot(
+    paste0("figures/ASV_counts_trnl_by_soil_sampling_date.png"),
+    species_count_plot_by_date,
+    base_height = 12,
+    bg = "white"
+)
 
 # End of File
