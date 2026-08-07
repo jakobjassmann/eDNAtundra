@@ -22,7 +22,7 @@ vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
 
 # Load presence / absence moss observations
 bryo_obs <- read_csv(
-    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb.csv"
+    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
 ) %>%
     mutate(plot_id = paste0(Site, Plot_ID)) %>%
     select(site_id = Site, plot_id, genus = Genus, species = Species) %>%
@@ -100,7 +100,7 @@ combined_obs_nsp_plot %>%
 #   <chr>   <chr>           <int>
 # 1 Site 1  Bryophytes         52
 # 2 Site 1  Vascular plants    30
-# 3 Site 2  Bryophytes         32
+# 3 Site 2  Bryophytes         31
 # 4 Site 2  Vascular plants    31
 # 5 Site 3  Bryophytes         58
 # 6 Site 3  Vascular plants    38
@@ -112,7 +112,7 @@ combined_obs_nsp_site %>%
     #   site_id Bryophytes `Vascular plants` ratio
     #   <chr>        <int>             <int> <dbl>
     # 1 Site 1          52                30 0.634
-    # 2 Site 2          32                31 0.508
+    # 2 Site 2          31                31 0.5
     # 3 Site 3          58                38 0.604
     ungroup() %>%
     summarise(perc = round(100 * mean(ratio)))
@@ -134,7 +134,7 @@ combined_obs_nsp_site %>%
 #   <chr>   <chr>              <dbl>
 # 1 Site 1  Bryophytes         13.8
 # 2 Site 1  Vascular plants     6.75
-# 3 Site 2  Bryophytes          8.82
+# 3 Site 2  Bryophytes          8.67
 # 4 Site 2  Vascular plants     7.77
 # 5 Site 3  Bryophytes         15.1
 # 6 Site 3  Vascular plants     7.77

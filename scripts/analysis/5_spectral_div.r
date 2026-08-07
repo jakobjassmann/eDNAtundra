@@ -141,7 +141,7 @@ vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
 
 # Load presence / absence moss observations
 bryo_obs <- read_csv(
-    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb.csv"
+    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
 ) %>%
     mutate(plot_id = paste0(Site, Plot_ID)) %>%
     select(site_id = Site, plot_id, genus = Genus, species = Species) %>%
@@ -302,7 +302,7 @@ ggplot(multispec_cv, aes(x = spectral_cv)) +
 spp_richness_vasc_lm <- lm(n_spp_vasc ~ spectral_cv, multispec_cv)
 summary(spp_richness_vasc_lm)
 
-Call:lm(formula = n_spp_vasc ~ spectral_cv, data = multispec_cv)
+# Call:lm(formula = n_spp_vasc ~ spectral_cv, data = multispec_cv)
 # Residuals:
 #     Min      1Q  Median      3Q     Max
 # -3.7390 -1.7969 -0.6551  2.0768  8.3827

@@ -101,7 +101,7 @@ vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
 
 # Load presence / absence moss observations
 bryo_obs <- read_csv(
-    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb.csv"
+    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
 ) %>%
     mutate(plot_id = paste0(Site, Plot_ID)) %>%
     select(site_id = Site, plot_id, genus = Genus, species = Species) %>%
