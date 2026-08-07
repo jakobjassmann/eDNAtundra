@@ -63,11 +63,11 @@ ds_bitsr_complete_check <- tibble(
 
 # Quick check of direct matches
 sum(ds_bitsr_complete_check$ds_bitsr)
-# [1] 52
+# [1] 53
 
 # No match
 sum(!ds_bitsr_complete_check$ds_bitsr)
-# 15
+# 14
 
 # revert to names used in our taxonomy
 ds_bitsr_complete_check <- ds_bitsr_complete_check %>%

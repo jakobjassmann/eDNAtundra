@@ -346,6 +346,7 @@ moss_obs <- moss_obs %>%
             Full_Name == "Hypnum procerrimum" ~ "Pseudostereodon procerrimus",
             Full_Name == "Hypnum revolutum" ~ "Roaldia revoluta",
             Full_Name == "Hypnum vaucheri" ~ "Buckia vaucheri",
+            Full_Name == "Orthotrichum speciosum" ~ "Lewinskya speciosa",
             Full_Name ==
                 "Pseudocalliergon brevifolium" ~ "Drepanocladus brevifolius",
             # Add the original name for those that don't have synonyms

@@ -66,14 +66,15 @@ eDNA_obs %>%
     filter(species != "species") %>%
     distinct(short_name) %>%
     arrange(short_name) %>%
-    inner_join(botanical_obs_synonyms)
-# 9
+    filter(short_name %in% botanical_obs_synonyms$synonym)
+# 12
+
 # Which are not?
 eDNA_obs %>%
     filter(species != "species") %>%
     distinct(short_name) %>%
     arrange(short_name) %>%
-    filter(!(short_name %in% botanical_obs_synonyms$short_name))
+    filter(!(short_name %in% botanical_obs_synonyms$synonym))
 # # A tibble: 7 × 1
 #   short_name
 #   <chr>
