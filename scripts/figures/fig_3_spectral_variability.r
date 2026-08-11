@@ -32,7 +32,7 @@ multispec_cv <- bind_cols(
 # Load file names of multispec drone rasters
 multispec_rasts <- data.frame(
     file_name = list.files(
-        "data/drone_data/multispec/",
+        "data/drone_data/multispec/2026/",
         full.names = T,
         pattern = ".tif$"
     )

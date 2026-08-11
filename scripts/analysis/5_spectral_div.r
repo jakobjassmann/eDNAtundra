@@ -50,10 +50,11 @@ rgb_rasts <- list.files(
 ) %>%
     .[!grepl("crop", .)] %>%
     map(rast)
+
 # Multispec file names only
 multispec_rasts <- data.frame(
     file_name = list.files(
-        "data/drone_data/multispec/",
+        "data/drone_data/multispec/2026/",
         full.names = T,
         pattern = ".tif$"
     )
@@ -183,16 +184,16 @@ combined_obs <- full_join(combined_obs, point_framing)
 
 ## RGB based anlaysis
 
-# Correlate the the species richness with the spectral diversity
-ggplot() +
-    geom_point(data = combined_obs, aes(x = n_spp, spectral_cv)) +
-    theme_classic()
+# # Correlate the the species richness with the spectral diversity
+# ggplot() +
+#     geom_point(data = combined_obs, aes(x = n_spp, spectral_cv)) +
+#     theme_classic()
 
-# Correlate the the cover richness with the spectral diversity
-ggplot(data = combined_obs, mapping = aes(x = shan_div, spectral_cv)) +
-    geom_point() +
-    geom_smooth(method = "lm") +
-    theme_classic()
+# # Correlate the the cover richness with the spectral diversity
+# ggplot(data = combined_obs, mapping = aes(x = shan_div, spectral_cv)) +
+#     geom_point() +
+#     geom_smooth(method = "lm") +
+#     theme_classic()
 
 ## Multispectral analysis
 multispec_cv <- plot_multispec %>%
@@ -247,16 +248,17 @@ hist(multispec_cv$spectral_cv)
 # Test Pearson correlation
 cor(multispec_cv$spectral_cv, multispec_cv$n_spp)
 cor.test(multispec_cv$spectral_cv, multispec_cv$n_spp)
+
 #         Pearson's product-moment correlation
+
 # data:  multispec_cv$spectral_cv and multispec_cv$n_spp
-# t = 6.0988, df = 52, p-value = 1.344e-07
+# t = 5.9817, df = 52, p-value = 2.058e-07
 # alternative hypothesis: true correlation is not equal to 0
 # 95 percent confidence interval:
-#  0.4570257 0.7788517
+#  0.4471244 0.7739084
 # sample estimates:
 #       cor
-# 0.6457621
-# Fit linear model
+# 0.6384485
 
 spp_richness_lm <- lm(n_spp ~ spectral_cv, multispec_cv)
 summary(spp_richness_lm)
@@ -264,16 +266,18 @@ summary(spp_richness_lm)
 # lm(formula = n_spp ~ spectral_cv, data = multispec_cv)
 # Residuals:
 #     Min      1Q  Median      3Q     Max
-# -11.845  -2.893   0.355   3.487   8.216
+# -11.812  -2.862   0.332   3.193   8.125
+
 # Coefficients:
 #             Estimate Std. Error t value Pr(>|t|)
-# (Intercept)    4.147      2.282   1.817   0.0749 .
-# spectral_cv   26.325      4.317   6.099 1.34e-07 ***
+# (Intercept)    4.372      2.288   1.911   0.0616 .
+# spectral_cv   25.975      4.342   5.982 2.06e-07 ***
 # ---
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-# Residual standard error: 4.716 on 52 degrees of freedom
-# Multiple R-squared:  0.417,     Adjusted R-squared:  0.4058
-# F-statistic:  37.2 on 1 and 52 DF,  p-value: 1.344e-07
+
+# Residual standard error: 4.754 on 52 degrees of freedom
+# Multiple R-squared:  0.4076,    Adjusted R-squared:  0.3962
+# F-statistic: 35.78 on 1 and 52 DF,  p-value: 2.058e-07
 
 # Save linear model and export table
 save(spp_richness_lm, file = "data/analysis/lm_nspp_multispectral_cv.Rda")
@@ -305,16 +309,18 @@ summary(spp_richness_vasc_lm)
 # Call:lm(formula = n_spp_vasc ~ spectral_cv, data = multispec_cv)
 # Residuals:
 #     Min      1Q  Median      3Q     Max
-# -3.7390 -1.7969 -0.6551  2.0768  8.3827
+# -3.6915 -1.8285 -0.5537  2.0628  8.3421
+
 # Coefficients:
 #             Estimate Std. Error t value Pr(>|t|)
-# (Intercept)    1.840      1.196   1.538     0.13
-# spectral_cv   12.034      2.264   5.317 2.25e-06 ***
+# (Intercept)    1.926      1.196   1.611    0.113
+# spectral_cv   11.908      2.269   5.248 2.88e-06 ***
 # ---
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-# Residual standard error: 2.473 on 52 degrees of freedom
-# Multiple R-squared:  0.3522,    Adjusted R-squared:  0.3397
-# F-statistic: 28.27 on 1 and 52 DF,  p-value: 2.254e-06
+
+# Residual standard error: 2.484 on 52 degrees of freedom
+# Multiple R-squared:  0.3462,    Adjusted R-squared:  0.3336
+# F-statistic: 27.54 on 1 and 52 DF,  p-value: 2.88e-06
 save(
     spp_richness_vasc_lm,
     file = "data/analysis/lm_nspp_vasc_multispectral_cv.Rda"
@@ -335,6 +341,20 @@ save(
     file = "data/analysis/lm_nspp_bryo_multispectral_cv.Rda"
 )
 summary(spp_richness_bryo_lm)
+# Residuals:
+#    Min     1Q Median     3Q    Max
+# -8.890 -2.658 -0.262  3.022  8.954
+
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)
+# (Intercept)    2.446      1.926   1.270 0.209622
+# spectral_cv   14.067      3.655   3.849 0.000326 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+# Residual standard error: 4.001 on 52 degrees of freedom
+# Multiple R-squared:  0.2217,    Adjusted R-squared:  0.2068
+# F-statistic: 14.82 on 1 and 52 DF,  p-value: 0.0003262
 spp_richness_bryo_lm %>%
     summary() %>%
     tidy() %>%
