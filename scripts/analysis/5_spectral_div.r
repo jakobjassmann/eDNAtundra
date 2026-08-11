@@ -209,16 +209,16 @@ multispec_cv <- plot_multispec %>%
 # Save data
 write_csv(multispec_cv, "data/combined_obs_multispec_cv.csv")
 
-# Test for correlation spectral cv and shannon diversity (point frame)
-ggplot(multispec_cv, aes(x = spectral_cv, y = shan_div)) +
-    geom_point() +
-    geom_smooth(method = "lm") +
-    theme_classic()
-hist(multispec_cv$shan_div)
-hist(multispec_cv$spectral_cv)
-cor(multispec_cv$spectral_cv, multispec_cv$shan_div)
-cor.test(multispec_cv$spectral_cv, multispec_cv$shan_div)
-summary(lm(shan_div ~ spectral_cv, multispec_cv))
+# # Test for correlation spectral cv and shannon diversity (point frame)
+# ggplot(multispec_cv, aes(x = spectral_cv, y = shan_div)) +
+#     geom_point() +
+#     geom_smooth(method = "lm") +
+#     theme_classic()
+# hist(multispec_cv$shan_div)
+# hist(multispec_cv$spectral_cv)
+# cor(multispec_cv$spectral_cv, multispec_cv$shan_div)
+# cor.test(multispec_cv$spectral_cv, multispec_cv$shan_div)
+# summary(lm(shan_div ~ spectral_cv, multispec_cv))
 
 # Test for correlation spectral cv and n_spp (abundance)
 ggplot(multispec_cv, aes(x = spectral_cv, y = n_spp)) +
@@ -367,6 +367,24 @@ spp_richness_bryo_lm %>%
     gtsave("tables/8_lm_nspp_bryo_multispectral.html")
 
 ## OLD code
+
+# # Test the reverse relationship to assess the added contributions of bryophytes
+# # to the relationship
+# spp_richness_sep_rev_lm <- lm(
+#     spectral_cv ~ n_spp_bryo + n_spp_vasc,
+#     multispec_cv
+# )
+# spp_richness_vasc_rev_lm <- lm(
+#     spectral_cv ~ n_spp_vasc,
+#     multispec_cv
+# )
+# summary(spp_richness_vasc_rev_lm)
+# summary(spp_richness_sep_rev_lm)
+# anova(spp_richness_vasc_rev_lm, spp_richness_sep_rev_lm)
+# summary(spp_richness_sep_rev_lm)$adj.r.squared
+# summary(spp_richness_vasc_rev_lm)$adj.r.squared
+# summary(spp_richness_sep_rev_lm)$adj.r.squared -
+#     summary(spp_richness_vasc_rev_lm)$adj.r.squared
 
 # # Test landscape level abundance
 # full_join(
