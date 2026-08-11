@@ -58,7 +58,7 @@ rgb_rasts_agg <- list.files(
 # Multispec file names only
 multispec_rasts <- data.frame(
     file_name = list.files(
-        "data/drone_data/multispec/",
+        "data/drone_data/multispec/2026/",
         full.names = T,
         pattern = ".tif$"
     )
