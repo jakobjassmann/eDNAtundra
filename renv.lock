@@ -1315,6 +1315,32 @@
       "Author": "JJ Allaire [aut], Romain Francois [aut, cph], Kevin Ushey [aut, cre], Gregory Vandenbrouck [aut], Marcus Geelnard [aut, cph] (TinyThread library, https://tinythreadpp.bitsnbites.eu/), Hamada S. Badr [ctb] (ORCID: <https://orcid.org/0000-0002-9808-2344>), Posit, PBC [cph], Intel [aut, cph] (Intel TBB library, https://www.threadingbuildingblocks.org/), Microsoft [cph]",
       "Repository": "CRAN"
     },
+    "RcppThread": {
+      "Package": "RcppThread",
+      "Version": "2.4.0",
+      "Source": "Repository",
+      "Title": "R-Friendly Threading in C++",
+      "Authors@R": "c( person(\"Thomas\", \"Nagler\",, \"mail@tnagler.com\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-1855-0046\")) )",
+      "Description": "Provides a C++11-style thread class and thread pool that can safely be interrupted from R. See Nagler (2021) <doi:10.18637/jss.v097.c01>.",
+      "Depends": [
+        "R (>= 3.3.0)"
+      ],
+      "License": "MIT + file LICENSE",
+      "Encoding": "UTF-8",
+      "URL": "https://github.com/tnagler/RcppThread",
+      "BugReports": "https://github.com/tnagler/RcppThread/issues",
+      "Suggests": [
+        "testthat",
+        "R.rsp",
+        "Rcpp"
+      ],
+      "VignetteBuilder": "R.rsp",
+      "Config/roxygen2/version": "8.0.0",
+      "NeedsCompilation": "yes",
+      "Author": "Thomas Nagler [aut, cre] (ORCID: <https://orcid.org/0000-0003-1855-0046>)",
+      "Maintainer": "Thomas Nagler <mail@tnagler.com>",
+      "Repository": "CRAN"
+    },
     "Rdpack": {
       "Package": "Rdpack",
       "Version": "2.6.6",
@@ -3547,6 +3573,44 @@
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
+    "decido": {
+      "Package": "decido",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Title": "Bindings for 'Mapbox' Ear Cutting Triangulation Library",
+      "Description": "Provides constrained triangulation of polygons. Ear cutting (or  ear clipping) applies constrained triangulation by successively 'cutting' triangles from a polygon defined by path/s. Holes are supported by introducing a bridge segment between polygon paths. This package wraps the 'header-only'  library 'earcut.hpp' <https://github.com/mapbox/earcut.hpp> which includes a reference to the method used by Held, M. (2001) <doi:10.1007/s00453-001-0028-4>.",
+      "Authors@R": "c( person(\"Michael\", \"Sumner\", email = \"mdsumner@gmail.com\", role = c(\"aut\", \"cre\")),  person(\"Andrew\", \"Smith\", role = \"ctb\", comment = \"provided C++ guidance\"),  person(\"Mapbox\", role = \"cph\", comment = \"author of header library earcut.hpp\"),  person(\"Mark\", \"Padgham\", role = \"ctb\", comment = \"help with CRAN issues\"),  person(\"David\", \"Cooley\", role = \"ctb\", comment = \"added header capability for linking from other packages\"))",
+      "License": "MIT + file LICENSE",
+      "Encoding": "UTF-8",
+      "ByteCompile": "true",
+      "LinkingTo": [
+        "Rcpp"
+      ],
+      "Depends": [
+        "R (>= 3.2.5)"
+      ],
+      "Imports": [
+        "Rcpp"
+      ],
+      "RoxygenNote": "7.3.2",
+      "Suggests": [
+        "covr",
+        "testthat",
+        "knitr",
+        "oz",
+        "rmarkdown",
+        "spelling",
+        "markdown"
+      ],
+      "VignetteBuilder": "knitr",
+      "URL": "https://hypertidy.github.io/decido/",
+      "BugReports": "https://github.com/hypertidy/decido/issues",
+      "Language": "en-US",
+      "NeedsCompilation": "yes",
+      "Author": "Michael Sumner [aut, cre], Andrew Smith [ctb] (provided C++ guidance), Mapbox [cph] (author of header library earcut.hpp), Mark Padgham [ctb] (help with CRAN issues), David Cooley [ctb] (added header capability for linking from other packages)",
+      "Maintainer": "Michael Sumner <mdsumner@gmail.com>",
+      "Repository": "CRAN"
+    },
     "deldir": {
       "Package": "deldir",
       "Version": "2.0-4",
@@ -3787,6 +3851,39 @@
       "Author": "Ulrich Halekoh [aut, cph], Søren Højsgaard [aut, cre, cph]",
       "Maintainer": "Søren Højsgaard <sorenh@math.aau.dk>",
       "Repository": "CRAN"
+    },
+    "doParallel": {
+      "Package": "doParallel",
+      "Version": "1.0.17",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Foreach Parallel Adaptor for the 'parallel' Package",
+      "Authors@R": "c(person(\"Folashade\", \"Daniel\", role=\"cre\", email=\"fdaniel@microsoft.com\"), person(\"Microsoft\", \"Corporation\", role=c(\"aut\", \"cph\")), person(\"Steve\", \"Weston\", role=\"aut\"), person(\"Dan\", \"Tenenbaum\", role=\"ctb\"))",
+      "Description": "Provides a parallel backend for the %dopar% function using the parallel package.",
+      "Depends": [
+        "R (>= 2.14.0)",
+        "foreach (>= 1.2.0)",
+        "iterators (>= 1.0.0)",
+        "parallel",
+        "utils"
+      ],
+      "Suggests": [
+        "caret",
+        "mlbench",
+        "rpart",
+        "RUnit"
+      ],
+      "Enhances": [
+        "compiler"
+      ],
+      "License": "GPL-2",
+      "URL": "https://github.com/RevolutionAnalytics/doparallel",
+      "BugReports": "https://github.com/RevolutionAnalytics/doparallel/issues",
+      "NeedsCompilation": "no",
+      "Author": "Folashade Daniel [cre], Microsoft Corporation [aut, cph], Steve Weston [aut], Dan Tenenbaum [ctb]",
+      "Maintainer": "Folashade Daniel <fdaniel@microsoft.com>",
+      "Repository": "CRAN",
+      "Encoding": "UTF-8"
     },
     "dplyr": {
       "Package": "dplyr",
@@ -6542,6 +6639,51 @@
       "Repository": "CRAN",
       "Encoding": "UTF-8"
     },
+    "libimath": {
+      "Package": "libimath",
+      "Version": "3.2.2-1",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "'Imath' Computer Graphics Linear Algebra Static Library",
+      "Authors@R": "c( person( \"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-3131-3814\") ), person(\"Andrew\", \"Kunz\", role = c(\"ctb\", \"cph\")), person(\"Antonio\", \"Rojas\", role = c(\"ctb\", \"cph\")), person(\"Brecht\", \"Van Lommel\", role = c(\"ctb\", \"cph\")), person(\"Cary\", \"Phillips\", role = c(\"ctb\", \"cph\")), person(\"Christina\", \"Tempelaar-Lietz\", role = c(\"ctb\", \"cph\")), person(\"Christopher\", \"Kulla\", role = c(\"ctb\", \"cph\")), person(\"Daniel\", \"Kaneider\", role = c(\"ctb\", \"cph\")), person(\"Dirk\", \"Lemstra\", role = c(\"ctb\", \"cph\")), person(\"Ed\", \"Hanway\", role = c(\"ctb\", \"cph\")), person(\"Eric\", \"Wimmer\", role = c(\"ctb\", \"cph\")), person(\"Florian\", \"Kainz\", role = c(\"ctb\", \"cph\")), person(\"Gregorio\", \"Litenstein\", role = c(\"ctb\", \"cph\")), person(\"Harry\", \"Mallon\", role = c(\"ctb\", \"cph\")), person(\"Huibean\", \"Luo\", role = c(\"ctb\", \"cph\")), person(\"Jean-Marie\", \"Aubry\", role = c(\"ctb\", \"cph\")), person(\"Jens\", \"Lindgren\", role = c(\"ctb\", \"cph\")), person(\"Ji Hun\", \"Yu\", role = c(\"ctb\", \"cph\")), person(\"Jonathan\", \"Stone\", role = c(\"ctb\", \"cph\")), person(\"Jules\", \"Maselbas\", role = c(\"ctb\", \"cph\")), person(\"Kazuki\", \"Sakamoto\", role = c(\"ctb\", \"cph\")), person(\"Kimball\", \"Thurston\", role = c(\"ctb\", \"cph\")), person(\"Larry\", \"Gritz\", role = c(\"ctb\", \"cph\")), person(\"Liam\", \"Fernandez\", role = c(\"ctb\", \"cph\")), person(\"Lucas\", \"Miller\", role = c(\"ctb\", \"cph\")), person(\"Mark\", \"Sisson\", role = c(\"ctb\", \"cph\")), person(\"Mathieu\", \"Malaterre\", role = c(\"ctb\", \"cph\")), person(\"Mathieu\", \"Westphal\", role = c(\"ctb\", \"cph\")), person(\"Matthäus G.\", \"Chajdas\", role = c(\"ctb\", \"cph\")), person(\"Matthias C. M.\", \"Troffaes\", role = c(\"ctb\", \"cph\")), person(\"Nicholas\", \"Yue\", role = c(\"ctb\", \"cph\")), person(\"Nick\", \"Porcino\", role = c(\"ctb\", \"cph\")), person(\"Nick\", \"Rasmussen\", role = c(\"ctb\", \"cph\")), person(\"Nicolas\", \"Chauvet\", role = c(\"ctb\", \"cph\")), person(\"Nigel\", \"Stewart\", role = c(\"ctb\", \"cph\")), person(\"Owen\", \"Thompson\", role = c(\"ctb\", \"cph\")), person(\"Peter\", \"Hillman\", role = c(\"ctb\", \"cph\")), person(\"Piotr\", \"Barejko\", role = c(\"ctb\", \"cph\")), person(\"Piotr\", \"Stanczyk\", role = c(\"ctb\", \"cph\")), person(\"Ralph\", \"Potter\", role = c(\"ctb\", \"cph\")), person(\"Richard\", \"Hobbes\", role = c(\"ctb\", \"cph\")), person(\"Simon\", \"Boorer\", role = c(\"ctb\", \"cph\")), person(\"Thanh\", \"Ha\", role = c(\"ctb\", \"cph\")), person(\"Thorsten\", \"Kaufmann\", role = c(\"ctb\", \"cph\")), person(\"Xiao\", \"Zhai\", role = c(\"ctb\", \"cph\")), person(\"Yujie\", \"Shu\", role = c(\"ctb\", \"cph\")), person(\"Yuya\", \"Asano\", role = c(\"ctb\", \"cph\")), person(\"Zachary\", \"Klein\", role = c(\"ctb\", \"cph\")), person(\"Kevin\", \"Ushey\", role = \"cph\") )",
+      "Description": "Provides a static library for 'Imath'  (see <https://github.com/AcademySoftwareFoundation/Imath>), a library for functions and data types common in computer graphics applications, including a 16-bit floating-point type.",
+      "License": "BSD_3_clause + file LICENSE",
+      "SystemRequirements": "GNU Make, cmake",
+      "Encoding": "UTF-8",
+      "Config/build/compilation-database": "true",
+      "Biarch": "TRUE",
+      "Config/roxygen2/version": "8.0.0",
+      "NeedsCompilation": "yes",
+      "Author": "Tyler Morgan-Wall [aut, cre] (ORCID: <https://orcid.org/0000-0002-3131-3814>), Andrew Kunz [ctb, cph], Antonio Rojas [ctb, cph], Brecht Van Lommel [ctb, cph], Cary Phillips [ctb, cph], Christina Tempelaar-Lietz [ctb, cph], Christopher Kulla [ctb, cph], Daniel Kaneider [ctb, cph], Dirk Lemstra [ctb, cph], Ed Hanway [ctb, cph], Eric Wimmer [ctb, cph], Florian Kainz [ctb, cph], Gregorio Litenstein [ctb, cph], Harry Mallon [ctb, cph], Huibean Luo [ctb, cph], Jean-Marie Aubry [ctb, cph], Jens Lindgren [ctb, cph], Ji Hun Yu [ctb, cph], Jonathan Stone [ctb, cph], Jules Maselbas [ctb, cph], Kazuki Sakamoto [ctb, cph], Kimball Thurston [ctb, cph], Larry Gritz [ctb, cph], Liam Fernandez [ctb, cph], Lucas Miller [ctb, cph], Mark Sisson [ctb, cph], Mathieu Malaterre [ctb, cph], Mathieu Westphal [ctb, cph], Matthäus G. Chajdas [ctb, cph], Matthias C. M. Troffaes [ctb, cph], Nicholas Yue [ctb, cph], Nick Porcino [ctb, cph], Nick Rasmussen [ctb, cph], Nicolas Chauvet [ctb, cph], Nigel Stewart [ctb, cph], Owen Thompson [ctb, cph], Peter Hillman [ctb, cph], Piotr Barejko [ctb, cph], Piotr Stanczyk [ctb, cph], Ralph Potter [ctb, cph], Richard Hobbes [ctb, cph], Simon Boorer [ctb, cph], Thanh Ha [ctb, cph], Thorsten Kaufmann [ctb, cph], Xiao Zhai [ctb, cph], Yujie Shu [ctb, cph], Yuya Asano [ctb, cph], Zachary Klein [ctb, cph], Kevin Ushey [cph]",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
+      "Repository": "CRAN"
+    },
+    "libopenexr": {
+      "Package": "libopenexr",
+      "Version": "3.4.12-4",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Static Library and Headers for 'OpenEXR' Image I/O",
+      "Authors@R": "c( person( \"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-3131-3814\") ), person(\"Aaron\", \"Demolder\", role = c(\"ctb\", \"cph\")), person(\"Abe\", \"Fettig\", role = c(\"ctb\", \"cph\")), person(\"Aloys\", \"Baillet\", role = c(\"ctb\", \"cph\")), person(\"Andre\", \"Mazzone\", role = c(\"ctb\", \"cph\")), person(\"Andrew\", \"Kunz\", role = c(\"ctb\", \"cph\")), person(\"Anton\", \"Dukhovnikov\", role = c(\"ctb\", \"cph\")), person(\"Antonio\", \"Rojas\", role = c(\"ctb\", \"cph\")), person(\"Aras\", \"Pranckevičius\", role = c(\"ctb\", \"cph\")), person(\"Arkady\", \"Shapkin\", role = c(\"ctb\", \"cph\")), person(\"Arkell\", \"Rasiah\", role = c(\"ctb\", \"cph\")), person(\"Axel\", \"Waggershauser\", role = c(\"ctb\", \"cph\")), person(\"Balázs\", \"Oroszi\", role = c(\"ctb\", \"cph\")), person(\"Barnaby\", \"Robson\", role = c(\"ctb\", \"cph\")), person(\"Ben\", \"Grimes\", role = c(\"ctb\", \"cph\")), person(\"Brendan\", \"Bolles\", role = c(\"ctb\", \"cph\")), person(\"Cary\", \"Phillips\", role = c(\"ctb\", \"cph\")), person(\"Chris\", \"Leu\", role = c(\"ctb\", \"cph\")), person(\"Christina\", \"Tempelaar-Lietz\", role = c(\"ctb\", \"cph\")), person(\"Christopher\", \"Horvath\", role = c(\"ctb\", \"cph\")), person(\"Christopher\", \"Kulla\", role = c(\"ctb\", \"cph\")), person(\"Christoph\", \"Gohlke\", role = c(\"ctb\", \"cph\")), person(\"Cristian\", \"Martínez\", role = c(\"ctb\", \"cph\")), person(\"Dan\", \"Horák\", role = c(\"ctb\", \"cph\")), person(\"Daniel\", \"Kaneider\", role = c(\"ctb\", \"cph\")), person(\"Darby\", \"Johnston\", role = c(\"ctb\", \"cph\")), person(\"Dave\", \"Sawyer\", role = c(\"ctb\", \"cph\")), person(\"David\", \"Korczynski\", role = c(\"ctb\", \"cph\")), person(\"Diogo Teles\", \"Sant'Anna\", role = c(\"ctb\", \"cph\")), person(\"Dirk\", \"Lemstra\", role = c(\"ctb\", \"cph\")), person(\"Drew\", \"Hess\", role = c(\"ctb\", \"cph\")), person(\"Ed\", \"Hanway\", role = c(\"ctb\", \"cph\")), person(\"Edward\", \"Kmett\", role = c(\"ctb\", \"cph\")), person(\"Eric\", \"Sommerlade\", role = c(\"ctb\", \"cph\")), person(\"E\", \"Sommerlade\", role = c(\"ctb\", \"cph\")), person(\"Florian\", \"Kainz\", role = c(\"ctb\", \"cph\")), person(\"Grant\", \"Kim\", role = c(\"ctb\", \"cph\")), person(\"Gregorio\", \"Litenstein\", role = c(\"ctb\", \"cph\")), person(\"Gyula\", \"Gubacsi\", role = c(\"ctb\", \"cph\")), person(\"Halfdan\", \"Ingvarsson\", role = c(\"ctb\", \"cph\")), person(\"Harry\", \"Mallon\", role = c(\"ctb\", \"cph\")), person(\"Huibean\", \"Luo\", role = c(\"ctb\", \"cph\")), person(\"Ibraheem\", \"Alhashim\", role = c(\"ctb\", \"cph\")), person(\"Jack\", \"Kingsman\", role = c(\"ctb\", \"cph\")), person(\"Jamie\", \"Kenyon\", role = c(\"ctb\", \"cph\")), person(\"Jan\", \"Tojnar\", role = c(\"ctb\", \"cph\")), person(\"Jean-Francois\", \"Panisset\", role = c(\"ctb\", \"cph\")), person(\"Jens\", \"Lindgren\", role = c(\"ctb\", \"cph\")), person(\"Ji Hun\", \"Yu\", role = c(\"ctb\", \"cph\")), person(\"Johannes\", \"Vollmer\", role = c(\"ctb\", \"cph\")), person(\"John\", \"Loy\", role = c(\"ctb\", \"cph\")), person(\"John\", \"Mertic\", role = c(\"ctb\", \"cph\")), person(\"Jonathan\", \"Stone\", role = c(\"ctb\", \"cph\")), person(\"Jose Luis\", \"Cercos-Pita\", role = c(\"ctb\", \"cph\")), person(\"Joseph\", \"Goldstone\", role = c(\"ctb\", \"cph\")), person(\"Juha\", \"Reunanen\", role = c(\"ctb\", \"cph\")), person(\"Julian\", \"Amann\", role = c(\"ctb\", \"cph\")), person(\"Juri\", \"Abramov\", role = c(\"ctb\", \"cph\")), person(\"Karl\", \"Hendrikse\", role = c(\"ctb\", \"cph\")), person(\"Karl\", \"Rasche\", role = c(\"ctb\", \"cph\")), person(\"Kevin\", \"Wheatley\", role = c(\"ctb\", \"cph\")), person(\"Kimball\", \"Thurston\", role = c(\"ctb\", \"cph\")), person(\"Larry\", \"Gritz\", role = c(\"ctb\", \"cph\")), person(\"Laurens\", \"Voerman\", role = c(\"ctb\", \"cph\")), person(\"L. E.\", \"Segovia\", role = c(\"ctb\", \"cph\")), person(\"Liam\", \"Fernandez\", role = c(\"ctb\", \"cph\")), person(\"Lucy\", \"Wilkes\", role = c(\"ctb\", \"cph\")), person(\"Mark\", \"Reid\", role = c(\"ctb\", \"cph\")), person(\"Mark\", \"Sisson\", role = c(\"ctb\", \"cph\")), person(\"Martin\", \"Aumüller\", role = c(\"ctb\", \"cph\")), person(\"Martin\", \"Husemann\", role = c(\"ctb\", \"cph\")), person(\"Matthäus G.\", \"Chajdas\", role = c(\"ctb\", \"cph\")), person(\"Matthias C. M.\", \"Troffaes\", role = c(\"ctb\", \"cph\")), person(\"Matt\", \"Pharr\", role = c(\"ctb\", \"cph\")), person(\"Md Sadman\", \"Chowdhury\", role = c(\"ctb\", \"cph\")), person(\"Michael\", \"Thomas\", role = c(\"ctb\", \"cph\")), person(\"Nicholas\", \"Yue\", role = c(\"ctb\", \"cph\")), person(\"Nick\", \"Porcino\", role = c(\"ctb\", \"cph\")), person(\"Nick\", \"Rasmussen\", role = c(\"ctb\", \"cph\")), person(\"Nicolas\", \"Chauvet\", role = c(\"ctb\", \"cph\")), person(\"Niklas\", \"Hambüchen\", role = c(\"ctb\", \"cph\")), person(\"Owen\", \"Thompson\", role = c(\"ctb\", \"cph\")), person(\"Paul\", \"Schneider\", role = c(\"ctb\", \"cph\")), person(\"Peter\", \"Hillman\", role = c(\"ctb\", \"cph\")), person(\"Peter\", \"Steneteg\", role = c(\"ctb\", \"cph\")), person(\"Peter\", \"Urbanec\", role = c(\"ctb\", \"cph\")), person(\"Phil\", \"Barrett\", role = c(\"ctb\", \"cph\")), person(\"Piotr\", \"Stanczyk\", role = c(\"ctb\", \"cph\")), person(\"Ralph\", \"Potter\", role = c(\"ctb\", \"cph\")), person(\"Rémi\", \"Achard\", role = c(\"ctb\", \"cph\")), person(\"Reto\", \"Kromer\", role = c(\"ctb\", \"cph\")), person(\"Richard\", \"Goedeken\", role = c(\"ctb\", \"cph\")), person(\"Sergey\", \"Fedorov\", role = c(\"ctb\", \"cph\")), person(\"Shawn\", \"Walker-Salas\", role = c(\"ctb\", \"cph\")), person(\"Simon\", \"Boorer\", role = c(\"ctb\", \"cph\")), person(\"Simon\", \"Otter\", role = c(\"ctb\", \"cph\")), person(\"Srinath\", \"Ravichandran\", role = c(\"ctb\", \"cph\")), person(\"Thanh\", \"Ha\", role = c(\"ctb\", \"cph\")), person(\"Thomas\", \"Debesse\", role = c(\"ctb\", \"cph\")), person(\"Thorsten\", \"Kaufmann\", role = c(\"ctb\", \"cph\")), person(\"Timothy\", \"Lyanguzov\", role = c(\"ctb\", \"cph\")), person(\"Wenzel\", \"Jakob\", role = c(\"ctb\", \"cph\")), person(\"Wojciech\", \"Jarosz\", role = c(\"ctb\", \"cph\")), person(\"Xo\", \"Wang\", role = c(\"ctb\", \"cph\")), person(\"Yaakov\", \"Selkowitz\", role = c(\"ctb\", \"cph\")), person(\"Yining Karl\", \"Li\", role = c(\"ctb\", \"cph\")), person(\"Yujie\", \"Shu\", role = c(\"ctb\", \"cph\")), person(\"Kevin\", \"Ushey\", role = \"cph\") )",
+      "Description": "Provides the 'OpenEXR' static library and 'C++' headers  for high-dynamic-range image I/O  (see <https://openexr.com/>)  needed to link R packages against the 'OpenEXR' library, along  with a basic R interface to load 'EXR' images.",
+      "Depends": [
+        "R (>= 4.3.0)"
+      ],
+      "License": "BSD_3_clause + file LICENSE",
+      "LinkingTo": [
+        "libimath (>= 3.2.2)"
+      ],
+      "Encoding": "UTF-8",
+      "LazyData": "true",
+      "SystemRequirements": "CMake, GNU make",
+      "RoxygenNote": "7.3.2",
+      "Biarch": "TRUE",
+      "BugReports": "https://github.com/tylermorganwall/libopenexr/issues",
+      "NeedsCompilation": "yes",
+      "Author": "Tyler Morgan-Wall [aut, cre] (ORCID: <https://orcid.org/0000-0002-3131-3814>), Aaron Demolder [ctb, cph], Abe Fettig [ctb, cph], Aloys Baillet [ctb, cph], Andre Mazzone [ctb, cph], Andrew Kunz [ctb, cph], Anton Dukhovnikov [ctb, cph], Antonio Rojas [ctb, cph], Aras Pranckevičius [ctb, cph], Arkady Shapkin [ctb, cph], Arkell Rasiah [ctb, cph], Axel Waggershauser [ctb, cph], Balázs Oroszi [ctb, cph], Barnaby Robson [ctb, cph], Ben Grimes [ctb, cph], Brendan Bolles [ctb, cph], Cary Phillips [ctb, cph], Chris Leu [ctb, cph], Christina Tempelaar-Lietz [ctb, cph], Christopher Horvath [ctb, cph], Christopher Kulla [ctb, cph], Christoph Gohlke [ctb, cph], Cristian Martínez [ctb, cph], Dan Horák [ctb, cph], Daniel Kaneider [ctb, cph], Darby Johnston [ctb, cph], Dave Sawyer [ctb, cph], David Korczynski [ctb, cph], Diogo Teles Sant'Anna [ctb, cph], Dirk Lemstra [ctb, cph], Drew Hess [ctb, cph], Ed Hanway [ctb, cph], Edward Kmett [ctb, cph], Eric Sommerlade [ctb, cph], E Sommerlade [ctb, cph], Florian Kainz [ctb, cph], Grant Kim [ctb, cph], Gregorio Litenstein [ctb, cph], Gyula Gubacsi [ctb, cph], Halfdan Ingvarsson [ctb, cph], Harry Mallon [ctb, cph], Huibean Luo [ctb, cph], Ibraheem Alhashim [ctb, cph], Jack Kingsman [ctb, cph], Jamie Kenyon [ctb, cph], Jan Tojnar [ctb, cph], Jean-Francois Panisset [ctb, cph], Jens Lindgren [ctb, cph], Ji Hun Yu [ctb, cph], Johannes Vollmer [ctb, cph], John Loy [ctb, cph], John Mertic [ctb, cph], Jonathan Stone [ctb, cph], Jose Luis Cercos-Pita [ctb, cph], Joseph Goldstone [ctb, cph], Juha Reunanen [ctb, cph], Julian Amann [ctb, cph], Juri Abramov [ctb, cph], Karl Hendrikse [ctb, cph], Karl Rasche [ctb, cph], Kevin Wheatley [ctb, cph], Kimball Thurston [ctb, cph], Larry Gritz [ctb, cph], Laurens Voerman [ctb, cph], L. E. Segovia [ctb, cph], Liam Fernandez [ctb, cph], Lucy Wilkes [ctb, cph], Mark Reid [ctb, cph], Mark Sisson [ctb, cph], Martin Aumüller [ctb, cph], Martin Husemann [ctb, cph], Matthäus G. Chajdas [ctb, cph], Matthias C. M. Troffaes [ctb, cph], Matt Pharr [ctb, cph], Md Sadman Chowdhury [ctb, cph], Michael Thomas [ctb, cph], Nicholas Yue [ctb, cph], Nick Porcino [ctb, cph], Nick Rasmussen [ctb, cph], Nicolas Chauvet [ctb, cph], Niklas Hambüchen [ctb, cph], Owen Thompson [ctb, cph], Paul Schneider [ctb, cph], Peter Hillman [ctb, cph], Peter Steneteg [ctb, cph], Peter Urbanec [ctb, cph], Phil Barrett [ctb, cph], Piotr Stanczyk [ctb, cph], Ralph Potter [ctb, cph], Rémi Achard [ctb, cph], Reto Kromer [ctb, cph], Richard Goedeken [ctb, cph], Sergey Fedorov [ctb, cph], Shawn Walker-Salas [ctb, cph], Simon Boorer [ctb, cph], Simon Otter [ctb, cph], Srinath Ravichandran [ctb, cph], Thanh Ha [ctb, cph], Thomas Debesse [ctb, cph], Thorsten Kaufmann [ctb, cph], Timothy Lyanguzov [ctb, cph], Wenzel Jakob [ctb, cph], Wojciech Jarosz [ctb, cph], Xo Wang [ctb, cph], Yaakov Selkowitz [ctb, cph], Yining Karl Li [ctb, cph], Yujie Shu [ctb, cph], Kevin Ushey [cph]",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
+      "Repository": "CRAN"
+    },
     "lifecycle": {
       "Package": "lifecycle",
       "Version": "1.0.5",
@@ -8378,6 +8520,274 @@
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
+    "raster": {
+      "Package": "raster",
+      "Version": "3.6-32",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Geographic Data Analysis and Modeling",
+      "Date": "2025-03-27",
+      "Imports": [
+        "Rcpp",
+        "methods",
+        "terra (>= 1.8-5)"
+      ],
+      "LinkingTo": [
+        "Rcpp"
+      ],
+      "Depends": [
+        "sp (>= 1.4-5)",
+        "R (>= 3.5.0)"
+      ],
+      "Suggests": [
+        "ncdf4",
+        "igraph",
+        "tcltk",
+        "parallel",
+        "rasterVis",
+        "MASS",
+        "sf",
+        "tinytest",
+        "gstat",
+        "fields",
+        "exactextractr"
+      ],
+      "Description": "Reading, writing, manipulating, analyzing and modeling of spatial data. This package has been superseded by the \"terra\" package <https://CRAN.R-project.org/package=terra>.",
+      "License": "GPL (>= 3)",
+      "URL": "https://rspatial.org/raster",
+      "BugReports": "https://github.com/rspatial/raster/issues/",
+      "Authors@R": "c( person(\"Robert J.\", \"Hijmans\", role = c(\"cre\", \"aut\"),   email = \"r.hijmans@gmail.com\",  comment = c(ORCID = \"0000-0001-5872-2872\")), person(\"Jacob\", \"van Etten\", role = \"ctb\"), person(\"Michael\", \"Sumner\", role = \"ctb\"), person(\"Joe\", \"Cheng\", role = \"ctb\"), person(\"Dan\", \"Baston\", role = \"ctb\"), person(\"Andrew\", \"Bevan\", role = \"ctb\"), person(\"Roger\", \"Bivand\", role = \"ctb\"), person(\"Lorenzo\", \"Busetto\", role = \"ctb\"), person(\"Mort\", \"Canty\", role = \"ctb\"), person(\"Ben\", \"Fasoli\", role = \"ctb\"), person(\"David\", \"Forrest\", role = \"ctb\"), person(\"Aniruddha\", \"Ghosh\", role = \"ctb\"), person(\"Duncan\", \"Golicher\", role = \"ctb\"), person(\"Josh\", \"Gray\", role = \"ctb\"), person(\"Jonathan A.\", \"Greenberg\", role = \"ctb\"), person(\"Paul\", \"Hiemstra\", role = \"ctb\"), person(\"Kassel\", \"Hingee\", role = \"ctb\"), person(\"Alex\", \"Ilich\", role = \"ctb\"), person(\"Institute for Mathematics Applied Geosciences\", role=\"cph\"), person(\"Charles\", \"Karney\", role = \"ctb\"), person(\"Matteo\", \"Mattiuzzi\", role = \"ctb\"), person(\"Steven\", \"Mosher\", role = \"ctb\"), person(\"Babak\", \"Naimi\", role = \"ctb\"),\t person(\"Jakub\", \"Nowosad\", role = \"ctb\"), person(\"Edzer\", \"Pebesma\", role = \"ctb\"), person(\"Oscar\", \"Perpinan Lamigueiro\", role = \"ctb\"), person(\"Etienne B.\", \"Racine\", role = \"ctb\"), person(\"Barry\", \"Rowlingson\", role = \"ctb\"), person(\"Ashton\", \"Shortridge\", role = \"ctb\"), person(\"Bill\", \"Venables\", role = \"ctb\"), person(\"Rafael\", \"Wueest\", role = \"ctb\") )",
+      "NeedsCompilation": "yes",
+      "Author": "Robert J. Hijmans [cre, aut] (<https://orcid.org/0000-0001-5872-2872>), Jacob van Etten [ctb], Michael Sumner [ctb], Joe Cheng [ctb], Dan Baston [ctb], Andrew Bevan [ctb], Roger Bivand [ctb], Lorenzo Busetto [ctb], Mort Canty [ctb], Ben Fasoli [ctb], David Forrest [ctb], Aniruddha Ghosh [ctb], Duncan Golicher [ctb], Josh Gray [ctb], Jonathan A. Greenberg [ctb], Paul Hiemstra [ctb], Kassel Hingee [ctb], Alex Ilich [ctb], Institute for Mathematics Applied Geosciences [cph], Charles Karney [ctb], Matteo Mattiuzzi [ctb], Steven Mosher [ctb], Babak Naimi [ctb], Jakub Nowosad [ctb], Edzer Pebesma [ctb], Oscar Perpinan Lamigueiro [ctb], Etienne B. Racine [ctb], Barry Rowlingson [ctb], Ashton Shortridge [ctb], Bill Venables [ctb], Rafael Wueest [ctb]",
+      "Maintainer": "Robert J. Hijmans <r.hijmans@gmail.com>",
+      "Repository": "CRAN",
+      "Encoding": "UTF-8"
+    },
+    "rayimage": {
+      "Package": "rayimage",
+      "Version": "0.26.1",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Image Processing for Simulated Cameras",
+      "Authors@R": "person(\"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\", role = c(\"aut\", \"cph\", \"cre\"), comment = c(ORCID = \"0000-0002-3131-3814\"))",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
+      "Description": "Uses convolution-based techniques to generate simulated camera bokeh, depth of field, and other camera effects, using an image and an optional depth map. Accepts both filename inputs and in-memory array representations of images and matrices, including common raster formats such as 'JPEG', 'PNG', 'TIFF', 'TGA', 'BMP', 'PSD', 'GIF', 'HDR', 'PIC', 'PNM', 'DNG', and 'EXR'. Includes functions to perform 2D convolutions, color correction, colorspace conversion, image/matrix reorientation and resizing, image and text overlays, exposure adjustment, camera vignette effects, and image titles.",
+      "License": "GPL-3",
+      "LazyData": "true",
+      "Depends": [
+        "R (>= 4.3.0)"
+      ],
+      "Imports": [
+        "Rcpp",
+        "png",
+        "jpeg",
+        "grDevices",
+        "grid",
+        "tiff",
+        "systemfonts",
+        "ragg"
+      ],
+      "Suggests": [
+        "magick",
+        "testthat (>= 3.0.0)",
+        "libopenexr (>= 3.4.12-4)",
+        "cli"
+      ],
+      "LinkingTo": [
+        "Rcpp",
+        "RcppArmadillo",
+        "progress",
+        "tinydng",
+        "stbimageheaders"
+      ],
+      "Encoding": "UTF-8",
+      "URL": "https://www.rayimage.dev, https://github.com/tylermorganwall/rayimage",
+      "BugReports": "https://github.com/tylermorganwall/rayimage/issues",
+      "Config/testthat/edition": "3",
+      "Config/build/compilation-database": "true",
+      "Config/roxygen2/version": "8.0.0",
+      "NeedsCompilation": "yes",
+      "Author": "Tyler Morgan-Wall [aut, cph, cre] (ORCID: <https://orcid.org/0000-0002-3131-3814>)",
+      "Repository": "CRAN"
+    },
+    "rayrender": {
+      "Package": "rayrender",
+      "Version": "0.41.3",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Build and Raytrace 3D Scenes",
+      "Date": "2026-06-15",
+      "Authors@R": "c(person(\"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\",  role = c(\"aut\", \"cph\", \"cre\"), comment = c(ORCID = \"0000-0002-3131-3814\")), person(\"Syoyo\", \"Fujita\", role=c(\"ctb\", \"cph\")), person(\"Vilya\", \"Harvey\", role = c(\"ctb\", \"cph\")))",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
+      "Description": "Render scenes using pathtracing. Build 3D scenes out of spheres, cubes, planes, disks, triangles, cones, curves, line segments, cylinders, ellipsoids, and 3D models in the 'Wavefront' OBJ file format or the PLY Polygon File Format. Supports several material types, textures, multicore rendering, and tone-mapping. Based on the \"Ray Tracing in One Weekend\" book series. Peter Shirley (2018) <https://raytracing.github.io>.",
+      "License": "GPL-3",
+      "Copyright": "file inst/COPYRIGHTS",
+      "Depends": [
+        "R (>= 4.1.0)"
+      ],
+      "Imports": [
+        "Rcpp (>= 1.0.0)",
+        "parallel",
+        "png",
+        "raster",
+        "decido",
+        "rayimage (>= 0.26.1)",
+        "stats",
+        "progress",
+        "rayvertex (>= 0.15.0)",
+        "withr",
+        "vctrs",
+        "cli",
+        "pillar"
+      ],
+      "Suggests": [
+        "sf",
+        "spData",
+        "dplyr",
+        "Rvcg",
+        "testthat (>= 3.2.3)",
+        "tibble",
+        "rayshader (>= 0.38.13)",
+        "xml2",
+        "rgl"
+      ],
+      "LinkingTo": [
+        "Rcpp",
+        "RcppThread (>= 2.4.0)",
+        "progress",
+        "spacefillr (>= 0.3.0)",
+        "testthat",
+        "libopenexr (>= 3.4.4)",
+        "libimath (>= 3.2.2)"
+      ],
+      "URL": "https://www.rayrender.net, https://github.com/tylermorganwall/rayrender, http://www.rayrender.net/",
+      "SystemRequirements": "C++20",
+      "Biarch": "true",
+      "Encoding": "UTF-8",
+      "Config/testthat/edition": "3",
+      "Config/build/compilation-database": "true",
+      "Config/roxygen2/version": "8.0.0",
+      "NeedsCompilation": "yes",
+      "Author": "Tyler Morgan-Wall [aut, cph, cre] (ORCID: <https://orcid.org/0000-0002-3131-3814>), Syoyo Fujita [ctb, cph], Vilya Harvey [ctb, cph]",
+      "Repository": "CRAN"
+    },
+    "rayshader": {
+      "Package": "rayshader",
+      "Version": "0.41.2",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Create Maps and Visualize Data in 2D and 3D",
+      "Date": "2026-07-19",
+      "Authors@R": "person(\"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\",role = c(\"aut\", \"cph\", \"cre\"),  comment = c(ORCID = \"0000-0002-3131-3814\"))",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
+      "Description": "Uses a combination of raytracing and multiple hill shading methods to produce 2D and 3D data visualizations and maps. Includes water detection and layering functions, programmable color palette generation, several built-in textures for hill shading, 2D and 3D plotting options, a built-in path tracer, 'Wavefront' OBJ file export, and the ability to save 3D visualizations to a 3D printable format.",
+      "License": "GPL-3",
+      "LazyData": "true",
+      "Depends": [
+        "R (>= 4.1)"
+      ],
+      "Imports": [
+        "doParallel",
+        "foreach",
+        "Rcpp",
+        "progress",
+        "raster",
+        "scales",
+        "png",
+        "jpeg",
+        "rgl (>= 1.3.16)",
+        "grDevices",
+        "grid",
+        "utils",
+        "methods",
+        "terrainmeshr",
+        "rayimage (>= 0.24.1)",
+        "rayvertex (>= 0.13.1)",
+        "rayrender (>= 0.40.0)",
+        "magrittr"
+      ],
+      "Suggests": [
+        "reshape2",
+        "viridis",
+        "av",
+        "magick",
+        "ggplot2 (>= 4.0.0)",
+        "sf",
+        "isoband",
+        "car (>= 3.1-1)",
+        "geosphere",
+        "gifski",
+        "ambient",
+        "terra",
+        "elevatr",
+        "gridExtra",
+        "testthat (>= 3.0.0)",
+        "osmdata",
+        "raybevel (>= 0.2.1)",
+        "ragg",
+        "skymodelr"
+      ],
+      "LinkingTo": [
+        "Rcpp",
+        "progress",
+        "RcppArmadillo"
+      ],
+      "Encoding": "UTF-8",
+      "URL": "https://www.rayshader.com, https://github.com/tylermorganwall/rayshader",
+      "BugReports": "https://github.com/tylermorganwall/rayshader/issues",
+      "Config/testthat/edition": "3",
+      "Config/roxygen2/version": "8.0.0",
+      "NeedsCompilation": "yes",
+      "Author": "Tyler Morgan-Wall [aut, cph, cre] (ORCID: <https://orcid.org/0000-0002-3131-3814>)",
+      "Repository": "CRAN"
+    },
+    "rayvertex": {
+      "Package": "rayvertex",
+      "Version": "0.15.0",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "3D Software Rasterizer",
+      "Date": "2026-05-25",
+      "Authors@R": "c(person(\"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\",  role = c(\"aut\", \"cph\", \"cre\"), comment = c(ORCID = \"0000-0002-3131-3814\")), person(\"Syoyo\", \"Fujita\", role=c(\"ctb\", \"cph\")), person(\"Vilya\", \"Harvey\", role = c(\"ctb\", \"cph\")), person(\"G-Truc Creation\", role = c(\"ctb\", \"cph\")))",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
+      "Description": "Rasterize images using a 3D software renderer. 3D scenes are created either by importing external files, building scenes out of the included objects, or by constructing meshes manually. Supports point and directional lights, anti-aliased lines, shadow mapping, transparent objects, translucent objects, multiple materials types, reflection, refraction, environment maps, multicore rendering, bloom, tone-mapping, and screen-space ambient occlusion.",
+      "License": "MIT + file LICENSE",
+      "Copyright": "file inst/COPYRIGHTS",
+      "Depends": [
+        "R (>= 4.1)"
+      ],
+      "Imports": [
+        "Rcpp (>= 1.0.6)",
+        "grDevices",
+        "rayimage (>= 0.26.1)",
+        "digest",
+        "pillar (>= 1.10.1)",
+        "vctrs",
+        "tibble",
+        "withr",
+        "cli"
+      ],
+      "Suggests": [
+        "Rvcg",
+        "magick",
+        "raster",
+        "testthat (>= 3.0.0)"
+      ],
+      "LinkingTo": [
+        "Rcpp",
+        "spacefillr",
+        "RcppThread (>= 2.4.0)",
+        "stbimageheaders"
+      ],
+      "URL": "https://www.rayvertex.com, https://github.com/tylermorganwall/rayvertex",
+      "BugReports": "https://github.com/tylermorganwall/rayvertex/issues",
+      "Encoding": "UTF-8",
+      "Config/testthat/edition": "3",
+      "Config/roxygen2/version": "8.0.0",
+      "NeedsCompilation": "yes",
+      "Author": "Tyler Morgan-Wall [aut, cph, cre] (ORCID: <https://orcid.org/0000-0002-3131-3814>), Syoyo Fujita [ctb, cph], Vilya Harvey [ctb, cph], G-Truc Creation [ctb, cph]",
+      "Repository": "CRAN"
+    },
     "rbibutils": {
       "Package": "rbibutils",
       "Version": "2.4.1",
@@ -8834,6 +9244,75 @@
       "Author": "Kevin Ushey [aut, cre], Jim Hester [aut], Robert Krzyzanowski [aut]",
       "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
       "Repository": "CRAN"
+    },
+    "rgl": {
+      "Package": "rgl",
+      "Version": "1.3.36",
+      "Source": "Repository",
+      "Title": "3D Visualization Using OpenGL",
+      "Authors@R": "c(person(\"Duncan\", \"Murdoch\", role = c(\"aut\", \"cre\"), email = \"murdoch.duncan@gmail.com\"), person(\"Daniel\", \"Adler\", role = \"aut\", email = \"dadler@dyncall.org\"), person(\"Oleg\", \"Nenadic\", role = \"ctb\"), person(\"Simon\", \"Urbanek\", role = \"ctb\"), person(\"Ming\", \"Chen\", role = \"ctb\"), person(\"Albrecht\", \"Gebhardt\", role = \"ctb\"), person(\"Ben\", \"Bolker\", role = \"ctb\"), person(\"Gabor\", \"Csardi\", role = \"ctb\"), person(\"Adam\", \"Strzelecki\", role = \"ctb\"), person(\"Alexander\", \"Senger\", role = \"ctb\"), person(\"The R Core Team\", role = c(\"ctb\", \"cph\")), person(\"Dirk\",\"Eddelbuettel\", role = \"ctb\"), person(\"The authors of Shiny\", role = \"cph\"), person(\"The authors of knitr\", role = \"cph\"), person(\"Jeroen\", \"Ooms\", role = \"ctb\"), person(\"Yohann\", \"Demont\", role = \"ctb\"), person(\"Joshua\", \"Ulrich\", role = \"ctb\"), person(\"Xavier\", \"Fernandez i Marin\", role = \"ctb\"), person(\"George\", \"Helffrich\", role = \"ctb\"), person(\"Ivan\", \"Krylov\", role = \"ctb\"), person(\"Michael\", \"Sumner\", role = \"ctb\"), person(\"Mike\", \"Stein\", role = \"ctb\"), person(\"Jonathon\", \"Love\", role = \"ctb\"), person(\"Mapbox team\", role = c(\"ctb\", \"cph\")))",
+      "Depends": [
+        "R (>= 3.6.0)"
+      ],
+      "Suggests": [
+        "MASS",
+        "rmarkdown (>= 2.16)",
+        "deldir (>= 1.0-4)",
+        "orientlib",
+        "lattice",
+        "misc3d",
+        "magick",
+        "plotrix (>= 3.7-3)",
+        "interp",
+        "alphashape3d",
+        "tcltk",
+        "js (>= 1.2)",
+        "webshot2 (>= 0.1.0)",
+        "downlit (>= 0.4.0)",
+        "pkgdown (>= 2.0.0)",
+        "extrafont",
+        "shiny",
+        "manipulateWidget (>= 0.9.0)",
+        "testthat",
+        "crosstalk",
+        "V8",
+        "chromote",
+        "jpeg",
+        "png",
+        "markdown",
+        "xdvir",
+        "grid"
+      ],
+      "Imports": [
+        "graphics",
+        "grDevices",
+        "stats",
+        "utils",
+        "htmlwidgets (>= 1.6.0)",
+        "htmltools",
+        "knitr (>= 1.33)",
+        "jsonlite (>= 0.9.20)",
+        "magrittr",
+        "R6",
+        "base64enc",
+        "mime"
+      ],
+      "Enhances": [
+        "waldo"
+      ],
+      "Description": "Provides medium to high level functions for 3D interactive graphics, including functions modelled on base graphics (plot3d(), etc.) as well as functions for constructing representations of geometric objects (cube3d(), etc.).  Output may be on screen using OpenGL, or to various standard 3D file formats including WebGL, PLY, OBJ, STL as well as 2D image formats, including PNG, Postscript, SVG, PGF.",
+      "License": "GPL",
+      "URL": "https://github.com/dmurdoch/rgl, https://dmurdoch.github.io/rgl/",
+      "SystemRequirements": "OpenGL and GLU Library (Required for display in R. See \"Installing OpenGL support\" in README.md. Not needed if only browser displays using rglwidget() are wanted.), zlib (optional), libpng (>=1.2.9, optional), FreeType (optional), pandoc (>=1.14, needed for vignettes), LaTeX needed for optional latex3d() examples.",
+      "BugReports": "https://github.com/dmurdoch/rgl/issues",
+      "VignetteBuilder": "knitr, rmarkdown",
+      "Biarch": "true",
+      "RoxygenNote": "7.3.3",
+      "NeedsCompilation": "yes",
+      "Author": "Duncan Murdoch [aut, cre], Daniel Adler [aut], Oleg Nenadic [ctb], Simon Urbanek [ctb], Ming Chen [ctb], Albrecht Gebhardt [ctb], Ben Bolker [ctb], Gabor Csardi [ctb], Adam Strzelecki [ctb], Alexander Senger [ctb], The R Core Team [ctb, cph], Dirk Eddelbuettel [ctb], The authors of Shiny [cph], The authors of knitr [cph], Jeroen Ooms [ctb], Yohann Demont [ctb], Joshua Ulrich [ctb], Xavier Fernandez i Marin [ctb], George Helffrich [ctb], Ivan Krylov [ctb], Michael Sumner [ctb], Mike Stein [ctb], Jonathon Love [ctb], Mapbox team [ctb, cph]",
+      "Maintainer": "Duncan Murdoch <murdoch.duncan@gmail.com>",
+      "Repository": "CRAN",
+      "Encoding": "UTF-8"
     },
     "rlang": {
       "Package": "rlang",
@@ -9602,6 +10081,49 @@
       "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
       "Repository": "CRAN"
     },
+    "spacefillr": {
+      "Package": "spacefillr",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Space-Filling Random and Quasi-Random Sequences",
+      "Authors@R": "c(person(\"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\",  role = c(\"aut\", \"cph\", \"cre\"), comment = c(ORCID = \"0000-0002-3131-3814\")), person(\"Andrew\", \"Helmer\", role = c(\"ctb\", \"cph\")), person(\"Leonhard\", \"Grünschloß\", role = c(\"ctb\", \"cph\")), person(\"Eric\", \"Heitz\", role = c(\"ctb\", \"cph\")))",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
+      "Description": "Generates random and quasi-random space-filling sequences. Supports the following sequences: 'Halton', 'Sobol', 'Owen'-scrambled 'Sobol',  'Owen'-scrambled 'Sobol' with errors distributed as blue noise, progressive jittered, progressive multi-jittered ('PMJ'), 'PMJ' with blue noise, 'PMJ02', and 'PMJ02' with blue noise. Includes a 'C++' 'API'. Methods derived from \"Constructing Sobol sequences with better two-dimensional projections\" (2012) <doi:10.1137/070709359> S. Joe and F. Y. Kuo, \"Progressive Multi-Jittered Sample Sequences\" (2018) <https://graphics.pixar.com/library/ProgressiveMultiJitteredSampling/paper.pdf> Christensen, P., Kensler, A. and Kilpatrick, C., and \"A Low-Discrepancy Sampler that Distributes Monte Carlo Errors as a Blue Noise in Screen Space\" (2019) E. Heitz, B. Laurent, O. Victor, C. David and I. Jean-Claude, <doi:10.1145/3306307.3328191>.",
+      "License": "MIT + file LICENSE",
+      "Imports": [
+        "Rcpp (>= 1.0.0)"
+      ],
+      "LinkingTo": [
+        "Rcpp"
+      ],
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.3.2",
+      "URL": "https://github.com/tylermorganwall/spacefillr",
+      "BugReports": "https://github.com/tylermorganwall/spacefillr/issues",
+      "SystemRequirements": "C++17",
+      "Config/build/compilation-database": "true",
+      "NeedsCompilation": "yes",
+      "Author": "Tyler Morgan-Wall [aut, cph, cre] (<https://orcid.org/0000-0002-3131-3814>), Andrew Helmer [ctb, cph], Leonhard Grünschloß [ctb, cph], Eric Heitz [ctb, cph]",
+      "Repository": "CRAN"
+    },
+    "stbimageheaders": {
+      "Package": "stbimageheaders",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "'stb' Image C/C++ Header Files",
+      "Authors@R": "c( person(\"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\", role = c(\"aut\", \"cre\", \"cph\"), comment = c(ORCID = \"0000-0002-3131-3814\")), person(\"Sean\", \"Barrett\", role = c(\"aut\", \"cph\")), person(\"Jeff\", \"Roberts\", role = \"aut\"), person(\"Jorge L.\", \"Rodriguez\", role = \"aut\") )",
+      "Description": "Provides image-related C/C++ header files from the 'stb' single-file libraries for image loading, writing, and resizing.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://github.com/tylermorganwall/stbimageheaders",
+      "BugReports": "https://github.com/tylermorganwall/stbimageheaders/issues",
+      "Encoding": "UTF-8",
+      "NeedsCompilation": "no",
+      "Author": "Tyler Morgan-Wall [aut, cre, cph] (ORCID: <https://orcid.org/0000-0002-3131-3814>), Sean Barrett [aut, cph], Jeff Roberts [aut], Jorge L. Rodriguez [aut]",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
+      "Repository": "CRAN"
+    },
     "stringi": {
       "Package": "stringi",
       "Version": "1.8.7",
@@ -9869,6 +10391,24 @@
       "Authors@R": "c( person(\"Robert J.\", \"Hijmans\", role=c(\"cre\", \"aut\"),   email=\"r.hijmans@gmail.com\", comment=c(ORCID=\"0000-0001-5872-2872\")),\t\t\t person(\"Andrew\", \"Brown\", role=\"aut\", comment=c(ORCID=\"0000-0002-4565-533X\")), person(\"Márcia\", \"Barbosa\", role=\"aut\", comment=c(ORCID=\"0000-0001-8972-7713\")), person(\"Krzysztof\", \"Dyba\", role=\"ctb\", comment=c(ORCID=\"0000-0002-8614-3816\")), person(\"Roger\", \"Bivand\", role=\"ctb\", comment=c(ORCID=\"0000-0003-2392-6140\")), person(\"Michael\", \"Chirico\", role=\"ctb\", comment=c(ORCID=\"0000-0003-0787-087X\")), person(\"Emanuele\", \"Cordano\", role=\"ctb\",comment=c(ORCID=\"0000-0002-3508-5898\")), person(\"Edzer\", \"Pebesma\", role=\"ctb\", comment=c(ORCID=\"0000-0001-8049-7069\")), person(\"Barry\", \"Rowlingson\", role=\"ctb\", comment=c(ORCID=\"0000-0002-8586-6625\")), person(\"Michael D.\", \"Sumner\", role=\"ctb\", comment=c(ORCID=\"0000-0002-2471-7511\")))",
       "NeedsCompilation": "yes",
       "Author": "Robert J. Hijmans [cre, aut] (ORCID: <https://orcid.org/0000-0001-5872-2872>), Andrew Brown [aut] (ORCID: <https://orcid.org/0000-0002-4565-533X>), Márcia Barbosa [aut] (ORCID: <https://orcid.org/0000-0001-8972-7713>), Krzysztof Dyba [ctb] (ORCID: <https://orcid.org/0000-0002-8614-3816>), Roger Bivand [ctb] (ORCID: <https://orcid.org/0000-0003-2392-6140>), Michael Chirico [ctb] (ORCID: <https://orcid.org/0000-0003-0787-087X>), Emanuele Cordano [ctb] (ORCID: <https://orcid.org/0000-0002-3508-5898>), Edzer Pebesma [ctb] (ORCID: <https://orcid.org/0000-0001-8049-7069>), Barry Rowlingson [ctb] (ORCID: <https://orcid.org/0000-0002-8586-6625>), Michael D. Sumner [ctb] (ORCID: <https://orcid.org/0000-0002-2471-7511>)",
+      "Repository": "CRAN"
+    },
+    "terrainmeshr": {
+      "Package": "terrainmeshr",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Triangulate and Simplify 3D Terrain Meshes",
+      "Authors@R": "c(person(\"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\", role = c(\"aut\", \"cph\", \"cre\"), comment = c(ORCID = \"0000-0002-3131-3814\")), person(\"Michael\", \"Fogleman\", role=c(\"ctb\", \"cph\")))",
+      "Description": "Provides triangulations of regular height fields, based on the methods described in \"Fast Polygonal Approximation of Terrains and Height Fields\" Michael Garland and Paul S. Heckbert (1995) <https://www.mgarland.org/files/papers/scape.pdf> using code from the 'hmm' library written by Michael Fogleman <https://github.com/fogleman/hmm>.",
+      "License": "MIT + file LICENSE",
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.3.3",
+      "URL": "https://github.com/tylermorganwall/terrainmeshr",
+      "BugReports": "https://github.com/tylermorganwall/terrainmeshr/issues",
+      "NeedsCompilation": "yes",
+      "Author": "Tyler Morgan-Wall [aut, cph, cre] (ORCID: <https://orcid.org/0000-0002-3131-3814>), Michael Fogleman [ctb, cph]",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
       "Repository": "CRAN"
     },
     "testthat": {
@@ -10352,6 +10892,24 @@
       "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
       "Repository": "CRAN"
     },
+    "tiff": {
+      "Package": "tiff",
+      "Version": "0.1-12",
+      "Source": "Repository",
+      "Title": "Read and Write TIFF Images",
+      "Author": "Simon Urbanek <Simon.Urbanek@r-project.org> [aut, cre], Kent Johnson <kjohnson@akoyabio.com> [ctb]",
+      "Maintainer": "Simon Urbanek <Simon.Urbanek@r-project.org>",
+      "Depends": [
+        "R (>= 2.9.0)"
+      ],
+      "Description": "Functions to read, write and display bitmap images stored in the TIFF format. It can read and write both files and in-memory raw vectors, including native image representation.",
+      "License": "GPL-2 | GPL-3",
+      "SystemRequirements": "tiff and jpeg libraries",
+      "URL": "https://www.rforge.net/tiff/",
+      "NeedsCompilation": "yes",
+      "Repository": "CRAN",
+      "Encoding": "UTF-8"
+    },
     "timeDate": {
       "Package": "timeDate",
       "Version": "4052.112",
@@ -10406,6 +10964,23 @@
       "NeedsCompilation": "yes",
       "Author": "Vitalie Spinu [aut, cre], Google Inc. [ctb, cph]",
       "Maintainer": "Vitalie Spinu <spinuvit@gmail.com>",
+      "Repository": "CRAN"
+    },
+    "tinydng": {
+      "Package": "tinydng",
+      "Version": "0.1.0-0",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "'TinyDNG' C++ Header Files",
+      "Authors@R": "c( person(\"Tyler\", \"Morgan-Wall\", email = \"tylermw@gmail.com\", role = c(\"aut\", \"cre\", \"cph\"), comment = c(ORCID = \"0000-0002-3131-3814\")), person(\"Syoyo\", \"Fujita\", role = c(\"aut\", \"cph\"), comment = \"Original author of TinyDNG\") )",
+      "Description": "Provides C++ header files for 'TinyDNG', a small header-only library for reading and writing 'DNG' and 'TIFF' files.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://github.com/tylermorganwall/tinydng",
+      "BugReports": "https://github.com/tylermorganwall/tinydng/issues",
+      "Encoding": "UTF-8",
+      "NeedsCompilation": "no",
+      "Author": "Tyler Morgan-Wall [aut, cre, cph] (ORCID: <https://orcid.org/0000-0002-3131-3814>), Syoyo Fujita [aut, cph] (Original author of TinyDNG)",
+      "Maintainer": "Tyler Morgan-Wall <tylermw@gmail.com>",
       "Repository": "CRAN"
     },
     "tinytex": {
