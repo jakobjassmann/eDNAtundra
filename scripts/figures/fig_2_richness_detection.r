@@ -24,14 +24,14 @@ site_richness <- obs_combined %>%
     # Aggregate into detection classes
     group_by(site_id) %>%
     summarise(
+        `eDNA only` = sum(!botanical & eDNA),
         `Botanical observations only` = sum(botanical & !eDNA & !eDNA_harm),
-        `Botanical and eDNA (Harmonised)` = sum(botanical & !eDNA & eDNA_harm),
-        `Botanical and eDNA` = sum(botanical & eDNA),
-        `eDNA only` = sum(!botanical & eDNA)
+        `Botanical & eDNA (species-level)` = sum(botanical & eDNA),
+        `Botanical & eDNA (harmonised)` = sum(botanical & !eDNA & eDNA_harm)
     ) %>%
     ungroup() %>%
     pivot_longer(
-        cols = `Botanical observations only`:`eDNA only`,
+        cols = `eDNA only`:`Botanical & eDNA (harmonised)`,
         names_to = "source",
         values_to = "n"
     ) %>%
@@ -41,30 +41,105 @@ site_richness <- obs_combined %>%
             levels = c(
                 "eDNA only",
                 "Botanical observations only",
-                "Botanical and eDNA (Harmonised)",
-                "Botanical and eDNA"
+                "Botanical & eDNA (species-level)",
+                "Botanical & eDNA (harmonised)"
             )
         )
     )
 
+# # Plot site-level detection
+# (site_richness_plot <- ggplot(site_richness) +
+#     geom_col(
+#         aes(
+#             x = site_id,
+#             y = n,
+#             fill = source,
+#             colour = source
+#         )
+#         # ,
+#         # linewidth = 1,
+#         # lineend = "square"
+#     ) +
+#     labs(
+#         y = "Number of Species (n)"
+#     ) +
+#     scale_fill_manual(
+#         values = c("#F28F16", "#A62121", "#223F59", "#016E63"), # 016E63
+#         name = "Vascular plants observed with",
+#     ) +
+#     # scale_colour_manual(
+#     #     values = c("#F28F16", "#A62121", "#223F59", "#223F59"),
+#     #     name = "Vascular plants observed with"
+#     # ) +
+#     scale_y_continuous(limits = c(0, 50)) +
+#     guides(
+#         fill = guide_legend(nrow = 4)
+#     ) +
+#     theme_cowplot() +
+#     theme(axis.title.x = element_blank()) +
+#     theme(
+#         legend.position = "right",
+#         #legend.position.inside = c(0.06, 0.9),
+#         legend.justification.right = c(0, 0.25),
+#         legend.box.background = element_rect(colour = "black"),
+#         legend.box.margin = margin(0.25, 0.50, 0.25, 0.35, unit = "cm"),
+#         plot.title = element_text(hjust = 0.5),
+#     ))
+
 # Plot site-level detection
-(site_richness_plot <- ggplot(site_richness) +
+(site_richness_plot <- ggplot() +
     geom_col(
         aes(
             x = site_id,
             y = n,
             fill = source
+            #,
             # colour = source
-        )
-        # linewidth = 1.5,
-        # lineend = "square"
+        ),
+        show.legend = c(fill = TRUE),
+        # linewidth = 1,
+        # lineend = "square",
+        data = site_richness %>%
+            mutate(
+                source = case_when(
+                    source ==
+                        "Botanical & eDNA (harmonised)" ~ "Botanical observations only",
+                    TRUE ~ source
+                )
+            ) %>%
+            mutate(
+                source = factor(
+                    as.character(source),
+                    levels = c(
+                        "eDNA only",
+                        "Botanical observations only",
+                        "Botanical & eDNA (species-level)",
+                        "Botanical & eDNA (harmonised)"
+                    )
+                )
+            )
+    ) +
+    geom_rect(
+        aes(
+            xmin = as.numeric(site_id),
+            xmax = as.numeric(site_id) + 0.45,
+            ymin = 0,
+            ymax = n
+        ),
+        show.legend = FALSE,
+        fill = "#016E63",
+        data = filter(site_richness, grepl("Botanical & eDNA", source)) %>%
+            mutate(site_id = factor(site_id)) %>%
+            group_by(site_id) %>%
+            summarise(n = sum(n))
     ) +
     labs(
         y = "Number of Species (n)"
     ) +
     scale_fill_manual(
-        values = c("#F28F16", "#A62121", "#016E63", "#223F59"),
-        name = "Vascular plants observed with"
+        values = c("#F28F16", "#A62121", "#223F59", "#016E63"), # 016E63,
+        name = "Vascular plants observed with",
+        drop = FALSE
     ) +
     # scale_colour_manual(
     #     values = c("#F28F16", "#A62121", "#223F59", "#223F59"),
@@ -72,7 +147,7 @@ site_richness <- obs_combined %>%
     # ) +
     scale_y_continuous(limits = c(0, 50)) +
     guides(
-        fill = guide_legend(nrow = 4)
+        fill = guide_legend(nrow = 4, override.aes = list(alpha = 1))
     ) +
     theme_cowplot() +
     theme(axis.title.x = element_blank()) +
@@ -84,6 +159,7 @@ site_richness <- obs_combined %>%
         legend.box.margin = margin(0.25, 0.50, 0.25, 0.35, unit = "cm"),
         plot.title = element_text(hjust = 0.5),
     ))
+
 
 ## b) Bryophyte vs. Vascular Plant Species Richness
 
