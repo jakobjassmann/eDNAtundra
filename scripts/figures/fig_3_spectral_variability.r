@@ -60,12 +60,20 @@ multispec_rasts <- data.frame(
 ) +
     geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "#cdcdcd66") +
     geom_line(aes(y = fit), colour = "#962c7e", linewidth = 2) +
-    geom_point(aes(shape = site_id, color = spectral_cv), size = 5) +
-    scale_color_viridis_c(
+    geom_point(
+        aes(
+            shape = site_id,
+            color = site_id
+        ),
+        size = 5
+    ) +
+    scale_color_viridis_d(
         option = "magma",
-        limits = c(0.2, 1),
-        na.value = "white",
-        guide = "none"
+        #limits = c(0.2, 1),
+        begin = 0.25,
+        end = 0.75,
+        na.value = "white"
+        #, guide = "none"
     ) +
     scale_x_continuous(
         limits = c(0.2, 0.9),
@@ -106,14 +114,14 @@ crop(rast(multispec_rasts[c(11, 8, 7), 1]), st_buffer(plot_max, 0.3)) %>%
     hist()
 
 # Example 1: Drone Image (true colour)
-example_1_drone <- ggplot() +
+(example_1_drone <- ggplot() +
     geom_spatraster_rgb(
         data = crop(
             rast(multispec_rasts[c(17, 14, 13), 1]),
             st_buffer(plot_min, 0.3)
         ),
-        zlim = c(0.1, 0.3),
-        max_col_value = 0.3,
+        zlim = c(0.01, 0.3),
+        stretch = "lin",
         interpolate = FALSE
     ) +
     geom_sf(
@@ -142,17 +150,17 @@ example_1_drone <- ggplot() +
     scale_x_continuous(expand = c(0, 0)) +
     scale_y_continuous(expand = c(0, 0)) +
     theme_map() +
-    theme(axis.title = element_blank())
+    theme(axis.title = element_blank()))
 
 # Example 2: Drone Image (true colour)
-example_2_drone <- ggplot() +
+(example_2_drone <- ggplot() +
     geom_spatraster_rgb(
         data = crop(
             rast(multispec_rasts[c(11, 8, 7), 1]),
             st_buffer(plot_max, 0.3)
         ),
         zlim = c(0.01, 0.10),
-        max_col_value = 0.1,
+        stretch = "lin",
         interpolate = FALSE
     ) +
     geom_sf(
@@ -164,7 +172,7 @@ example_2_drone <- ggplot() +
     scale_x_continuous(expand = c(0, 0)) +
     scale_y_continuous(expand = c(0, 0)) +
     theme_map() +
-    theme(axis.title = element_blank())
+    theme(axis.title = element_blank()))
 
 # Example 1: Statistics
 example_1_stats <- plot_grid(
