@@ -64,7 +64,7 @@ To integrate these data into the repository, copy the Zenodo archive into the `/
 
 ### Satellite data used in Figure 1
 
-The map in Figure 1 is derived from Copernicus Sentinel-2 satellite imagery. To recreate the map, the user needs to download the Sentinel-2 data product for tile 13WDS with ID "S2B_MSIL2A_20230808T190919_N0510_R056_T13WDS_20241022T234233" from the Copernicus archives (for example, via https://browser.dataspace.copernicus.eu). The product needs to be then cropped to x [470922.11, 522119.90] and y [7654069.71, 7687033.23] (EPSG:32613 - WGS 84 / UTM zone 13N) and saved in `data/sentinel` with the file name specified in `scripts/3_figures/fig_1_map.r`. 
+The map in Figure 1 is derived from Copernicus Sentinel-2 satellite imagery. To recreate the map, the user needs to download the Sentinel-2 data product for tile 13WDS with ID "S2B_MSIL2A_20230808T190919_N0510_R056_T13WDS_20241022T234233". The data is available via the Copernicus archives which can be accessed via https://browser.dataspace.copernicus.eu. The product needs to be cropped to x [470922.11, 522119.90] and y [7654069.71, 7687033.23] (EPSG:32613 - WGS 84 / UTM zone 13N) and saved in the `data/sentinel` folder under the filename specified in `scripts/3_figures/fig_1_map.r`. 
 
 ### Saarela et al. 2020 species list
 
