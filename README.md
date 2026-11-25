@@ -62,17 +62,17 @@ The data is currently under embargo till after peer-review, a copy of the data h
 
 To integrate these data into the repository, copy the Zenodo archive into the `/data` folder of a local copy of this repository. 
 
-###Satellite data used in Figure 1
+### Satellite data used in Figure 1
 
 The map in Figure 1 is derived from Copernicus Sentinel-2 satellite imagery. To recreate the map, the user needs to download the Sentinel-2 data product for tile 13WDS with ID "S2B_MSIL2A_20230808T190919_N0510_R056_T13WDS_20241022T234233" from the Copernicus archives (for example, via https://browser.dataspace.copernicus.eu). The product needs to be then cropped to x [470922.11, 522119.90] and y [7654069.71, 7687033.23] (EPSG:32613 - WGS 84 / UTM zone 13N) and saved in `data/sentinel` with the file name specified in `scripts/3_figures/fig_1_map.r`. 
 
-###Saarela et al. 2020 species list
+### Saarela et al. 2020 species list
 
 If the user wishes to regenerate the subset of the species lists from Saarela et al. 2020 (not required for the analysis), they need to download the `phytokeys-141-001-s003.xlsx` provided in the supplementary materials by Saarela et al. 2020 and paste it into the `data/species_list/` folder.
 
 Saarela, J.M., Sokoloff, P.C., Gillespie, L.J., Bull, R.D., Bennett, B.A., Ponomarenko, S., 2020. Vascular plants of Vic, but used during data collectiontoria Island (Northwest Territories and Nunavut, Canada): a specimen-based study of an Arctic flora. PhytoKeys 141, 1–330. https://doi.org/10.3897/phytokeys.141.48810
 
-###External ITS and trnL reference databases
+### External ITS and trnL reference databases
 
 To curate the custom reference database using the scripts provided, the user will need to download the following reference databases:
 - DS-BITSR as tsv available at: https://doi.org/10.5883/DS-BITSR
