@@ -58,7 +58,7 @@ These data can be found on Zenodo:
 
 Assmann et al. 2024. Dataset for "Combined eDNA and spectral variability facilitate rapid assessment of plant diversity in Arctic tundra landscapes". Zenodo. [https://PLACEHOLDER](https://doi.org/PLACEHOLDER)
 
-The data is currently under embargo till after peer-review, a copy of the data has been made available to the reviewers via a dedicated link for peer-review. 
+The data is currently under embargo and will be made openly available after peer-review. A copy of the data has been made available to the reviewers via a dedicated link for peer-review. 
 
 To integrate these data into the repository, copy the Zenodo archive into the `/data` folder of a local copy of this repository. 
 
