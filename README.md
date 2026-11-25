@@ -74,7 +74,7 @@ The tsv / fasta files will need to be placed in the respective sub-folders of `d
 
 ### Satellite data used in Figure 1
 
-The map in Figure 1 is derived from Copernicus Sentinel-2 satellite imagery. To recreate the map, the user needs to download the Sentinel-2 data product for tile 13WDS with ID "S2B_MSIL2A_20230808T190919_N0510_R056_T13WDS_20241022T234233". The data is available via the Copernicus archives which can be accessed via https://browser.dataspace.copernicus.eu. The product needs to be cropped to x [470922.11, 522119.90] and y [7654069.71, 7687033.23] (EPSG:32613 - WGS 84 / UTM zone 13N) and saved in `data/sentinel` using the filename specified in `scripts/3_figures/fig_1_map.r`. 
+The map in Figure 1 is derived from Copernicus Sentinel-2 satellite imagery. To recreate the map, the user needs to download the Sentinel-2 data product for tile 13WDS with ID "S2B_MSIL2A_20230808T190919_N0510_R056_T13WDS_20241022T234233". The data is available through the Copernicus archives which can be accessed via https://browser.dataspace.copernicus.eu. The product needs to be cropped to x [470922.11, 522119.90] and y [7654069.71, 7687033.23] (EPSG:32613 - WGS 84 / UTM zone 13N) and saved in `data/sentinel` using the filename specified in `scripts/3_figures/fig_1_map.r`. 
 
 ### Saarela et al. 2020 species list
 
@@ -85,12 +85,14 @@ Saarela, J.M., Sokoloff, P.C., Gillespie, L.J., Bull, R.D., Bennett, B.A., Ponom
 [\[back to content\]](#content)
 
 ## 3. Analysis workflow
-We recommend to reproduce the analysis, tables and figures by running the scripts in the sequence listed below.
+To reproduce the analysis, tables and figures, we recommend running the scripts in the sequence listed below.
 
-**Environment and data preparation**
+**Environment preparation**
 - Download data from Zenodo and external resources, integrate it into folder structure as described above.
 - Restore the local R environment from the lock file using renv::restore().
-- Run scripts in `scripts/1_data_prep/` in the sequence indicated by the filenames.
+
+**Data preparation**
+- Run all scripts in `scripts/1_data_prep/` in the sequence indicated by the filenames.
 
 **Analyses**
 - Run scripts in `scripts/2_analysis/`  in the sequence indicated by the filenames.
