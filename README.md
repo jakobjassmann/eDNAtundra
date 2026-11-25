@@ -74,7 +74,7 @@ Saarela, J.M., Sokoloff, P.C., Gillespie, L.J., Bull, R.D., Bennett, B.A., Ponom
 
 ### External ITS and trnL reference databases
 
-To curate the custom reference database used in this manuscirpt, the user will need to download the following reference databases:
+To curate the custom reference database used for the analyses, the user will need to download the following reference databases:
 - DS-BITSR as tsv available at: https://doi.org/10.5883/DS-BITSR
 - DS-VASCAN as tsv available at: https://doi.org/10.5883/DS-VASCAN
 - DS-ZACKPLAN as tsv available at: https://doi.org/10.5883/DS-ZACKPLAN
