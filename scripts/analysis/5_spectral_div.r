@@ -14,6 +14,7 @@ library(factoextra)
 library(ggnewscale)
 library(broom)
 library(gt)
+library(ggfortify)
 
 # Set up parallel envrionment
 cl <- parallel::makeCluster(5)
@@ -292,6 +293,34 @@ spp_richness_lm %>%
     gt() %>%
     gtsave("tables/6_lm_nspp_multispectral.html")
 
+# Model diagnostics
+lmtest::bptest(spp_richness_lm)
+#         studentized Breusch-Pagan test
+# data:  spp_richness_lm
+# BP = 0.79218, df = 1, p-value = 0.3734
+diagnostic_numbers <- c(1, 2, 3, 5)
+diagnostic_plots <- autoplot(
+    spp_richness_lm,
+    which = diagnostic_numbers,
+    label.size = 3
+)@plots
+diagnostic_plots <- lapply(
+    diagnostic_plots,
+    function(plot) plot + theme_cowplot()
+)
+diagnostic_grid <- plot_grid(
+    plotlist = diagnostic_plots,
+    ncol = 2,
+    labels = c("A", "B", "C", "D"),
+    align = "hv"
+)
+save_plot(
+    "figures/lm_nspp_diagnostics.png",
+    diagnostic_grid,
+    bg = "white",
+    base_height = 5
+)
+
 ## Rrepeat analysis with vascular / bryophytes only
 ggplot(multispec_cv, aes(x = spectral_cv)) +
     geom_point(aes(y = n_spp), colour = "blue") +
@@ -335,6 +364,37 @@ spp_richness_vasc_lm %>%
     ) %>%
     gt() %>%
     gtsave("tables/7_lm_nspp_vasc_multispectral.html")
+
+# Model diagnostics
+plot(spp_richness_vasc_lm)
+lmtest::bptest(spp_richness_vasc_lm)
+#         studentized Breusch-Pagan test
+# data:  spp_richness_vasc_lm
+# BP = 0.38576, df = 1, p-value = 0.5345
+diagnostic_numbers <- c(1, 2, 3, 5)
+diagnostic_plots <- autoplot(
+    spp_richness_vasc_lm,
+    which = diagnostic_numbers,
+    label.size = 3
+)@plots
+diagnostic_plots <- lapply(
+    diagnostic_plots,
+    function(plot) plot + theme_cowplot()
+)
+diagnostic_grid <- plot_grid(
+    plotlist = diagnostic_plots,
+    ncol = 2,
+    labels = c("A", "B", "C", "D"),
+    align = "hv"
+)
+save_plot(
+    "figures/lm_nspp_vasc_diagnostics.png",
+    diagnostic_grid,
+    bg = "white",
+    base_height = 5
+)
+
+# Bryophtyes
 spp_richness_bryo_lm <- lm(n_spp_bryo ~ spectral_cv, multispec_cv)
 save(
     spp_richness_bryo_lm,
@@ -365,6 +425,35 @@ spp_richness_bryo_lm %>%
     ) %>%
     gt() %>%
     gtsave("tables/8_lm_nspp_bryo_multispectral.html")
+
+# Model diagnostics
+plot(spp_richness_bryo_lm)
+lmtest::bptest(spp_richness_bryo_lm)
+#         studentized Breusch-Pagan test
+# data:  spp_richness_bryo_lm
+# BP = 0.72604, df = 1, p-value = 0.3942
+diagnostic_numbers <- c(1, 2, 3, 5)
+diagnostic_plots <- autoplot(
+    spp_richness_bryo_lm,
+    which = diagnostic_numbers,
+    label.size = 3
+)@plots
+diagnostic_plots <- lapply(
+    diagnostic_plots,
+    function(plot) plot + theme_cowplot()
+)
+diagnostic_grid <- plot_grid(
+    plotlist = diagnostic_plots,
+    ncol = 2,
+    labels = c("A", "B", "C", "D"),
+    align = "hv"
+)
+save_plot(
+    "figures/lm_nspp_bryo_diagnostics.png",
+    diagnostic_grid,
+    bg = "white",
+    base_height = 5
+)
 
 ## OLD code
 

@@ -307,7 +307,7 @@ save_plot(
 # )
 
 # Contour plots of predicted species richness
-est_rich_maps <- map(1:3, function(x) {
+(est_rich_maps <- map(1:3, function(x) {
     # Subset data
     plots <- full_join(
         multispec_cv,
@@ -319,6 +319,8 @@ est_rich_maps <- map(1:3, function(x) {
 
     # Predict number of species
     n_spp_rast <- predict(cv_rast, spp_richness_lm)
+    # round to nearest integer
+    n_spp_rast <- round(n_spp_rast)
 
     # Classify raster
     breaks <- matrix(
@@ -348,23 +350,23 @@ est_rich_maps <- map(1:3, function(x) {
         ncol = 3,
         byrow = T
     )
-    n_spp_rast <- classify(n_spp_rast, breaks)
+    n_spp_rast <- classify(n_spp_rast, breaks, right = FALSE)
     levels(n_spp_rast) <- data.frame(
         id = 1:7,
         n_species = c(
-            "0-5",
-            "5-10",
-            "10-15",
-            "15-20",
-            "20-25",
-            "25-30",
-            "30-35"
+            "0-4",
+            "5-9",
+            "10-14",
+            "15-19",
+            "20-24",
+            "25-29",
+            "30-34"
         )
     )
 
     # Visualise
     est_rich_plot <- ggplot() +
-        geom_spatraster(data = n_spp_rast) +
+        geom_spatraster(data = n_spp_rast, show.legend = c(fill = TRUE)) +
         # scale_fill_viridis_c(limits = c(0, 35), breaks = seq(0,35,5)) +
         # geom_spatraster_contour_filled(data = (predict(cv_rast, spp_richness_lm)),
         #                         breaks = seq(0,35,5)) +
@@ -372,25 +374,17 @@ est_rich_maps <- map(1:3, function(x) {
             na.value = "white",
             limits = factor(c(levels(n_spp_rast)[[1]]$n_species[-1], NA)),
             labels = c(
-                "5-10",
-                "10-15",
-                "15-20",
-                "20-25",
-                "25-30",
-                "30-35",
+                "5 - 9",
+                "10 - 14",
+                "15 - 19",
+                "20 - 24",
+                "25 - 29",
+                "30 - 34",
                 "Water/Snow"
             )
         ) +
-        #     # geom_sf(
-        #     data = st_as_sf(plots), aes(size = n_spp),
-        #     fill = NA,
-        #     shape = 21, colour = "magenta", stroke = 2
-        # ) +
-        scale_size_continuous(limits = c(0, 35)) +
         labs(
-            #title = site_colour$site,
             fill = "Estimated\nSpecies\nRichness (n)" #,
-            # size = "Species Richness (n)"
         ) +
         theme_map(18) +
         theme(
@@ -404,7 +398,7 @@ est_rich_maps <- map(1:3, function(x) {
             legend.key = element_rect(colour = "black")
             #       plot.title = element_text(hjust = 0.5))
         )
-})
+}))
 
 # Generate RGB plots
 rgb_plots <- map(1:3, function(x) {
