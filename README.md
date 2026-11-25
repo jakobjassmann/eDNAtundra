@@ -37,7 +37,7 @@ scripts/
   |- 2_analysis/                        - Scripts to carry out the analysis presented in the manuscript.
   |- 3_figures/                         - Scripts to generate the figures presented in the manuscript.
   |- 4_helper_scripts/                  - Helper scripts generating data products used for fieldwork or external communications.
-  |- 5_archived_scripts/                - Legacy scripts created not needed any more for the analysis.
+  |- 5_archived_scripts/                - Legacy scripts not needed for the analysis.
 tables/                                 - Tables presented in the supplementary materials.
 ```
 
