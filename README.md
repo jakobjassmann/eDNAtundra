@@ -70,7 +70,7 @@ To curate the custom reference database used for the analyses, the user will nee
 - DS-ZACKPLAN as tsv available at: https://doi.org/10.5883/DS-ZACKPLAN
 - Willerslev et al. 2014 "references.arctic-gh.fasta" at: https://datadryad.org/dataset/doi:10.5061/dryad.ph8s5
 
-The tsv / fasta files will need to be placed in the respective placeholder sub-folders of `data/external/reference_libraries/`.
+The tsv / fasta files will need to be placed in the respective sub-folders of `data/external/reference_libraries/`.
 
 ### Satellite data used in Figure 1
 
