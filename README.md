@@ -1,7 +1,7 @@
 # Assmann et al. - Combined eDNA and spectral variability facilitate rapid assessment of plant diversity in Arctic tundra landscapes
 Jakob J. Assmann, Debora S. Obrist, Erin Cox, Gilda Varliero, Beat Frey, Gabriela Schaepman-Strub
 
-Last update to readme: 25 November 2026
+Last update to readme 25 November 2026
 
 ## Content
 
