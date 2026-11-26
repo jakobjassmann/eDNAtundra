@@ -3,4 +3,10 @@
 .Rhistory
 .RData
 .Ruserdata
-data/*
+data/botanical_obs/*
+data/drone_data/*
+data/external/*
+data/geometries/*
+data/sentinel/*
+data/sequences/*
+data/tutorial
