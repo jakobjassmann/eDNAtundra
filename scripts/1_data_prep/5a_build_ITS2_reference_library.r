@@ -9,7 +9,7 @@ library(readxl)
 library(Biostrings)
 
 # Load species list from vascular plant observations
-species_list <- read_csv("data/botanical_obs/species_list_cleaned.csv")
+species_list <- read_csv("data/botanical_obs/vascular_species_list_cleaned.csv")
 
 # Load reference our own ITS2 sequences
 cb_its2 <- read_csv(
@@ -68,6 +68,9 @@ dsvascan <- read_tsv(
 
 
 #### Helper datasets for QC
+
+# Create out dir
+dir.create("data/sequences/its2/reference")
 
 # Export full DS-VASCAN to help with QC
 read_tsv(
@@ -358,9 +361,9 @@ blastn -query data/sequences/its2/reference/Assmann_et_al_ITS2_test.fasta \
 
 # Read test result
 blast_test <- read_delim("data/sequences/its2/reference/test_blast.txt", delim="\t", col_names = c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore"))
-blast_test %>% separate(qseqid, c("id", "clade_id", "family_id", "genus_id", "species_id"), sep = ";") %>% view()
+blast_test %>% separate(qseqid, c("id", "clade_id", "family_id", "genus_id", "species_id"), sep = ";")
 
-# Qulaity filter test result
+# Quality filter test result
 top_hits <- blast_test %>%
    # For 180 BP match minimum length for plant
   filter(length >= 180) %>%
