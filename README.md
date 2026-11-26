@@ -91,8 +91,8 @@ To reproduce the analysis, tables and figures, we recommend running the scripts 
 - The code was developed and tested using R version 4.6.0
 - Required packages and their versions used for testing and development are documented in `renv.lock`. 
 - The [renv package](https://rstudio.github.io/renv/articles/renv.html) can be used to recreate (restore) the environment with all packages and versions needed.
-1. If needed, install `renv` using `install("renv")`.
-2. For Windows: [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) is required to compile and install the correct versions of the packages from the back catalogue.  
+1. Install `renv` using `install.packages("renv")`.
+2. On Windows: [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) is required. Install if needed. Otherwise the required versions of the packages cannot be compiled from the back catalogue.  
 4. Download the data from Zenodo *and* the external resources, integrate these into the folder structure as described above.
 5. Open a new R session in the folder and activate `renv` with `renv::activate()`. 
 6. Restore the R environment from the lock file using `renv::restore()` (this will install all required packages with the correct version).
