@@ -91,11 +91,11 @@ To reproduce the analysis, tables and figures, we recommend running the scripts 
 - The code was developed and tested using R version 4.6.0
 - Required packages and their versions used for testing and development are documented in `renv.lock`. 
 - The [renv package](https://rstudio.github.io/renv/articles/renv.html) can be used to recreate (restore) the environment with all packages and versions needed.
-1. Install `renv` using `install.packages("renv")`.
-2. On Windows: [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) is required. Install if needed. Otherwise the required versions of the packages cannot be compiled from the back catalogue.  
-4. Download the data from Zenodo *and* the external resources, integrate these into the folder structure as described above.
-5. Open a new R session in the folder and activate `renv` with `renv::activate()`. 
-6. Restore the R environment from the lock file using `renv::restore()` (this will install all required packages with the correct version).
+1. Install `renv` - if needed - using `install.packages("renv")`.
+2. On Windows: [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) is required - install if needed. Otherwise the required versions of the packages cannot be compiled from the back catalogue.  
+4. Download the data from **Zenodo** *and* the **external resources**, integrate these into the folder structure as described above.
+5. Open a new R session in the folder containing the repository and activate `renv` with `renv::activate()`. 
+6. Restore the R environment from the renv.lock file using `renv::restore()` (this will install all required packages with the correct version).
 
  **Environment preparation: Shell scripts, cutadapt and ncbi-blast+**
 - The workflow requires the ability to execute (linux) shell scripts and commands using cutadapt and ncbi-blast+.
