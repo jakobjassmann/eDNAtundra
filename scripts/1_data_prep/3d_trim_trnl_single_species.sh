@@ -28,6 +28,6 @@ do
     cutadapt -a ^N{5}GGGCAATCCTGAGCCAA...GATAGGTGCAGAGACTCAATGG \
         -A ^N{5}CCATTGAGTCTCTGCACCTATC...TTGGCTCAGGATTGCCC \
         -m 10 -M 100 --discard-untrimmed -O 17 \
-        -o ${SAMPLE}_R1.fastq -p ${SAMPLE}_R2.fastq \
-        ${SAMPLE}_R1_001.fastq.gz ${SAMPLE}_R2_001.fastq.gz
+        -o ${OUTDIR}${SAMPLE}_R1.fastq -p ${OUTDIR}${SAMPLE}_R2.fastq \
+        ${INDIR}${SAMPLE}_R1_001.fastq.gz ${INDIR}${SAMPLE}_R2_001.fastq.gz
 done
