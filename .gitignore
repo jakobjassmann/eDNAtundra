@@ -1,11 +1,11 @@
 # Ignore the following files
 *.Rproj
-.Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 
 # Ignore the following olders
+.Rproj.user/*
 data/botanical_obs/*
 data/drone_data/*
 data/external/reference_libraries/*
