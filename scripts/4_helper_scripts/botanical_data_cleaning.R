@@ -78,7 +78,7 @@ botanical_obs %>%
     ) %>%
     filter(!grepl("species", species)) %>%
     arrange(short_name) %>%
-    write_csv(., "data/botanical_obs/species_list_cleaned.csv")
+    write_csv(., "data/botanical_obs/vascular_species_list_cleaned.csv")
 
 ## Point fraiming ----
 
