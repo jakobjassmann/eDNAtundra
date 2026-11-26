@@ -1,12 +1,25 @@
+# Ignore the following files
 *.Rproj
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+
+# Ignore the following olders
 data/botanical_obs/*
 data/drone_data/*
-data/external/*
+data/external/reference_libraries/*
+data/external/species_list/*
 data/geometries/*
 data/sentinel/*
 data/sequences/*
-data/tutorial
+data/tutorial/*
+
+# But not theses ones:
+!data/botanical_obs/.gitkeep
+!data/drone_data/.gitkeep
+!data/external/reference_libraries/.gitkeep
+!data/external/species_list/.gitkeep
+!data/geometries/.gitkeep
+!data/sentinel/.gitkeep
+!data/sequences/.gitkeep
