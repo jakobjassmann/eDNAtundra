@@ -89,8 +89,8 @@ To reproduce the analysis, tables and figures, we recommend running the scripts 
 
 **Environment preparation**
 - Download data from Zenodo and external resources, integrate it into folder structure as described above.
-- Open a new R session in the folder and install `renv` if needed. 
-- Restore the local R environment from the lock file using `renv::activate()` (may require a restart of R) followed by `renv::restore()`.
+- Open a new R session in the folder and, if needed, install the [renv package](https://rstudio.github.io/renv/articles/renv.html) by running `install("renv")`. 
+- Restore the R environment from the lock file in this repository with `renv::activate()` followed by `renv::restore()`.
 
 **Data preparation**
 - Run all scripts in `scripts/1_data_prep/` in the sequence indicated by the filenames.
