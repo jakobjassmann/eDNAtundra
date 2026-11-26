@@ -89,7 +89,7 @@ To reproduce the analysis, tables and figures, we recommend running the scripts 
 
 **Environment preparation: R**
 - The code was developed and tested using R version 4.6.0
-- Required packages and their versions used for testing and development are documented in `.renvlock`. 
+- Required packages and their versions used for testing and development are documented in `renv.lock`. 
 - The [renv package](https://rstudio.github.io/renv/articles/renv.html) can be used to recreate (restore) the environment with all packages and versions needed.
 1. If needed, install `renv` using `install("renv")`.
 2. For Windows: [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) is required to compile and install the correct versions of the packages from the back catalogue.  
