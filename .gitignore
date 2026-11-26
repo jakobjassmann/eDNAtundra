@@ -3,6 +3,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.Rprofile
 
 # Ignore the following olders
 .Rproj.user/*
