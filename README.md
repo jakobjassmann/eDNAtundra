@@ -90,17 +90,17 @@ To reproduce the analysis, tables and figures, we recommend running the scripts 
 **Environment preparation: R**
 - The code was developed and tested using R version 4.6.0
 - Required packages and their versions used for testing and development are documented in `renv.lock`. 
-- The [renv package](https://rstudio.github.io/renv/articles/renv.html) can be used to recreate (restore) the environment with all packages and versions needed.
-1. Install `renv` - if needed - using `install.packages("renv")`.
-2. On Windows: [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) is required - install if needed. Otherwise the required versions of the packages cannot be compiled from the back catalogue.  
-4. Download the data from **Zenodo** *and* the **external resources**, integrate these into the folder structure as described above.
-5. Open a new R session in the folder containing the repository and activate `renv` with `renv::activate()`. 
-6. Restore the R environment from the renv.lock file using `renv::restore()` (this will install all required packages with the correct version).
+- The [renv package](https://rstudio.github.io/renv/articles/renv.html) can be used to recreate (restore) the environment with the required version for all packages.
+1. Install `renv` - if needed. For example, using `install.packages("renv")`.
+2. On Windows, [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) is required to install older versions of the required packages. Install if needed.
+4. Download the required data from **Zenodo** *and* the **external resources**. Integrate these into the folder structure as described above.
+5. Open a new R session in the folder containing the repository. Activate `renv` with `renv::activate()`. 
+6. Restore the R environment from the renv.lock file using `renv::restore()`. This will install the required version of all packages.
 
  **Environment preparation: Shell scripts, cutadapt and ncbi-blast+**
 - The workflow requires the ability to execute (linux) shell scripts and commands using cutadapt and ncbi-blast+.
-- Should the user operate on Windows, these can be accessed through the Windows Subsystem for Linux (WSL). More information and installation instructions can be found on: https://learn.microsoft.com/en-us/windows/wsl/install .
-- The code was developed and tested with the WSL running Ubuntu 24.04.4 LTS, cutadapt 4.4-1 and ncbi-blast+ 2.12.0 .
+- Should the user operate on Windows, these capabilities can be accessed through the Windows Subsystem for Linux (WSL). More information and installation instructions can be found here: https://learn.microsoft.com/en-us/windows/wsl/install .
+- The code was developed and tested with the WSL on Windows 11 running Ubuntu 24.04.4 LTS, cutadapt 4.4-1 and ncbi-blast+ 2.12.0 .
 1. In your linux environment install `cutadapt` and `ncbi-blast+` (e.g., `apt-get install cutadapt ncbi-blast+` on Ubuntu / WSL)
 
 **Data preparation**
