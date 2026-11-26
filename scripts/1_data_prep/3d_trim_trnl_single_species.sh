@@ -1,8 +1,11 @@
+# Note: run from base directory of repository
+#       for example: sh scripts/1_data_prep/3d_trim_trnl_single_species.sh 
+
 #!/bin/bash
 
 # Define inpout and output directory
-INDIR="/mnt/c/Users/jakob/repositories/eDNAtundra/data/sequences/trnl/single_species/raw_reads/"
-OUTDIR="/mnt/c/Users/jakob/repositories/eDNAtundra/data/sequences/trnl/single_species/trimmed/"
+INDIR="data/sequences/trnl/single_species/raw_reads/"
+OUTDIR="data/sequences/trnl/single_species/trimmed/"
 
 # Create output directory
 mkdir $OUTDIR
