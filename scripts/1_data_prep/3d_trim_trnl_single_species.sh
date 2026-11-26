@@ -1,5 +1,5 @@
 # Note: run from base directory of repository
-#       for example: sh scripts/1_data_prep/3d_trim_trnl_single_species.sh 
+#       for example: ./scripts/1_data_prep/3d_trim_trnl_single_species.sh 
 
 #!/bin/bash
 
