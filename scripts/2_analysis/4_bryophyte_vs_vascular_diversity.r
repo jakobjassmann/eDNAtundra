@@ -7,7 +7,9 @@ library(ggplot2)
 library(cowplot)
 
 # Load presence / absence vascular observations
-vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
+vascular_obs <- read_csv(
+    "data/botanical_obs/vascular_presence_absence_cleaned.csv"
+) %>%
     select(-observer, -scribe) %>%
     # Keep only species with confirmed species-level ID
     filter(species != "species") %>%
@@ -22,7 +24,7 @@ vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
 
 # Load presence / absence moss observations
 bryo_obs <- read_csv(
-    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
+    "data/botanical_obs/bryophyte_presence_absence_cleaned.csv"
 ) %>%
     mutate(plot_id = paste0(Site, Plot_ID)) %>%
     select(site_id = Site, plot_id, genus = Genus, species = Species) %>%
@@ -165,4 +167,5 @@ combined_obs_nsp_site %>%
 
 # save_plot("figures/fig_2b.png", bryo_vs_vasc_plot_icons, bg = "white")
 
-# End of File
+#### End of file
+################################################################################

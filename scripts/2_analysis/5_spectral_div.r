@@ -55,7 +55,7 @@ rgb_rasts <- list.files(
 # Multispec file names only
 multispec_rasts <- data.frame(
     file_name = list.files(
-        "data/drone_data/multispec/2026/",
+        "data/drone_data/multispec/",
         full.names = T,
         pattern = ".tif$"
     )
@@ -128,7 +128,9 @@ plot_multispec <- map(1:3, function(x) {
     bind_rows()
 
 # Load presence / absence vascular observations
-vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
+vascular_obs <- read_csv(
+    "data/botanical_obs/vascular_presence_absence_cleaned.csv"
+) %>%
     select(-observer, -scribe) %>%
     mutate(
         species = gsub("([A-Za-z]*) .*", "\\1", species),
@@ -143,7 +145,7 @@ vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
 
 # Load presence / absence moss observations
 bryo_obs <- read_csv(
-    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
+    "data/botanical_obs/bryophyte_presence_absence_cleaned.csv"
 ) %>%
     mutate(plot_id = paste0(Site, Plot_ID)) %>%
     select(site_id = Site, plot_id, genus = Genus, species = Species) %>%
@@ -168,20 +170,20 @@ combined_obs <- bind_rows(vascular_obs, bryo_obs) %>%
     ) %>%
     full_join(plot_rgb)
 
-# Point framing
-point_framing <- read_csv("data/botanical_obs/pointframing.csv") %>%
-    select(-observer, -scribe, -date) %>%
-    group_by(plot_id, full_name) %>%
-    summarise(sum_hits = n()) %>%
-    split(., .$plot_id) %>%
-    map(function(x) {
-        x <- mutate(x, p = sum_hits / sum(x$sum_hits), p_ln_p = p * log(p)) %>%
-            summarise(shan_div = -1 * sum(p_ln_p))
-    }) %>%
-    bind_rows()
+# # Point framing
+# point_framing <- read_csv("data/botanical_obs/pointframing.csv") %>%
+#     select(-observer, -scribe, -date) %>%
+#     group_by(plot_id, full_name) %>%
+#     summarise(sum_hits = n()) %>%
+#     split(., .$plot_id) %>%
+#     map(function(x) {
+#         x <- mutate(x, p = sum_hits / sum(x$sum_hits), p_ln_p = p * log(p)) %>%
+#             summarise(shan_div = -1 * sum(p_ln_p))
+#     }) %>%
+#     bind_rows()
 
-# Combine
-combined_obs <- full_join(combined_obs, point_framing)
+# # Combine
+# combined_obs <- full_join(combined_obs, point_framing)
 
 ## RGB based anlaysis
 
@@ -204,11 +206,18 @@ multispec_cv <- plot_multispec %>%
     summarise(spectral_cv = sd(reflectance) / mean(reflectance)) %>%
     full_join(
         .,
-        select(combined_obs, plot_id, n_spp, n_spp_vasc, n_spp_bryo, shan_div)
+        select(
+            combined_obs,
+            plot_id,
+            n_spp,
+            n_spp_vasc,
+            n_spp_bryo
+            #, shan_div
+        )
     )
 
 # Save data
-write_csv(multispec_cv, "data/combined_obs_multispec_cv.csv")
+write_csv(multispec_cv, "data/analysis/combined_obs_multispec_cv.csv")
 
 # # Test for correlation spectral cv and shannon diversity (point frame)
 # ggplot(multispec_cv, aes(x = spectral_cv, y = shan_div)) +
@@ -455,132 +464,5 @@ save_plot(
     base_height = 5
 )
 
-## OLD code
-
-# # Test the reverse relationship to assess the added contributions of bryophytes
-# # to the relationship
-# spp_richness_sep_rev_lm <- lm(
-#     spectral_cv ~ n_spp_bryo + n_spp_vasc,
-#     multispec_cv
-# )
-# spp_richness_vasc_rev_lm <- lm(
-#     spectral_cv ~ n_spp_vasc,
-#     multispec_cv
-# )
-# summary(spp_richness_vasc_rev_lm)
-# summary(spp_richness_sep_rev_lm)
-# anova(spp_richness_vasc_rev_lm, spp_richness_sep_rev_lm)
-# summary(spp_richness_sep_rev_lm)$adj.r.squared
-# summary(spp_richness_vasc_rev_lm)$adj.r.squared
-# summary(spp_richness_sep_rev_lm)$adj.r.squared -
-#     summary(spp_richness_vasc_rev_lm)$adj.r.squared
-
-# # Test landscape level abundance
-# full_join(
-#     bind_rows(vascular_obs, bryo_obs) %>%
-#         arrange(site_id, plot_id, short_name, phylum) %>%
-#         relocate(site_id) %>%
-#         group_by(site_id, short_name) %>%
-#         summarise(p = n_distinct(short_name) / 18) %>%
-#         mutate(p_ln_p = p * log(p)) %>%
-#         group_by(site_id) %>%
-#         summarise(shan_div = -1 * sum(p_ln_p)),
-#     plot_multispec %>%
-#         group_by(site_id) %>%
-#         select(-ndvi) %>%
-#         pivot_longer(3:7, names_to = "band", values_to = "reflectance") %>%
-#         summarise(spectral_cv = sd(reflectance) / mean(reflectance))
-# )
-
-# # # Test clustering at sites
-# # set.seed(46)
-# # multispec_rasts %>%
-# #     split(., .$site) %>%
-# #     map(function(site_rasts) {
-# #         site_rast <- rast(site_rasts$file_name) %>%
-# #             crop(filter(site_bounds, site == unique(site_rasts$site))) %>%
-# #             setNames(site_rasts$band)
-# #         clust_results <- map(1:5, function(x) spatSample(site_rast, 1000)) %>%
-# #             pblapply(., FUN = function(y) {
-# #                 NbClust::NbClust(data = y, method = "kmeans", max.nc = 6)
-# #             }, cl = cl) %>%
-# #             map(function(x) DescTools::Mode(x$Best.nc[1, ])[1])
-# #         clust_results
-# #     })
-# # plot(site_rast[[1]])
-
-# # plot_multispec_sum <- plot_multispec %>%
-# #     group_by(site_id, plot_id) %>%
-# #     summarise(
-# #         blue = mean(blue),
-# #         green = mean(green),
-# #         # ndvi = mean(ndvi),
-# #         nir = mean(nir),
-# #         red = mean(red),
-# #         rededge = mean(rededge)
-# #     ) %>%
-# #     group_split() %>%
-# #     map(function(site_vals) {
-# #         site_vals <- as.data.frame(site_vals)
-# #         row.names(site_vals) <- site_vals$plot_id
-# #         pca <- prcomp(site_vals[, 3:ncol(site_vals)])
-# #         plot_grid(
-# #             fviz_pca_ind(pca),
-# #             fviz_pca_var(pca)
-# #         )
-# #     }) %>%
-# #     plot_grid(plotlist = ., nrow = 3)
-
-# # Test for correlation with sd of ndv
-# ndvi_sd <- plot_multispec %>%
-#     group_by(site_id, plot_id) %>%
-#     summarise(sd_ndvi = sd(ndvi)) %>%
-#     full_join(point_framing)
-# ggplot(ndvi_sd, aes(x = sd_ndvi, y = shan_div)) +
-#     geom_point() +
-#     geom_smooth(method = "lm")
-# cor(ndvi_sd$sd_ndvi, ndvi_sd$shan_div)
-# cor.test(ndvi_sd$sd_ndvi, ndvi_sd$shan_div)
-
-# ndvi_sd <- full_join(
-#     bind_rows(vascular_obs, bryo_obs) %>%
-#         group_by(site_id, plot_id) %>%
-#         summarise(rich = n_distinct(short_name)),
-#     plot_multispec %>%
-#         group_by(site_id, plot_id) %>%
-#         summarise(sd_ndvi = sd(ndvi))
-# )
-
-# ggplot(ndvi_sd, aes(x = sd_ndvi, y = rich)) +
-#     geom_point() +
-#     geom_smooth(method = "lm")
-# cor(ndvi_sd$sd_ndvi, ndvi_sd$rich)
-# cor.test(ndvi_sd$sd_ndvi, ndvi_sd$rich)
-
-# # Get overall site spectral variability
-# multispec_rasts %>%
-#     split(., .$site) %>%
-#     map(function(site_rasts) {
-#         site_rasts <- filter(site_rasts, band != "ndvi")
-#         site_rast <- rast(site_rasts$file_name) %>%
-#             crop(filter(site_bounds, site == unique(site_rasts$site))) %>%
-#             setNames(site_rasts$band)
-#         global_sd <- sd(as.vector(site_rast), na.rm = T)
-#         return(data.frame(
-#             site_id = unique(site_rasts$site),
-#             global_sd = global_sd
-#         ))
-#     }) %>%
-#     bind_rows() %>%
-#     full_join(
-#         bind_rows(vascular_obs, bryo_obs) %>%
-#             arrange(site_id, plot_id, short_name, phylum) %>%
-#             relocate(site_id) %>%
-#             group_by(site_id, short_name) %>%
-#             summarise(p = n_distinct(short_name) / 18) %>%
-#             mutate(p_ln_p = p * log(p)) %>%
-#             group_by(site_id) %>%
-#             summarise(shan_div = -1 * sum(p_ln_p))
-#     )
-
-# End of file
+#### End of file
+################################################################################
