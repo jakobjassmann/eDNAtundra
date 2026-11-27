@@ -232,9 +232,9 @@ trnl_taxa %>%
     summarise(count_sum_max = max(count_sum))
 #   site_id count_sum_max
 #   <chr>           <dbl>
-# 1 Site 1         100971
-# 2 Site 2          96724
-# 3 Site 3         100359
+# 1 Site 1         101100
+# 2 Site 2         102040
+# 3 Site 3         102823
 # => 103000 seems a reasonable limit for a global scale
 
 map(unique(trnl_taxa$site_id), function(site_id_to_plot) {
