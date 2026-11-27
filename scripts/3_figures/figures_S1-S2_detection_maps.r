@@ -101,7 +101,7 @@ obs_combined <- read_csv("data/analysis/detection_species_genus.csv")
         legend.box.margin = margin(0.25, 0.50, 0.25, 0.35, unit = "cm")
     ))
 save_plot(
-    "figures/detection_map_site.png",
+    "figures/figure_S2_detection_map_site.png",
     site_level_map,
     bg = "white",
     base_asp = 0.8,
@@ -191,9 +191,12 @@ save_plot(
         legend.box.margin = margin(0.25, 0.50, 0.25, 0.35, unit = "cm")
     ))
 save_plot(
-    "figures/detection_map_plot.png",
+    "figures/figure_S1_detection_map_plot.png",
     plot_level_map,
     bg = "white",
     base_asp = 1.5,
     base_height = 10
 )
+
+#### End of file
+################################################################################

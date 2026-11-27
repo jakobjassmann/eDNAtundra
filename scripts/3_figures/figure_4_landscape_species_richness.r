@@ -58,7 +58,7 @@ rgb_rasts_agg <- list.files(
 # Multispec file names only
 multispec_rasts <- data.frame(
     file_name = list.files(
-        "data/drone_data/multispec/2026/",
+        "data/drone_data/multispec/",
         full.names = T,
         pattern = ".tif$"
     )
@@ -77,27 +77,28 @@ multispec_rasts <- data.frame(
             TRUE ~ NA
         )
     )
-# DSMs
-dsm_rasts <- list.files(
-    "data/drone_data/dsm/",
-    full.names = T,
-    pattern = ".tif$"
-) %>%
-    map(function(file_name) {
-        cat(file_name, "\n")
-        site_id <- gsub(".*(site_[0-3]).*", "\\1", file_name)
-        cat(site_id, "\n")
-        site_rast <- crop(rast(file_name), filter(site_bounds, site == site_id))
-        site_rast
-        site_rast <- aggregate(
-            site_rast,
-            fact = round(1 / res(site_rast)),
-            fun = mean
-        ) %>%
-            setNames("dsm") %>%
-            crop(filter(site_bounds, site == site_id))
-        return(site_rast)
-    })
+
+# # DSMs
+# dsm_rasts <- list.files(
+#     "data/drone_data/dsm/",
+#     full.names = T,
+#     pattern = ".tif$"
+# ) %>%
+#     map(function(file_name) {
+#         cat(file_name, "\n")
+#         site_id <- gsub(".*(site_[0-3]).*", "\\1", file_name)
+#         cat(site_id, "\n")
+#         site_rast <- crop(rast(file_name), filter(site_bounds, site == site_id))
+#         site_rast
+#         site_rast <- aggregate(
+#             site_rast,
+#             fact = round(1 / res(site_rast)),
+#             fun = mean
+#         ) %>%
+#             setNames("dsm") %>%
+#             crop(filter(site_bounds, site == site_id))
+#         return(site_rast)
+#     })
 
 # Aggregate multispec rasters to CV (1 m rsolution)
 spec_cv_rast <- multispec_rasts %>%
@@ -120,7 +121,7 @@ spec_cv_rast <- multispec_rasts %>%
     })
 
 # Load plot-level data
-multispec_cv <- read_csv("data/combined_obs_multispec_cv.csv")
+multispec_cv <- read_csv("data/analysis/combined_obs_multispec_cv.csv")
 
 # # Override buggy cowplot::get_legend if needed
 # get_legend <- function(plot) {
@@ -237,7 +238,7 @@ spect_div_plot <- plot_grid(
 )
 
 save_plot(
-    "figures/figure_SX_spect_div_maps.png",
+    "figures/figure_S5_spect_div_maps.png",
     spect_div_plot,
     base_asp = 1,
     ncol = 2,
@@ -506,7 +507,7 @@ est_rich_plot <- plot_grid(
 
 # Save
 save_plot(
-    "figures/figure_4_est_spp_richness_maps.png",
+    "figures/figure_4_richness_maps.png",
     est_rich_plot,
     base_asp = 0.9,
     ncol = 4,
@@ -514,294 +515,297 @@ save_plot(
     bg = "white"
 )
 
-## 3D plots
-Sys.setenv(RAYON_NUM_THREADS = 20)
-rgb_plots_3d <- map(1:3, function(x) {
-    # Get elevation raster
-    elmat <- raster_to_matrix(dsm_rasts[[x]])
-    # Prepare rgb raster
-    rgb_rast <- rgb_rasts_agg[[x]]
-    rgb_rast[[1]][] <- rgb_rast[[1]][] / 255
-    rgb_rast[[2]][] <- rgb_rast[[2]][] / 255
-    rgb_rast[[3]][] <- rgb_rast[[3]][] / 255
-    #plotRGB(rgb_rast, scale = 1)
+# ## 3D plots (not used in manuscript)
+# Sys.setenv(RAYON_NUM_THREADS = 20)
+# rgb_plots_3d <- map(1:3, function(x) {
+#     # Get elevation raster
+#     elmat <- raster_to_matrix(dsm_rasts[[x]])
+#     # Prepare rgb raster
+#     rgb_rast <- rgb_rasts_agg[[x]]
+#     rgb_rast[[1]][] <- rgb_rast[[1]][] / 255
+#     rgb_rast[[2]][] <- rgb_rast[[2]][] / 255
+#     rgb_rast[[3]][] <- rgb_rast[[3]][] / 255
+#     #plotRGB(rgb_rast, scale = 1)
 
-    rgb_mat <- as.array(rgb_rast)[,, 1:3]
-    rgb_mat <- rgb_mat^1.4
-    if (sum(is.na(rgb_mat)) > 0) {
-        rgb_mat[is.na(rgb_mat)] <- 1
-    }
-    #plot_map(rgb_mat)
+#     rgb_mat <- as.array(rgb_rast)[,, 1:3]
+#     rgb_mat <- rgb_mat^1.4
+#     if (sum(is.na(rgb_mat)) > 0) {
+#         rgb_mat[is.na(rgb_mat)] <- 1
+#     }
+#     #plot_map(rgb_mat)
 
-    # Initate 3D plot
-    plot_3d(
-        rgb_mat,
-        elmat,
-        zscale = 0.5,
-        zoom = 0.7, #0.85,
-        phi = 45,
-        theta = 45,
-        windowsize = 2000
-    )
-    # Set outfile and render in high quality
-    out_file <- tempfile(fileext = ".png")
-    render_highquality(
-        out_file,
-        samples = 12, # Up to 128 for best quality
-        lightdirection = c(60, 150),
-        lightintensity = 375,
-        clear = TRUE,
-        parallel = TRUE,
-        interactive = FALSE,
-        ground_size = 0
-    )
-    rgl::close3d()
+#     # Initate 3D plot
+#     plot_3d(
+#         rgb_mat,
+#         elmat,
+#         zscale = 0.5,
+#         zoom = 0.7, #0.85,
+#         phi = 45,
+#         theta = 45,
+#         windowsize = 2000
+#     )
+#     # Set outfile and render in high quality
+#     out_file <- tempfile(fileext = ".png")
+#     render_highquality(
+#         out_file,
+#         samples = 12, # Up to 128 for best quality
+#         lightdirection = c(60, 150),
+#         lightintensity = 375,
+#         clear = TRUE,
+#         parallel = TRUE,
+#         interactive = FALSE,
+#         ground_size = 0
+#     )
+#     rgl::close3d()
 
-    # Load image for post-processing
-    img <- image_read(out_file)
-    # Turn black background to white
-    mask <- image_transparent(img, "black")
-    img_masked <- image_background(mask, "white", flatten = TRUE)
-    # Downscale for antialisaing
-    img_scaled <- image_resize(
-        img_masked,
-        "1000x1000",
-        filter = "Lanczos"
-    )
-    # Write out imagge
-    image_write(img_scaled, out_file)
+#     # Load image for post-processing
+#     img <- image_read(out_file)
+#     # Turn black background to white
+#     mask <- image_transparent(img, "black")
+#     img_masked <- image_background(mask, "white", flatten = TRUE)
+#     # Downscale for antialisaing
+#     img_scaled <- image_resize(
+#         img_masked,
+#         "1000x1000",
+#         filter = "Lanczos"
+#     )
+#     # Write out imagge
+#     image_write(img_scaled, out_file)
 
-    # Re-load and convert to ggplot object
-    (rast_plot_3d <- (ggdraw() + draw_image(out_file)))
+#     # Re-load and convert to ggplot object
+#     (rast_plot_3d <- (ggdraw() + draw_image(out_file)))
 
-    # tidy up
-    file.remove(out_file)
+#     # tidy up
+#     file.remove(out_file)
 
-    # Return file
-    return(rast_plot_3d)
-})
-n_spp_plots_3d <- map(1:3, function(x) {
-    n_spp_rast <- predict(spec_cv_rast[[x]], spp_richness_lm)
+#     # Return file
+#     return(rast_plot_3d)
+# })
+# n_spp_plots_3d <- map(1:3, function(x) {
+#     n_spp_rast <- predict(spec_cv_rast[[x]], spp_richness_lm)
 
-    # Classify raster
-    breaks <- matrix(
-        c(
-            0,
-            5,
-            1,
-            5,
-            10,
-            2,
-            10,
-            15,
-            3,
-            15,
-            20,
-            4,
-            20,
-            25,
-            5,
-            25,
-            30,
-            6,
-            30,
-            35,
-            7
-        ),
-        ncol = 3,
-        byrow = T
-    )
-    n_spp_rast <- classify(n_spp_rast, breaks)
-    levels(n_spp_rast) <- data.frame(
-        id = 1:7,
-        n_species = c(
-            "0-5",
-            "5-10",
-            "10-15",
-            "15-20",
-            "20-25",
-            "25-30",
-            "30-35"
-        )
-    )
-    # Get elevation raster
-    elmat <- raster_to_matrix(dsm_rasts[[x]])
-    # Prepare water mask
-    water_mask <- water_masks[[x]]
-    # water_mask_inv_array <- water_mask
-    # water_mask_inv_array[] <- NA
-    # water_mask_inv_array[] <- is.na(water_mask[])
-    # water_mask_inv_array <- as.array(water_mask_inv_array)
-    water_mask_inv <- is.na(water_mask[])
-    water_col <- col2rgb("white")
-    # Prepare color scale
-    viridis_cols <- col2rgb(c(
-        "#000000",
-        "#470052",
-        "#494084",
-        "#34768d",
-        "#22a785",
-        "#72d25c",
-        "#f6eb46"
-    )) /
-        255
-    # Prepare raster layers
-    n_spp_mat_red <- n_spp_rast[[1]]
-    n_spp_mat_green <- n_spp_rast[[1]]
-    n_spp_mat_blue <- n_spp_rast[[1]]
-    n_spp_mat_red[] <- NA
-    n_spp_mat_green[] <- NA
-    n_spp_mat_blue[] <- NA
-    n_spp_mat_red[] <- viridis_cols[1, as.numeric(n_spp_rast$n_species[])]
-    n_spp_mat_green[] <- viridis_cols[2, as.numeric(n_spp_rast$n_species[])]
-    n_spp_mat_blue[] <- viridis_cols[3, as.numeric(n_spp_rast$n_species[])]
-    n_spp_mat_red[water_mask_inv] <- water_col[1] / 255
-    n_spp_mat_green[water_mask_inv] <- water_col[2] / 255
-    n_spp_mat_blue[water_mask_inv] <- water_col[3] / 255
-    n_spp_mat_rgb <- c(n_spp_mat_red, n_spp_mat_green, n_spp_mat_blue)
-    plotRGB(n_spp_mat_rgb, scale = 1)
-    n_spp_mat_rgb <- as.array(n_spp_mat_rgb)
-    # Gamma correction
-    n_spp_mat_rgb <- n_spp_mat_rgb^1.4
-    plot_map(n_spp_mat_rgb)
+#     # Classify raster
+#     breaks <- matrix(
+#         c(
+#             0,
+#             5,
+#             1,
+#             5,
+#             10,
+#             2,
+#             10,
+#             15,
+#             3,
+#             15,
+#             20,
+#             4,
+#             20,
+#             25,
+#             5,
+#             25,
+#             30,
+#             6,
+#             30,
+#             35,
+#             7
+#         ),
+#         ncol = 3,
+#         byrow = T
+#     )
+#     n_spp_rast <- classify(n_spp_rast, breaks)
+#     levels(n_spp_rast) <- data.frame(
+#         id = 1:7,
+#         n_species = c(
+#             "0-5",
+#             "5-10",
+#             "10-15",
+#             "15-20",
+#             "20-25",
+#             "25-30",
+#             "30-35"
+#         )
+#     )
+#     # Get elevation raster
+#     elmat <- raster_to_matrix(dsm_rasts[[x]])
+#     # Prepare water mask
+#     water_mask <- water_masks[[x]]
+#     # water_mask_inv_array <- water_mask
+#     # water_mask_inv_array[] <- NA
+#     # water_mask_inv_array[] <- is.na(water_mask[])
+#     # water_mask_inv_array <- as.array(water_mask_inv_array)
+#     water_mask_inv <- is.na(water_mask[])
+#     water_col <- col2rgb("white")
+#     # Prepare color scale
+#     viridis_cols <- col2rgb(c(
+#         "#000000",
+#         "#470052",
+#         "#494084",
+#         "#34768d",
+#         "#22a785",
+#         "#72d25c",
+#         "#f6eb46"
+#     )) /
+#         255
+#     # Prepare raster layers
+#     n_spp_mat_red <- n_spp_rast[[1]]
+#     n_spp_mat_green <- n_spp_rast[[1]]
+#     n_spp_mat_blue <- n_spp_rast[[1]]
+#     n_spp_mat_red[] <- NA
+#     n_spp_mat_green[] <- NA
+#     n_spp_mat_blue[] <- NA
+#     n_spp_mat_red[] <- viridis_cols[1, as.numeric(n_spp_rast$n_species[])]
+#     n_spp_mat_green[] <- viridis_cols[2, as.numeric(n_spp_rast$n_species[])]
+#     n_spp_mat_blue[] <- viridis_cols[3, as.numeric(n_spp_rast$n_species[])]
+#     n_spp_mat_red[water_mask_inv] <- water_col[1] / 255
+#     n_spp_mat_green[water_mask_inv] <- water_col[2] / 255
+#     n_spp_mat_blue[water_mask_inv] <- water_col[3] / 255
+#     n_spp_mat_rgb <- c(n_spp_mat_red, n_spp_mat_green, n_spp_mat_blue)
+#     plotRGB(n_spp_mat_rgb, scale = 1)
+#     n_spp_mat_rgb <- as.array(n_spp_mat_rgb)
+#     # Gamma correction
+#     n_spp_mat_rgb <- n_spp_mat_rgb^1.4
+#     plot_map(n_spp_mat_rgb)
 
-    # Initate 3D plot
-    plot_3d(
-        n_spp_mat_rgb,
-        elmat,
-        zscale = 0.5,
-        zoom = 0.7, #.85
-        phi = 45,
-        theta = 45,
-        windowsize = 2000
-    )
-    # Set outfile and render in high quality
-    out_file <- tempfile(fileext = ".png")
-    render_highquality(
-        out_file,
-        samples = 12, # Up to 128 for best quality
-        lightdirection = c(60, 150),
-        lightintensity = 375,
-        clear = TRUE,
-        parallel = TRUE,
-        interactive = FALSE,
-        ground_size = 0
-    )
-    rgl::close3d()
+#     # Initate 3D plot
+#     plot_3d(
+#         n_spp_mat_rgb,
+#         elmat,
+#         zscale = 0.5,
+#         zoom = 0.7, #.85
+#         phi = 45,
+#         theta = 45,
+#         windowsize = 2000
+#     )
+#     # Set outfile and render in high quality
+#     out_file <- tempfile(fileext = ".png")
+#     render_highquality(
+#         out_file,
+#         samples = 12, # Up to 128 for best quality
+#         lightdirection = c(60, 150),
+#         lightintensity = 375,
+#         clear = TRUE,
+#         parallel = TRUE,
+#         interactive = FALSE,
+#         ground_size = 0
+#     )
+#     rgl::close3d()
 
-    # Load image for post-processing
-    img <- image_read(out_file)
-    # Turn black background to white
-    mask <- image_transparent(img, "black")
-    img_masked <- image_background(mask, "white", flatten = TRUE)
-    # Downscale for antialisaing
-    img_scaled <- image_resize(
-        img_masked,
-        "1000x1000",
-        filter = "Lanczos"
-    )
-    # Write out imagge
-    image_write(img_scaled, out_file)
+#     # Load image for post-processing
+#     img <- image_read(out_file)
+#     # Turn black background to white
+#     mask <- image_transparent(img, "black")
+#     img_masked <- image_background(mask, "white", flatten = TRUE)
+#     # Downscale for antialisaing
+#     img_scaled <- image_resize(
+#         img_masked,
+#         "1000x1000",
+#         filter = "Lanczos"
+#     )
+#     # Write out imagge
+#     image_write(img_scaled, out_file)
 
-    # Re-load and convert to ggplot object
-    (rast_plot_3d <- (ggdraw() + draw_image(out_file)))
+#     # Re-load and convert to ggplot object
+#     (rast_plot_3d <- (ggdraw() + draw_image(out_file)))
 
-    # tidy up
-    file.remove(out_file)
+#     # tidy up
+#     file.remove(out_file)
 
-    # Return file
-    return(rast_plot_3d)
-})
+#     # Return file
+#     return(rast_plot_3d)
+# })
 
-# Annotate plots and save
-{
-    # Create copies for annotation
-    rgb_plots_3d_annotated <- rgb_plots_3d
-    n_spp_plots_3d_annotated <- n_spp_plots_3d
+# # Annotate plots and save
+# {
+#     # Create copies for annotation
+#     rgb_plots_3d_annotated <- rgb_plots_3d
+#     n_spp_plots_3d_annotated <- n_spp_plots_3d
 
-    # Scale bar
-    rgb_plots_3d_annotated[[3]] <-
-        rgb_plots_3d_annotated[[3]] +
-        draw_label(
-            "150 m",
-            x = 0.75,
-            y = 0.1925,
-            hjust = 0.5,
-            size = 42,
-            angle = 37,
-            fontface = "bold",
-            vjust = 1.5
-        ) +
-        draw_line(
-            x = c(0.65, 0.84),
-            y = c(0.1, 0.29),
-            # arrow = arrow(length = unit(0.25, "cm"), type = "closed"),
-            color = "black",
-            linewidth = 2.5
-        )
-    # North Arrow
-    n_spp_plots_3d_annotated[[3]] <-
-        n_spp_plots_3d_annotated[[3]] +
-        draw_label(
-            "N",
-            x = 0.84,
-            y = 0.14,
-            hjust = 0.5,
-            size = 42,
-            #angle = 37,
-            fontface = "bold"
-        ) +
-        draw_line(
-            x = c(0.77, 0.85),
-            y = c(0.14, 0.23),
-            arrow = arrow(length = unit(0.4, "cm"), type = "closed"),
-            color = "black",
-            linewidth = 2.5
-        )
-    plot_grid(
-        plotlist = c(
-            rgb_plots_3d_annotated,
-            list(NULL),
-            n_spp_plots_3d_annotated,
-            list(
-                ggdraw() +
-                    draw_grob(
-                        cowplot::get_legend(
-                            est_rich_maps[[3]] +
-                                theme_map(32) +
-                                theme(
-                                    legend.key = element_rect(colour = "black")
-                                )
-                        ),
-                        x = 0,
-                        y = 0,
-                        scale = 1
-                    )
-            )
-        ),
-        labels = c(
-            " a)  Site 1",
-            " b)  Site 2",
-            " c)  Site 3",
-            "",
-            " d)",
-            " e)",
-            " f)",
-            ""
-        ),
-        rel_widths = c(1, 1, 1, 0.4),
-        hjust = 0,
-        nrow = 2,
-        ncol = 4,
-        label_size = 36
-    ) %>%
-        save_plot(
-            "figures/figure_4_drone_images.png",
-            .,
-            base_asp = 1.195,
-            nrow = 2,
-            ncol = 4,
-            base_height = 6,
-            bg = "white"
-        )
-}
+#     # Scale bar
+#     rgb_plots_3d_annotated[[3]] <-
+#         rgb_plots_3d_annotated[[3]] +
+#         draw_label(
+#             "150 m",
+#             x = 0.75,
+#             y = 0.1925,
+#             hjust = 0.5,
+#             size = 42,
+#             angle = 37,
+#             fontface = "bold",
+#             vjust = 1.5
+#         ) +
+#         draw_line(
+#             x = c(0.65, 0.84),
+#             y = c(0.1, 0.29),
+#             # arrow = arrow(length = unit(0.25, "cm"), type = "closed"),
+#             color = "black",
+#             linewidth = 2.5
+#         )
+#     # North Arrow
+#     n_spp_plots_3d_annotated[[3]] <-
+#         n_spp_plots_3d_annotated[[3]] +
+#         draw_label(
+#             "N",
+#             x = 0.84,
+#             y = 0.14,
+#             hjust = 0.5,
+#             size = 42,
+#             #angle = 37,
+#             fontface = "bold"
+#         ) +
+#         draw_line(
+#             x = c(0.77, 0.85),
+#             y = c(0.14, 0.23),
+#             arrow = arrow(length = unit(0.4, "cm"), type = "closed"),
+#             color = "black",
+#             linewidth = 2.5
+#         )
+#     plot_grid(
+#         plotlist = c(
+#             rgb_plots_3d_annotated,
+#             list(NULL),
+#             n_spp_plots_3d_annotated,
+#             list(
+#                 ggdraw() +
+#                     draw_grob(
+#                         cowplot::get_legend(
+#                             est_rich_maps[[3]] +
+#                                 theme_map(32) +
+#                                 theme(
+#                                     legend.key = element_rect(colour = "black")
+#                                 )
+#                         ),
+#                         x = 0,
+#                         y = 0,
+#                         scale = 1
+#                     )
+#             )
+#         ),
+#         labels = c(
+#             " a)  Site 1",
+#             " b)  Site 2",
+#             " c)  Site 3",
+#             "",
+#             " d)",
+#             " e)",
+#             " f)",
+#             ""
+#         ),
+#         rel_widths = c(1, 1, 1, 0.4),
+#         hjust = 0,
+#         nrow = 2,
+#         ncol = 4,
+#         label_size = 36
+#     ) %>%
+#         save_plot(
+#             "figures/figure_4_drone_images.png",
+#             .,
+#             base_asp = 1.195,
+#             nrow = 2,
+#             ncol = 4,
+#             base_height = 6,
+#             bg = "white"
+#         )
+# }
+
+#### End of file
+################################################################################

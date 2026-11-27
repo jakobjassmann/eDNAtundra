@@ -192,7 +192,7 @@ species_count_plot_by_date <- ggplot() +
         )
     )
 save_plot(
-    paste0("figures/ASV_counts_ITS2_by_soil_sampling_date.png"),
+    paste0("figures/figure_S6_ASV_counts_ITS2_by_soil_sampling_date.png"),
     species_count_plot_by_date,
     base_height = 12,
     bg = "white"
@@ -367,7 +367,7 @@ species_count_plot_by_date <- ggplot() +
         y = "",
         fill = "Total count\nof ASVs",
         title = paste0(
-            "Sum of ITS2 ASV counts per taxon by sampling date"
+            "Sum of trnL ASV counts per taxon by sampling date"
         )
     ) +
     # coord_flip() +
@@ -382,7 +382,7 @@ species_count_plot_by_date <- ggplot() +
         )
     )
 save_plot(
-    paste0("figures/ASV_counts_trnl_by_soil_sampling_date.png"),
+    paste0("figures/figure_S7_ASV_counts_trnl_by_soil_sampling_date.png"),
     species_count_plot_by_date,
     base_height = 12,
     bg = "white"
@@ -574,10 +574,11 @@ species_count_plot_by_date <- ggplot() +
         )
     )
 save_plot(
-    paste0("figures/ASV_counts_ITS2_bryo_by_soil_sampling_date.png"),
+    paste0("figures/figure_S8_ASV_counts_ITS2_bryo_by_soil_sampling_date.png"),
     species_count_plot_by_date,
     base_height = 12,
     bg = "white"
 )
 
-# End of File
+#### End of file
+################################################################################

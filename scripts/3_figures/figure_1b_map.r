@@ -116,7 +116,7 @@ site_map <- ggplot() +
     theme_map()
 
 # Generate overview map / globe insert
-source("scripts/3_figures/fig_1_globe_insert.R")
+source("scripts/3_figures/figure_1a_globe_insert.R")
 
 # Combine with the conceptual sketches
 plot_grid(
@@ -137,10 +137,13 @@ plot_grid(
     label_colour = "white"
 ) %>%
     save_plot(
-        "figures/figure1_map_sketch.png",
+        "figures/figure_1_map.png",
         .,
         nrow = 2,
         base_asp = (517000 - 478000) / (7678000 - 7659000),
         base_height = 5,
         bg = "white"
     )
+
+#### End of file
+################################################################################

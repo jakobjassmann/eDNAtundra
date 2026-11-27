@@ -32,7 +32,7 @@ multispec_cv <- bind_cols(
 # Load file names of multispec drone rasters
 multispec_rasts <- data.frame(
     file_name = list.files(
-        "data/drone_data/multispec/2026/",
+        "data/drone_data/multispec/",
         full.names = T,
         pattern = ".tif$"
     )
@@ -299,10 +299,13 @@ combined_plot_nspp_cv <- plot_grid(
 
 # Write out as file
 save_plot(
-    "figures/figure_3.png",
+    "figures/figure_3_spectral_variability.png",
     combined_plot_nspp_cv,
     base_asp = 1.2,
     ncol = 2,
     base_height = 6,
     bg = "white"
 )
+
+#### End of file
+################################################################################

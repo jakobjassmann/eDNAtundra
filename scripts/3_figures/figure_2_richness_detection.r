@@ -164,7 +164,9 @@ site_richness <- obs_combined %>%
 ## b) Bryophyte vs. Vascular Plant Species Richness
 
 # Load presence / absence vascular observations
-vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
+vascular_obs <- read_csv(
+    "data/botanical_obs/vascular_presence_absence_cleaned.csv"
+) %>%
     select(-observer, -scribe) %>%
     mutate(
         species = gsub("([A-Za-z]*) .*", "\\1", species),
@@ -177,7 +179,7 @@ vascular_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
 
 # Load presence / absence moss observations
 bryo_obs <- read_csv(
-    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
+    "data/botanical_obs/bryophyte_presence_absence_cleaned.csv"
 ) %>%
     mutate(plot_id = paste0(Site, Plot_ID)) %>%
     select(site_id = Site, plot_id, genus = Genus, species = Species) %>%
@@ -261,7 +263,7 @@ combined_obs <- bind_rows(vascular_obs, bryo_obs) %>%
 
 # Save plot
 save_plot(
-    "figures/figure_2.png",
+    "figures/figure_2_richness_detection.png",
     panel_plot_icons,
     ncol = 1,
     nrow = 2,
@@ -269,4 +271,5 @@ save_plot(
     bg = "white"
 )
 
-## End of File
+#### End of file
+################################################################################
