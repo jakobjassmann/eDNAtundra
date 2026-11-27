@@ -56,7 +56,7 @@ To following data are not included in this code repository, but are required to 
 
 These data can be found on Zenodo:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assmann et al. 2024. Dataset for "Combined eDNA and spectral variability facilitate rapid assessment of plant diversity in Arctic tundra landscapes". Zenodo. [https://PLACEHOLDER](https://doi.org/PLACEHOLDER)
+* Assmann et al. 2024. Dataset for "Combined eDNA and spectral variability facilitate rapid assessment of plant diversity in Arctic tundra landscapes". Zenodo. [https://PLACEHOLDER](https://doi.org/PLACEHOLDER)
 
 The data is currently under embargo and will be made openly available after peer-review. A copy of the data has been made available to the reviewers via a dedicated link for peer-review. 
 
@@ -80,7 +80,7 @@ The map in Figure 1 is derived from Copernicus Sentinel-2 satellite imagery. To 
 
 If the user wishes to regenerate the subset of the species lists from Saarela et al. 2020 used for the field data sheets (this is not required for the analysis), they need to download `phytokeys-141-001-s003.xlsx` provided in the supplementary materials by Saarela et al. 2020 and paste it into the `data/species_list/` folder.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Saarela, J.M., Sokoloff, P.C., Gillespie, L.J., Bull, R.D., Bennett, B.A., Ponomarenko, S., 2020. Vascular plants of Vic, but used during data collectiontoria Island (Northwest Territories and Nunavut, Canada): a specimen-based study of an Arctic flora. PhytoKeys 141, 1–330. https://doi.org/10.3897/phytokeys.141.48810
+* Saarela, J.M., Sokoloff, P.C., Gillespie, L.J., Bull, R.D., Bennett, B.A., Ponomarenko, S., 2020. Vascular plants of Vic, but used during data collectiontoria Island (Northwest Territories and Nunavut, Canada): a specimen-based study of an Arctic flora. PhytoKeys 141, 1–330. https://doi.org/10.3897/phytokeys.141.48810
 
 [\[back to content\]](#content)
 
