@@ -1,4 +1,4 @@
-# Rarefraction analysis to optimise sampling
+# Rarefaction analysis to optimise sampling
 # Jakob J. Assmann jakob.assmann@uzh.zh 19 March 2025
 
 # Dependencies
@@ -333,7 +333,7 @@ n_detected_plot <- n_detected %>%
     theme_cowplot() +
     theme(strip.background = element_rect(fill = "white")))
 save_plot(
-    "figures/figure_SX_rarefaction.png",
+    "figures/figure_S4_rarefaction.png",
     rarefraction,
     base_asp = 2.5,
     base_height = 7,
@@ -343,3 +343,6 @@ save_plot(
 obs_combined %>%
     filter(site_id == "Site 1") %>%
     distinct(plot_id, source, plot_type)
+
+#### End of file
+################################################################################
