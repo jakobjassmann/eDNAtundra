@@ -39,7 +39,7 @@ eDNA_obs %>%
     )
 # Samples are consistently detected across subplots
 # Mean detection in 2.1 plots (sd = 0.880 plots)
-# Mean detection rate = 70.1% sd = 29.3%
+# Mean detection rate = 70.0% sd = 29.3%
 
 # Consistency of detection in pooled samples ----
 eDNA_obs %>%

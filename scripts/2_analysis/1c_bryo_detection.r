@@ -50,7 +50,7 @@ eDNA_obs <- read_csv("data/sequences/its2/edna/cleaned/its2_bryo_taxa.csv") %>%
 nrow(botanical_obs)
 nrow(filter(botanical_obs, species != "species"))
 nrow(eDNA_obs)
-# botanical 516 vs edna 121 (23%)
+# botanical 516 vs edna 120 (23%)
 # These are very few detections, how many are at species level?
 nrow(filter(eDNA_obs, species != "species"))
 # even less 77 (15%)

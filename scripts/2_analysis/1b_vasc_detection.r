@@ -51,7 +51,7 @@ eDNA_obs %>%
 # # A tibble: 1 × 3
 #   trnl_only its2_only  both
 #       <int>     <int> <int>
-# 1       704       668   968
+# 1       704       670   968
 
 #### Join botanical and edna data ----
 
