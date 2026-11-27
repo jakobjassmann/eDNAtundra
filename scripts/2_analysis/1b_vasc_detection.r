@@ -7,7 +7,9 @@ library(gt)
 #### Load and prepare botanical and eDNA datasets ----
 
 # Load presence/ absence botanical observations and prepare for comaprison
-botanical_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
+botanical_obs <- read_csv(
+    "data/botanical_obs/vascular_presence_absence_cleaned.csv"
+) %>%
     select(-observer, -scribe) %>%
     mutate(
         species = gsub("([A-Za-z]*) .*", "\\1", species),
@@ -17,7 +19,9 @@ botanical_obs <- read_csv("data/botanical_obs/presence_absence_cleaned.csv") %>%
     distinct()
 
 # Load species list from botanical observaitons
-botanical_ref <- read_csv("data/botanical_obs/species_list_cleaned.csv") %>%
+botanical_ref <- read_csv(
+    "data/botanical_obs/vascular_species_list_cleaned.csv"
+) %>%
     mutate(
         species = gsub("([A-Za-z]*) .*", "\\1", species),
         short_name = paste(genus, species)
@@ -47,7 +51,7 @@ eDNA_obs %>%
 # # A tibble: 1 × 3
 #   trnl_only its2_only  both
 #       <int>     <int> <int>
-# 1       704       670   968
+# 1       704       668   968
 
 #### Join botanical and edna data ----
 
@@ -518,4 +522,5 @@ obs_combined %>%
     ) %>%
     gtsave("tables/5_plots_per_species.html")
 
-## End of file
+#### End of file
+################################################################################

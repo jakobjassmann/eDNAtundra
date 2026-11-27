@@ -9,7 +9,7 @@ library(gt)
 
 # Load presence/ absence botanical observations and prepare for comaprison
 botanical_obs_orignal <- read_csv(
-    "data/botanical_obs/moss_data_Erin_cleaned_final_Deb_updated_Aug_2026.csv"
+    "data/botanical_obs/bryophyte_presence_absence_cleaned.csv"
 ) %>%
     mutate(plot_id = paste0(Site, Plot_ID)) %>%
     select(plot_id, genus = Genus, species = Species, synonym) %>%
@@ -50,7 +50,7 @@ eDNA_obs <- read_csv("data/sequences/its2/edna/cleaned/its2_bryo_taxa.csv") %>%
 nrow(botanical_obs)
 nrow(filter(botanical_obs, species != "species"))
 nrow(eDNA_obs)
-# botanical 516 vs edna 120 (23%)
+# botanical 516 vs edna 121 (23%)
 # These are very few detections, how many are at species level?
 nrow(filter(eDNA_obs, species != "species"))
 # even less 77 (15%)
@@ -75,16 +75,14 @@ eDNA_obs %>%
     distinct(short_name) %>%
     arrange(short_name) %>%
     filter(!(short_name %in% botanical_obs_synonyms$synonym))
-# # A tibble: 7 × 1
+# # A tibble: 5 × 1
 #   short_name
 #   <chr>
-# 1 Campylium bambergeri
-# 2 Distichium hagenii
-# 3 Encalypta longicollis
-# 4 Flexitrichum flexicaule
-# 5 Hymenostylium recurvirostrum
-# 6 Orthothecium intricatum
-# 7 Timmiella anomala
+# 1 Distichium hagenii
+# 2 Encalypta longicollis
+# 3 Hymenostylium recurvirostrum
+# 4 Orthothecium intricatum
+# 5 Timmiella anomala
 
 #### Join botanical and edna data ----
 
@@ -442,4 +440,5 @@ obs_combined %>%
     ) %>%
     gtsave("tables/bryo_5_plots_per_species.html")
 
-## End of file
+#### End of file
+################################################################################
