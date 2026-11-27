@@ -230,7 +230,7 @@ ca_plot_site_edna <- ggplot(
         panel.border = element_rect(color = "black")
     )
 save_plot(
-    "figures/fig_S3_ca_site.png",
+    "figures/figure_S3_ca_site.png",
     plot_grid(
         ca_plot_site_bot,
         ca_plot_site_edna,
