@@ -54,7 +54,7 @@ plot_site_1 <-
            clip = "off") +
   theme_nothing() +
   theme(plot.background = element_rect(fill = "black"))
-save_plot("figures/site_1_rgb.png", plot_site_1,
+save_plot("figures/not_included_in_manuscript/site_1_rgb.png", plot_site_1,
           base_asp = 1)
 
 
@@ -78,7 +78,7 @@ plot_site_2 <-
            clip = "off") +
   theme_nothing() +
   theme(plot.background = element_rect(fill = "white"))
-save_plot("figures/site_2_rgb.png", plot_site_2,
+save_plot("figures/not_included_in_manuscript/site_2_rgb.png", plot_site_2,
           base_asp = 1)
 
 plot_site_3 <- 
@@ -101,5 +101,5 @@ plot_site_3 <-
            clip = "off") +
   theme_nothing() +
   theme(plot.background = element_rect(fill = "black"))
-save_plot("figures/site_3_rgb.png", plot_site_3,
+save_plot("figures/not_included_in_manuscript/site_3_rgb.png", plot_site_3,
           base_asp = 1)
