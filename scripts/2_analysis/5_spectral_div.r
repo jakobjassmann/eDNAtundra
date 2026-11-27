@@ -324,7 +324,7 @@ diagnostic_grid <- plot_grid(
     align = "hv"
 )
 save_plot(
-    "figures/lm_nspp_diagnostics.png",
+    "figures/not_included_in_manuscript/lm_nspp_diagnostics.png",
     diagnostic_grid,
     bg = "white",
     base_height = 5
@@ -397,7 +397,7 @@ diagnostic_grid <- plot_grid(
     align = "hv"
 )
 save_plot(
-    "figures/lm_nspp_vasc_diagnostics.png",
+    "figures/not_included_in_manuscript/lm_nspp_vasc_diagnostics.png",
     diagnostic_grid,
     bg = "white",
     base_height = 5
@@ -458,7 +458,7 @@ diagnostic_grid <- plot_grid(
     align = "hv"
 )
 save_plot(
-    "figures/lm_nspp_bryo_diagnostics.png",
+    "figures/not_included_in_manuscript/lm_nspp_bryo_diagnostics.png",
     diagnostic_grid,
     bg = "white",
     base_height = 5

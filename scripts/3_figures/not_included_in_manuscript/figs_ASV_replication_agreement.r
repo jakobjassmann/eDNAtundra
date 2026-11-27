@@ -117,7 +117,7 @@ its2_res <- compute_agreement(its2, "ITS2")
 its2_plot <- plot_agreement_by_site(its2_res$plot_df, "ITS2")
 
 save_plot(
-    "figures/ASV_replication_agreement_ITS2.png",
+    "figures/not_included_in_manuscript/ASV_replication_agreement_ITS2.png",
     its2_plot,
     base_width = 9,
     base_height = 5,
@@ -143,7 +143,7 @@ its2_pooled_plot <- ggplot(
     theme(plot.title = element_text(hjust = 0.5))
 
 save_plot(
-    "figures/ASV_replication_pooled_ITS2.png",
+    "figures/not_included_in_manuscript/ASV_replication_pooled_ITS2.png",
     its2_pooled_plot,
     base_width = 6,
     base_height = 4,
@@ -156,7 +156,7 @@ trnl_res <- compute_agreement(trnl, "trnL")
 trnl_plot <- plot_agreement_by_site(trnl_res$plot_df, "trnL")
 
 save_plot(
-    "figures/ASV_replication_agreement_trnl.png",
+    "figures/not_included_in_manuscript/ASV_replication_agreement_trnl.png",
     trnl_plot,
     base_width = 9,
     base_height = 5,
@@ -182,7 +182,7 @@ trnl_pooled_plot <- ggplot(
     theme(plot.title = element_text(hjust = 0.5))
 
 save_plot(
-    "figures/ASV_replication_pooled_trnl.png",
+    "figures/not_included_in_manuscript/ASV_replication_pooled_trnl.png",
     trnl_pooled_plot,
     base_width = 6,
     base_height = 4,

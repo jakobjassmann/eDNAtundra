@@ -87,7 +87,11 @@ map(unique(its2_taxa$site_id), function(site_id_to_plot) {
             axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5)
         )
     save_plot(
-        paste0("figures/ASV_counts_ITS2_", site_id_to_plot, ".png"),
+        paste0(
+            "figures/not_included_in_manuscript/ASV_counts_ITS2_",
+            site_id_to_plot,
+            ".png"
+        ),
         species_count_plot,
         base_height = 12,
         bg = "white"
@@ -278,7 +282,11 @@ map(unique(trnl_taxa$site_id), function(site_id_to_plot) {
             axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5)
         )
     save_plot(
-        paste0("figures/ASV_counts_trnl_", site_id_to_plot, ".png"),
+        paste0(
+            "figures/not_included_in_manuscript/ASV_counts_trnl_",
+            site_id_to_plot,
+            ".png"
+        ),
         species_count_plot,
         base_height = 12,
         bg = "white"
@@ -470,7 +478,11 @@ map(unique(its2_taxa_bryo$site_id), function(site_id_to_plot) {
             axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5)
         )
     save_plot(
-        paste0("figures/ASV_counts_ITS2_bryo_", site_id_to_plot, ".png"),
+        paste0(
+            "figures/not_included_in_manuscript/ASV_counts_ITS2_bryo_",
+            site_id_to_plot,
+            ".png"
+        ),
         species_count_plot,
         base_height = 12,
         bg = "white"
