@@ -9,7 +9,7 @@ library(dada2)
 library(Biostrings)
 library(ShortRead)
 
-# Blast the its2 asv against the BITSR database
+# Blast the its2 asv against the BITSR database (run on linux command line)
 blastn -query data/sequences/its2/edna/cleaned/its2_asvs.fasta \
        -db data/external/reference_libraries/DS-BITSR/DS-BITSR_its2_db \
        -out data/sequences/its2/edna/cleaned/its2_bryo_blast_res.txt \
@@ -130,3 +130,4 @@ group_by(genus, species) %>% summarise(n = n()) %>% tibble:: view()
 # None.
 
 ### End of file
+################################################################################

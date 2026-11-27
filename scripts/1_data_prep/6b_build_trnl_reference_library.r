@@ -7,7 +7,7 @@ library(readxl)
 library(Biostrings)
 
 # Load species list from vascular plant observatins
-species_list <- read_csv("data/botanical_obs/species_list_cleaned.csv")
+species_list <- read_csv("data/botanical_obs/vascular_species_list_cleaned.csv")
 
 # Load reference our own trnl sequences
 cb_trnl <- read_csv(
@@ -218,6 +218,9 @@ filter(assmann_et_al, is.na(clade))
 
 ### Write out ast csv, fasta and create blast database
 
+# Create out dir
+dir.create("data/sequences/trnl/reference")
+
 # Write out
 write_excel_csv(
     assmann_et_al,
@@ -394,4 +397,5 @@ distinct(confused_taxa, genus_id, species_id)
 # 3. Eriophorum sp.
 # 4. Oxitropis sp. (arctobia / meydelliana)
 # 5. Salix sp. 
+
 
